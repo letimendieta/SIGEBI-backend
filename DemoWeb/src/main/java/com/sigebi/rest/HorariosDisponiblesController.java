@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Pacientes;
-import com.sigebi.repo.IPacientesRepo;
+import com.sigebi.model.HorariosDisponibles;
+import com.sigebi.repo.IHorariosDisponiblesRepo;
 
 @RestController
-@RequestMapping("/pacientes")
-public class PacientesController {
+@RequestMapping("/horarios-Disponibles")
+public class HorariosDisponiblesController {
 
 	@Autowired
-	private IPacientesRepo repo;
+	private IHorariosDisponiblesRepo repo;
 
 	@GetMapping
-	public List<Pacientes> listar() {
+	public List<HorariosDisponibles> listar() {
 		return repo.findAll();
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody Pacientes paciente) {
-		repo.save(paciente);
+	public void insertar(@RequestBody HorariosDisponibles horarioDisponible) {
+		repo.save(horarioDisponible);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Pacientes paciente) {
-		repo.save(paciente);
+	public void modificar(@RequestBody HorariosDisponibles horarioDisponible) {
+		repo.save(horarioDisponible);
 	}
 
 	@DeleteMapping(value = "/{id}")

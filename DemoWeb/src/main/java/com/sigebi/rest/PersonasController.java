@@ -28,13 +28,13 @@ public class PersonasController {
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody Personas per) {
-		repo.save(per);
+	public void insertar(@RequestBody Personas persona) {
+		repo.save(persona);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Personas per) {
-		repo.save(per);
+	public void modificar(@RequestBody Personas persona) {
+		repo.save(persona);
 	}
 
 	@DeleteMapping(value = "/{id}")

@@ -4,15 +4,18 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Insumos {
 		
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int insumo_id;
 	
-	@Column(name = "codigo", length = 15)
+	@Column(name = "codigo", length = 15, unique = true)
 	private String codigo;
 	
 	@Column(name = "descripcion", length = 30)

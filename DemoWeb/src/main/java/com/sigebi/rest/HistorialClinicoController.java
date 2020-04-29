@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Pacientes;
-import com.sigebi.repo.IPacientesRepo;
+import com.sigebi.model.HistorialClinico;
+import com.sigebi.repo.IHistorialClinicoRepo;
 
 @RestController
-@RequestMapping("/pacientes")
-public class PacientesController {
+@RequestMapping("/historial-Clinico")
+public class HistorialClinicoController {
 
 	@Autowired
-	private IPacientesRepo repo;
+	private IHistorialClinicoRepo repo;
 
 	@GetMapping
-	public List<Pacientes> listar() {
+	public List<HistorialClinico> listar() {
 		return repo.findAll();
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody Pacientes paciente) {
-		repo.save(paciente);
+	public void insertar(@RequestBody HistorialClinico historialClinico) {
+		repo.save(historialClinico);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Pacientes paciente) {
-		repo.save(paciente);
+	public void modificar(@RequestBody HistorialClinico historialClinico) {
+		repo.save(historialClinico);
 	}
 
 	@DeleteMapping(value = "/{id}")

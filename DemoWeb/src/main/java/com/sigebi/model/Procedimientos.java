@@ -2,15 +2,19 @@ package com.sigebi.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Procedimientos {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int procedimiento_id;
 	
 	@Column(name = "funcionario_id")
@@ -33,6 +37,18 @@ public class Procedimientos {
 	
 	@Column(name = "hora")
 	private Time hora;
+	
+	@Column(name = "fecha_creacion")
+	private Timestamp fechaCreacion;	
+	
+	@Column(name = "usuario_creacion", length = 15)
+	private String usuarioCreacion;
+	
+	@Column(name = "fecha_modificacion")
+	private Timestamp fechaModificacion;
+	
+	@Column(name = "usuario_modificacion", length = 15)
+	private String usuarioModificacion;
 
 	public int getProcedimiento_id() {
 		return procedimiento_id;
@@ -96,6 +112,38 @@ public class Procedimientos {
 
 	public void setHora(Time hora) {
 		this.hora = hora;
+	}
+
+	public Timestamp getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Timestamp fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public String getUsuarioCreacion() {
+		return usuarioCreacion;
+	}
+
+	public void setUsuarioCreacion(String usuarioCreacion) {
+		this.usuarioCreacion = usuarioCreacion;
+	}
+
+	public Timestamp getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(Timestamp fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
+	public String getUsuarioModificacion() {
+		return usuarioModificacion;
+	}
+
+	public void setUsuarioModificacion(String usuarioModificacion) {
+		this.usuarioModificacion = usuarioModificacion;
 	}
 	
 	

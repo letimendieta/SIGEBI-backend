@@ -16,12 +16,11 @@ import com.sigebi.model.Usuarios;
 import com.sigebi.repo.IUsuariosRepo;
 
 @Service
-public class UserService implements UserDetailsService{
+public class UsuariosService implements UserDetailsService{
 
 	@Autowired
 	private IUsuariosRepo repo;
-	
-	
+		
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
@@ -35,4 +34,7 @@ public class UserService implements UserDetailsService{
 	    return userDet;
 	}
 
+	public List<GrantedAuthority> buildGrante(byte rol){
+		return null;
+	}
 }
