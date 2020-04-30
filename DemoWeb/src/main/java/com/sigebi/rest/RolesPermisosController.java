@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Procedimientos;
-import com.sigebi.repo.IProcedimientosRepo;
+import com.sigebi.model.RolesPermisos;
+import com.sigebi.repo.IRolesPermisosRepo;
 
 @RestController
-@RequestMapping("/procedimientos")
-public class ProcedimientosController {
+@RequestMapping("/roles-Permisos")
+public class RolesPermisosController {
 
 	@Autowired
-	private IProcedimientosRepo repo;
+	private IRolesPermisosRepo repo;
 
 	@GetMapping
-	public List<Procedimientos> listar() {
+	public List<RolesPermisos> listar() {
 		return repo.findAll();
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody Procedimientos procedimiento) {
-		repo.save(procedimiento);
+	public void insertar(@RequestBody RolesPermisos rolPermiso) {
+		repo.save(rolPermiso);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Procedimientos procedimiento) {
-		repo.save(procedimiento);
+	public void modificar(@RequestBody RolesPermisos rolPermiso) {
+		repo.save(rolPermiso);
 	}
 
 	@DeleteMapping(value = "/{id}")
