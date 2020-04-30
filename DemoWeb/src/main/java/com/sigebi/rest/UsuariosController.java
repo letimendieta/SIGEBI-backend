@@ -12,29 +12,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Procedimientos;
-import com.sigebi.repo.IProcedimientosRepo;
+import com.sigebi.model.Usuarios;
+import com.sigebi.repo.IUsuariosRepo;
+import com.sigebi.service.UsuariosService;
 
 @RestController
-@RequestMapping("/procedimientos")
-public class ProcedimientosController {
+@RequestMapping("/usuarios")
+public class UsuariosController {
 
 	@Autowired
-	private IProcedimientosRepo repo;
+	private IUsuariosRepo repo;
+	
+	@Autowired
+	private UsuariosService usuarioService;
 
 	@GetMapping
-	public List<Procedimientos> listar() {
+	public List<Usuarios> listar() {
 		return repo.findAll();
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody Procedimientos procedimiento) {
-		repo.save(procedimiento);
+	public void insertar(@RequestBody Usuarios usuario) {
+		usuarioService.crearUsuario(usuario);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Procedimientos procedimiento) {
-		repo.save(procedimiento);
+	public void modificar(@RequestBody Usuarios usuario) {
+		repo.save(usuario);
 	}
 
 	@DeleteMapping(value = "/{id}")
