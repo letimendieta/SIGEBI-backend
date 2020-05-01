@@ -3,6 +3,7 @@ package com.sigebi.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import com.sigebi.model.Procedimientos;
 import com.sigebi.repo.IProcedimientosRepo;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/procedimientos")
 public class ProcedimientosController {
 
