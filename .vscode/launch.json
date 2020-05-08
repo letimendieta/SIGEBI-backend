@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SigebiWebApplication<SigebiWeb>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.sigebi.SigebiWebApplication",
+            "projectName": "SigebiWeb",
+            "args": ""
+        }
+    ]
+}
