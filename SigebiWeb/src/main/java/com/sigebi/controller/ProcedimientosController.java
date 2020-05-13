@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Procedimientos;
-import com.sigebi.service.IProcedimientosRepo;
+import com.sigebi.dao.IProcedimientosDao;
+import com.sigebi.entity.Procedimientos;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IProcedimientosRepo;
 public class ProcedimientosController {
 
 	@Autowired
-	private IProcedimientosRepo repo;
+	private IProcedimientosDao repo;
 
 	@GetMapping
 	public List<Procedimientos> listar() {

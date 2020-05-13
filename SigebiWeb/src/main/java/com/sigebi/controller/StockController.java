@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Stock;
-import com.sigebi.service.IStockRepo;
+import com.sigebi.dao.IStockDao;
+import com.sigebi.entity.Stock;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IStockRepo;
 public class StockController {
 
 	@Autowired
-	private IStockRepo repo;
+	private IStockDao repo;
 
 	@GetMapping
 	public List<Stock> listar() {

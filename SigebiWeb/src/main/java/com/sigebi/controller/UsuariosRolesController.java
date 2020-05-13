@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.UsuariosRoles;
-import com.sigebi.service.IUsuariosRolesRepo;
+import com.sigebi.dao.IUsuariosRolesDao;
+import com.sigebi.entity.UsuariosRoles;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IUsuariosRolesRepo;
 public class UsuariosRolesController {
 
 	@Autowired
-	private IUsuariosRolesRepo repo;
+	private IUsuariosRolesDao repo;
 
 	@GetMapping
 	public List<UsuariosRoles> listar() {

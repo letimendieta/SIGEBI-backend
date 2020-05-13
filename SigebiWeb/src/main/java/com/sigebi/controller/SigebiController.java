@@ -6,14 +6,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sigebi.model.Personas;
-import com.sigebi.service.IPersonasRepo;
+import com.sigebi.dao.IPersonasDao;
+import com.sigebi.entity.Personas;
 
 @Controller
 public class SigebiController {
 	
 	@Autowired
-	private IPersonasRepo repo;
+	private IPersonasDao repo;
 	
 	@GetMapping("/greeting")
 	public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name,

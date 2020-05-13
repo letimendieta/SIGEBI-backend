@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Usuarios;
-import com.sigebi.service.IUsuariosRepo;
-import com.sigebi.serviceImplement.UsuariosService;
+import com.sigebi.dao.IUsuariosDao;
+import com.sigebi.entity.Usuarios;
+import com.sigebi.service.UsuariosService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -23,7 +23,7 @@ import com.sigebi.serviceImplement.UsuariosService;
 public class UsuariosController {
 
 	@Autowired
-	private IUsuariosRepo repo;
+	private IUsuariosDao repo;
 	
 	@Autowired
 	private UsuariosService usuarioService;

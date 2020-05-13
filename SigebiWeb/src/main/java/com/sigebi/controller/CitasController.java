@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Citas;
-import com.sigebi.service.ICitasRepo;
+import com.sigebi.dao.ICitasDao;
+import com.sigebi.entity.Citas;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.ICitasRepo;
 public class CitasController {
 
 	@Autowired
-	private ICitasRepo repo;
+	private ICitasDao repo;
 
 	@GetMapping
 	public List<Citas> listar() {

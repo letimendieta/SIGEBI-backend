@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.sigebi.model.Areas;
-import com.sigebi.service.IAreasRepo;
-import com.sigebi.service.IUsuariosRepo;
+import com.sigebi.dao.IAreasDao;
+import com.sigebi.dao.IUsuariosDao;
+import com.sigebi.entity.Areas;
 
 @SpringBootTest
 class SigebiWebApplicationTests {
 
 	@Autowired
-	private IUsuariosRepo repo;
+	private IUsuariosDao repo;
 	
 	@Autowired
-	private IAreasRepo areasRepo;
+	private IAreasDao areasRepo;
 	
 	@Autowired
 	private BCryptPasswordEncoder encoder;

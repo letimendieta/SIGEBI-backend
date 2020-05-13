@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Departamentos;
-import com.sigebi.service.IDepartamentosRepo;
+import com.sigebi.dao.IDepartamentosDao;
+import com.sigebi.entity.Departamentos;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IDepartamentosRepo;
 public class DepartamentosController {
 
 	@Autowired
-	private IDepartamentosRepo repo;
+	private IDepartamentosDao repo;
 
 	@GetMapping
 	public List<Departamentos> listar() {

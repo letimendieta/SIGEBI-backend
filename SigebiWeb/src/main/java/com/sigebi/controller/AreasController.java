@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.Areas;
-import com.sigebi.service.IAreasRepo;
+import com.sigebi.dao.IAreasDao;
+import com.sigebi.entity.Areas;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IAreasRepo;
 public class AreasController {
 
 	@Autowired
-	private IAreasRepo repo;
+	private IAreasDao repo;
 
 	@GetMapping
 	public List<Areas> listar() {

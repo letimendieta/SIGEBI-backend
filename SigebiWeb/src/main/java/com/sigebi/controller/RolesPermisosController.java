@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.RolesPermisos;
-import com.sigebi.service.IRolesPermisosRepo;
+import com.sigebi.dao.IRolesPermisosDao;
+import com.sigebi.entity.RolesPermisos;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IRolesPermisosRepo;
 public class RolesPermisosController {
 
 	@Autowired
-	private IRolesPermisosRepo repo;
+	private IRolesPermisosDao repo;
 
 	@GetMapping
 	public List<RolesPermisos> listar() {

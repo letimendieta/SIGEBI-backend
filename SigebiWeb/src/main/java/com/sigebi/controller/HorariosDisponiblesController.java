@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.model.HorariosDisponibles;
-import com.sigebi.service.IHorariosDisponiblesRepo;
+import com.sigebi.dao.IHorariosDisponiblesDao;
+import com.sigebi.entity.HorariosDisponibles;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import com.sigebi.service.IHorariosDisponiblesRepo;
 public class HorariosDisponiblesController {
 
 	@Autowired
-	private IHorariosDisponiblesRepo repo;
+	private IHorariosDisponiblesDao repo;
 
 	@GetMapping
 	public List<HorariosDisponibles> listar() {
