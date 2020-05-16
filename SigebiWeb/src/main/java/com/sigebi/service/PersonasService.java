@@ -13,11 +13,11 @@ public interface PersonasService {
 	
 	public Personas findById(int id);
 	
-	public Personas save(Personas cliente);
+	public Personas save(Personas persona);
 	
 	public void delete(int id);
 	
-	List<Personas> buscar(Date fromDate, Date toDate, Personas persona, Pageable pageable);
+	public List<Personas> buscar(Date fromDate, Date toDate, Personas persona, Pageable pageable);
 	
 	
 }

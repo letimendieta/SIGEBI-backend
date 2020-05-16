@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Pacientes {
@@ -15,28 +17,33 @@ public class Pacientes {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer pacienteId;
 	
-	@Column(name = "persona_id")
+	@Column(name = "persona_id", nullable = false)
+	@NotEmpty(message ="no puede estar vacio")
 	private Integer personaId;
 	
 	@Column(name = "historial_id")
 	private Integer historialId;
 	
 	@Column(name = "grupo_sanguineo", length = 5)
+	@Size(max=5, message="maximo 5 caracteres")
 	private String grupoSanguineo;
 	
 	@Column(name = "seguro_medico", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String seguroMedico;
 	
 	@Column(name = "fecha_creacion")
 	private Timestamp fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
 	private Timestamp fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 
 	public Integer getPacienteId() {

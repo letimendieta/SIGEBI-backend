@@ -56,7 +56,7 @@ public class PersonasServiceImpl implements PersonasService{
 	@Transactional(readOnly = true)
 	public List<Personas> buscar(Date fromDate, Date toDate, Personas persona, Pageable pageable) {
 		
-        List<Personas> personas = personasDao.findAll((Specification<Personas>) (root, cq, cb) -> {
+        List<Personas> personasList = personasDao.findAll((Specification<Personas>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -73,7 +73,7 @@ public class PersonasServiceImpl implements PersonasService{
             cq.orderBy(cb.desc(root.get("personaId")));
             return p;
         }, pageable).getContent();
-        return personas;
+        return personasList;
     }
 
 }

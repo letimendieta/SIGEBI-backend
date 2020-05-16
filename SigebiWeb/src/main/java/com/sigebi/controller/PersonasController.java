@@ -4,12 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.dao.IPersonasDao;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
@@ -51,9 +47,21 @@ public class PersonasController {
     }
 
 	@GetMapping
-	public ResponseEntity<List<Personas>> listar() {
-		List<Personas> lista = personasService.findAll();
-		return ResponseEntity.ok(lista);
+	public ResponseEntity<?> listar() {
+		Map<String, Object> response = new HashMap<>();
+		List<Personas> personasList = null;
+		try {
+			personasList = personasService.findAll();
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if( personasList.isEmpty()) {
+			response.put("mensaje", "No se encontraron datos");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")

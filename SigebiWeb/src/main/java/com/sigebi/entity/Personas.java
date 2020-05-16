@@ -10,7 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Personas {
@@ -19,16 +22,19 @@ public class Personas {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int personaId;
 	
-	@Column(name = "cedula", length = 20, unique = true)
-	@NotNull(message = "cedula no puede ser nulo")
+	@Column(name = "cedula", length = 20, unique = true, nullable = false)	
+	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=20, message="maximo 20 caracteres")
 	private String cedula;
 	
-	@Column(name = "nombres", length = 50)
-	@NotNull(message = "nombres no puede ser nulo")
+	@Column(name = "nombres", length = 50, nullable = false)
+	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=50, message="maximo 50 caracteres")
 	private String nombres;	
 	
-	@Column(name = "apellidos", length = 50)
-	@NotNull(message = "apellidos no puede ser nulo")
+	@Column(name = "apellidos", length = 50, nullable = false)
+	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=50, message="maximo 50 caracteres")
 	private String apellidos;
 	
 	@Column(name = "edad")
@@ -40,10 +46,13 @@ public class Personas {
 	@Column(name = "direccion", length = 100)
 	private String direccion;
 	
-	@Column(name = "email", length = 50)
+	@Column(name = "email", length = 50)	
+	@NotEmpty(message ="no puede estar vacio")
+	@Email(message="no es una dirección de correo bien formada")
 	private String email;
 	
-	@Column(name = "celular", length = 20)
+	@Column(name = "celular")
+	@Size(max=20, message="maximo 20 caracteres")
 	private String celular;
 	
 	@Column(name = "estamento_id")
@@ -59,27 +68,33 @@ public class Personas {
 	private Integer dependenciaId;
 	
 	@Column(name = "sexo", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
 	private String sexo;
 	
 	@Column(name = "nacionalidad", length = 30)
+	@Size(max=30, message="maximo 30 caracteres")
 	private String nacionalidad;
 	
 	@Column(name = "telefono", length = 20)
+	@Size(max=20, message="maximo 20 caracteres")
 	private String telefono;
 	
 	@Column(name = "estado_civil", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String estadoCivil;
 	
 	@Column(name = "fecha_creacion")
 	private Timestamp fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
 	private Timestamp fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
 	@PrePersist

@@ -1,29 +1,22 @@
 package com.sigebi.service;
 
+import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import com.sigebi.dao.IPacientesDao;
 import com.sigebi.entity.Pacientes;
 
-@Service
-public class PacientesService{
+public interface PacientesService{
 
-	@Autowired
-	private IPacientesDao repo;
+	public List<Pacientes> findAll();
 	
-		
-	public List<Pacientes> obtenerPaciente(Pacientes paciente) {
-				
-		Sort example;
-		/*example.and
-		List<Pacientes> pa = repo.findAll(example, sort)(example);*/
-		
-	    
-	    return null;//userDet;
-	}	
+	public Pacientes findById(int id);
+	
+	public Pacientes save(Pacientes paciente);
+	
+	public void delete(int id);
+	
+	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, Pageable pageable);
 
 }
