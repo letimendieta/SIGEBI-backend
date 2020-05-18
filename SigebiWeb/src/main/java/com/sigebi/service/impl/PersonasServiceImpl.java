@@ -61,6 +61,9 @@ public class PersonasServiceImpl implements PersonasService{
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
+            /*if ( persona.getPersonaId() != 0) {
+                p = cb.and(p, cb.equals(root.get("personaId"), persona.getPersonaId()));
+            }*/
             if (!StringUtils.isEmpty(persona.getCedula())) {
                 p = cb.and(p, cb.like(root.get("cedula"), "%" + persona.getCedula() + "%"));
             }

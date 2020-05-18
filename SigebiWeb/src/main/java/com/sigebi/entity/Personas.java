@@ -46,7 +46,6 @@ public class Personas {
 	private String direccion;
 	
 	@Column(name = "email", length = 50)	
-	@NotEmpty(message ="no puede estar vacio")
 	@Email(message="no es una dirección de correo bien formada")
 	private String email;
 	
