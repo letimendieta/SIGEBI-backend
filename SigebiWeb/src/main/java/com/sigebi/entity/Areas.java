@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Areas {
@@ -16,12 +20,16 @@ public class Areas {
 	private int areaId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
+	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=15, message="maximo 15 caracteres")
 	private String codigo;
 	
 	@Column(name = "descripcion", length = 30)
+	@Size(max=30, message="maximo 30 caracteres")
 	private String descripcion;	
 	
 	@Column(name = "estado", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
 	private String estado;
 	
 	@Column(name = "fecha_creacion")
@@ -35,6 +43,16 @@ public class Areas {
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	private String usuarioModificacion;
+	
+	@PrePersist
+	private void create() {
+		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+	}
+	
+	@PreUpdate
+	private void update() {
+		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+	}
 
 	public int getAreaId() {
 		return areaId;

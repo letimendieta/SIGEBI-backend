@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Estamentos {
@@ -16,22 +20,36 @@ public class Estamentos {
 	private int estamentoId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
+	@NotEmpty(message ="no puede estar vacio")
 	private String codigo;
 	
 	@Column(name = "descripcion", length = 30)
+	@Size(max=30, message="maximo 30 caracteres")
 	private String descripcion;
 	
 	@Column(name = "fecha_creacion")
 	private Timestamp fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
 	private Timestamp fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
+	
+	@PrePersist
+	private void create() {
+		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+	}
+	
+	@PreUpdate
+	private void update() {
+		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+	}
 
 	public int getEstamentoId() {
 		return estamentoId;

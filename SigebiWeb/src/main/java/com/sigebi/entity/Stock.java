@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Stock {
@@ -16,25 +20,40 @@ public class Stock {
 	private int stockId;
 	
 	@Column(name = "insumo_id")
+	@NotEmpty(message ="no puede estar vacio")
 	private Integer insumoId;
 	
 	@Column(name = "cantidad")
+	@NotEmpty(message ="no puede estar vacio")
 	private Integer cantidad;
 	
 	@Column(name = "unidad_medida", length = 10)
+	@Size(max=10, message="maximo 10 caracteres")
 	private String unidad_Medida;
 	
 	@Column(name = "fecha_creacion")
 	private Timestamp fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
 	private Timestamp fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
+	
+	@PrePersist
+	private void create() {
+		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+	}
+	
+	@PreUpdate
+	private void update() {
+		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+	}
 
 	public int getStockId() {
 		return stockId;

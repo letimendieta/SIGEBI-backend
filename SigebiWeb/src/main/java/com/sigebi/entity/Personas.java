@@ -43,10 +43,12 @@ public class Personas {
 	private Date fechaNacimiento;
 	
 	@Column(name = "direccion", length = 100)
+	@Size(max=100, message="maximo 100 caracteres")
 	private String direccion;
 	
 	@Column(name = "email", length = 50)	
 	@Email(message="no es una dirección de correo bien formada")
+	@Size(max=50, message="maximo 50 caracteres")
 	private String email;
 	
 	@Column(name = "celular")
