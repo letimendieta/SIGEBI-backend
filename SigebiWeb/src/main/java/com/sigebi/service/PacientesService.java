@@ -17,6 +17,8 @@ public interface PacientesService{
 	
 	public void delete(int id);
 	
-	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, Pageable pageable);
+	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable);
+	
+	public List<Pacientes> busqueda(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable);
 
 }

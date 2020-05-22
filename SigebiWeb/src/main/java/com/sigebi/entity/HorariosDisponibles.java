@@ -18,7 +18,7 @@ public class HorariosDisponibles {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int horarioDisponibleId;
+	private Integer horarioDisponibleId;
 	
 	@Column(name = "funcionario_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -62,12 +62,12 @@ public class HorariosDisponibles {
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
-
-	public int getHorarioDisponibleId() {
+	
+	public Integer getHorarioDisponibleId() {
 		return horarioDisponibleId;
 	}
 
-	public void setHorarioDisponibleId(int horarioDisponibleId) {
+	public void setHorarioDisponibleId(Integer horarioDisponibleId) {
 		this.horarioDisponibleId = horarioDisponibleId;
 	}
 

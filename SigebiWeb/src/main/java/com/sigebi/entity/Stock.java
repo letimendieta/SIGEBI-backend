@@ -17,7 +17,7 @@ public class Stock {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int stockId;
+	private Integer stockId;
 	
 	@Column(name = "insumo_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -53,13 +53,13 @@ public class Stock {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
+	}	
 
-	public int getStockId() {
+	public Integer getStockId() {
 		return stockId;
 	}
 
-	public void setStockId(int stockId) {
+	public void setStockId(Integer stockId) {
 		this.stockId = stockId;
 	}
 

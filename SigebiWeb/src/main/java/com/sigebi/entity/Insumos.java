@@ -17,7 +17,7 @@ public class Insumos {
 		
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int insumo_id;
+	private Integer insumo_id;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -53,13 +53,13 @@ public class Insumos {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
+	}	
 
-	public int getInsumo_id() {
+	public Integer getInsumo_id() {
 		return insumo_id;
 	}
 
-	public void setInsumo_id(int insumo_id) {
+	public void setInsumo_id(Integer insumo_id) {
 		this.insumo_id = insumo_id;
 	}
 

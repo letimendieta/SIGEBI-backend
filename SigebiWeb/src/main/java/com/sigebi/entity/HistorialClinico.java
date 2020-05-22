@@ -17,7 +17,7 @@ public class HistorialClinico {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int historialClinicoId;
+	private Integer historialClinicoId;
 	
 	@Column(name = "paciente_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -50,11 +50,11 @@ public class HistorialClinico {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getHistorialClinicoId() {
+	public Integer getHistorialClinicoId() {
 		return historialClinicoId;
 	}
 
-	public void setHistorialClinicoId(int historialClinicoId) {
+	public void setHistorialClinicoId(Integer historialClinicoId) {
 		this.historialClinicoId = historialClinicoId;
 	}
 

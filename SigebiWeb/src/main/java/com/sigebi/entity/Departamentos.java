@@ -17,7 +17,7 @@ public class Departamentos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int departamentoId;
+	private Integer departamentoId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -50,13 +50,13 @@ public class Departamentos {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
-	
-	public int getDepartamentoId() {
+	}		
+
+	public Integer getDepartamentoId() {
 		return departamentoId;
 	}
 
-	public void setDepartamentoId(int departamentoId) {
+	public void setDepartamentoId(Integer departamentoId) {
 		this.departamentoId = departamentoId;
 	}
 

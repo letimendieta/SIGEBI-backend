@@ -17,7 +17,7 @@ public class Estamentos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int estamentoId;
+	private Integer estamentoId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -51,11 +51,11 @@ public class Estamentos {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getEstamentoId() {
+	public Integer getEstamentoId() {
 		return estamentoId;
 	}
 
-	public void setEstamentoId(int estamentoId) {
+	public void setEstamentoId(Integer estamentoId) {
 		this.estamentoId = estamentoId;
 	}
 

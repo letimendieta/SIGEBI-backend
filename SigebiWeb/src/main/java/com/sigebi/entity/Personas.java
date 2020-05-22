@@ -8,18 +8,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "personas")
 public class Personas {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int personaId;
+	private Integer personaId;
 	
 	@Column(name = "cedula", length = 20, unique = true, nullable = false)	
 	@NotEmpty(message ="no puede estar vacio")
@@ -97,6 +100,9 @@ public class Personas {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne(mappedBy = "personas")
+    private Pacientes pacientes;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
@@ -107,11 +113,11 @@ public class Personas {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getPersonaId() {
+	public Integer getPersonaId() {
 		return personaId;
 	}
 
-	public void setPersonaId(int personaId) {
+	public void setPersonaId(Integer personaId) {
 		this.personaId = personaId;
 	}
 

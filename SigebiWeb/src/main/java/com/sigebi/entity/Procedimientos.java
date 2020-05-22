@@ -19,7 +19,7 @@ public class Procedimientos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int procedimiento_id;
+	private Integer procedimiento_id;
 	
 	@Column(name = "funcionario_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -68,11 +68,11 @@ public class Procedimientos {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getProcedimiento_id() {
+	public Integer getProcedimiento_id() {
 		return procedimiento_id;
 	}
 
-	public void setProcedimiento_id(int procedimiento_id) {
+	public void setProcedimiento_id(Integer procedimiento_id) {
 		this.procedimiento_id = procedimiento_id;
 	}
 

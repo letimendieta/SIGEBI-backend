@@ -17,7 +17,7 @@ public class Parametros {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int parametroId;
+	private Integer parametroId;
 	
 	@Column(name = "codigo_parametro", length = 20, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -57,13 +57,13 @@ public class Parametros {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
+	}	
 
-	public int getParametroId() {
+	public Integer getParametroId() {
 		return parametroId;
 	}
 
-	public void setParametroId(int parametroId) {
+	public void setParametroId(Integer parametroId) {
 		this.parametroId = parametroId;
 	}
 

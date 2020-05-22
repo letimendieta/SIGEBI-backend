@@ -17,7 +17,7 @@ public class Roles {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int rolId;
+	private Integer rolId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -52,11 +52,11 @@ public class Roles {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getRolId() {
+	public Integer getRolId() {
 		return rolId;
 	}
 
-	public void setRolId(int rolId) {
+	public void setRolId(Integer rolId) {
 		this.rolId = rolId;
 	}
 

@@ -17,7 +17,7 @@ public class Permisos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int permiso_id;
+	private Integer permiso_id;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -51,11 +51,11 @@ public class Permisos {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getPermiso_id() {
+	public Integer getPermiso_id() {
 		return permiso_id;
 	}
 
-	public void setPermiso_id(int permiso_id) {
+	public void setPermiso_id(Integer permiso_id) {
 		this.permiso_id = permiso_id;
 	}
 

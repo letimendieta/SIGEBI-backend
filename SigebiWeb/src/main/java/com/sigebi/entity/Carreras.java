@@ -17,7 +17,7 @@ public class Carreras {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int carreraId;
+	private Integer carreraId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -51,12 +51,12 @@ public class Carreras {
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
-
-	public int getCarreraId() {
+	
+	public Integer getCarreraId() {
 		return carreraId;
 	}
 
-	public void setCarreraId(int carreraId) {
+	public void setCarreraId(Integer carreraId) {
 		this.carreraId = carreraId;
 	}
 

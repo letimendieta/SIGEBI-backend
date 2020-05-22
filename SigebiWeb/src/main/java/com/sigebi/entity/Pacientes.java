@@ -2,14 +2,16 @@ package com.sigebi.entity;
 
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -18,10 +20,6 @@ public class Pacientes {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer pacienteId;
-	
-	@Column(name = "persona_id", nullable = false)
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer personaId;
 	
 	@Column(name = "historial_id")
 	private Integer historialId;
@@ -48,6 +46,10 @@ public class Pacientes {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "persona_id", referencedColumnName = "personaId",unique = true)
+    private Personas personas;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
@@ -64,14 +66,6 @@ public class Pacientes {
 
 	public void setPacienteId(Integer pacienteId) {
 		this.pacienteId = pacienteId;
-	}
-
-	public Integer getPersonaId() {
-		return personaId;
-	}
-
-	public void setPersonaId(Integer personaId) {
-		this.personaId = personaId;
 	}
 
 	public Integer getHistorialId() {
@@ -129,6 +123,14 @@ public class Pacientes {
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
 	}
-	
+
+	public Personas getPersonas() {
+		return personas;
+	}
+
+	public void setPersonas(Personas personas) {
+		this.personas = personas;
+	}
+
 	
 }

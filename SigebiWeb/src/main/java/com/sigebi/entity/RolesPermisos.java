@@ -17,7 +17,7 @@ public class RolesPermisos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int rolPermisoId;
+	private Integer rolPermisoId;
 	
 	@Column(name = "rol_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -51,11 +51,11 @@ public class RolesPermisos {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getRolPermisoId() {
+	public Integer getRolPermisoId() {
 		return rolPermisoId;
 	}
 
-	public void setRolPermisoId(int rolPermisoId) {
+	public void setRolPermisoId(Integer rolPermisoId) {
 		this.rolPermisoId = rolPermisoId;
 	}
 

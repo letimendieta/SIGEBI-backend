@@ -53,7 +53,7 @@ public class PersonasServiceImpl implements PersonasService{
 	}
 	
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public List<Personas> buscar(Date fromDate, Date toDate, Personas persona, Pageable pageable) {
 		
         List<Personas> personasList = personasDao.findAll((Specification<Personas>) (root, cq, cb) -> {
@@ -61,7 +61,7 @@ public class PersonasServiceImpl implements PersonasService{
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
-            if ( persona.getPersonaId() != 0) {
+            if ( persona.getPersonaId() != null ) {
                 p = cb.and(p, cb.equal(root.get("personaId"), persona.getPersonaId()) );
             }
             if (!StringUtils.isEmpty(persona.getCedula())) {

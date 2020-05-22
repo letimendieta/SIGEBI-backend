@@ -18,7 +18,7 @@ public class Funcionarios {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int funcionarioId;
+	private Integer funcionarioId;
 	
 	@Column(name = "persona_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -61,11 +61,11 @@ public class Funcionarios {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getFuncionarioId() {
+	public Integer getFuncionarioId() {
 		return funcionarioId;
 	}
 
-	public void setFuncionarioId(int funcionarioId) {
+	public void setFuncionarioId(Integer funcionarioId) {
 		this.funcionarioId = funcionarioId;
 	}
 

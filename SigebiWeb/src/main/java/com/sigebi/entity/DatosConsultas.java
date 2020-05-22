@@ -18,7 +18,7 @@ public class DatosConsultas {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int datoConsultaId;
+	private Integer datoConsultaId;
 	
 	@Column(name = "fecha")
 	@NotEmpty(message ="no puede estar vacio")
@@ -54,12 +54,12 @@ public class DatosConsultas {
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
-
-	public int getDatoConsultaId() {
+	
+	public Integer getDatoConsultaId() {
 		return datoConsultaId;
 	}
 
-	public void setDatoConsultaId(int datoConsultaId) {
+	public void setDatoConsultaId(Integer datoConsultaId) {
 		this.datoConsultaId = datoConsultaId;
 	}
 

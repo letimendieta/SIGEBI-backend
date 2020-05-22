@@ -1,5 +1,6 @@
 package com.sigebi.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Pacientes;
+import com.sigebi.entity.Personas;
 import com.sigebi.service.PacientesService;
+import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
 
 @RestController
@@ -37,6 +43,8 @@ public class PacientesController {
 
 	@Autowired
 	private PacientesService pacientesService;
+	@Autowired
+	private PersonasService personasService;
 	@Autowired
 	private UtilesService utiles;
 	
@@ -88,17 +96,38 @@ public class PacientesController {
     public ResponseEntity<?> buscarPacientes(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
-            @RequestBody(required = false) Pacientes filtros,
-            Pageable pageable){
+            @RequestParam(required = false) String filtros,
+            Pageable pageable) throws JsonMappingException, JsonProcessingException{
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		Pacientes paciente = null;
+		if(!utiles.isNullOrBlank(filtros)) {
+			paciente = objectMapper.readValue(filtros, Pacientes.class);
+		}				
 		
 		Map<String, Object> response = new HashMap<>();
 		List<Pacientes> pacientesList = null;
 		
-		if ( filtros == null ) {
-			filtros = new Pacientes();
+		if ( paciente == null ) {
+			paciente = new Pacientes();
+		}
+		List<Personas> personasList = null;
+		List<Integer> personasIds = new ArrayList<Integer>();
+		if( paciente.getPersonas() != null) {
+			try {
+				personasList = personasService.buscar(fromDate, toDate, paciente.getPersonas(), pageable);
+			} catch (DataAccessException e) {
+				response.put("mensaje", "Error al realizar la consulta en la base de datos");
+				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		for( Personas persona : personasList ){
+			personasIds.add(persona.getPersonaId());
 		}
 		try {
-			pacientesList = pacientesService.buscar(fromDate, toDate, filtros, pageable);
+			pacientesList = pacientesService.busqueda(fromDate, toDate, paciente, personasIds, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -129,11 +158,20 @@ public class PacientesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
+		if ( paciente.getPersonas() == null ) {
+			response.put("mensaje", "Error: Datos de la persona es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
 		try {
 			pacienteNew = pacientesService.save(paciente);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar el insert en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getCause().getCause().getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

@@ -17,7 +17,7 @@ public class Areas {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int areaId;
+	private Integer areaId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@NotEmpty(message ="no puede estar vacio")
@@ -54,11 +54,11 @@ public class Areas {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getAreaId() {
+	public Integer getAreaId() {
 		return areaId;
 	}
 
-	public void setAreaId(int areaId) {
+	public void setAreaId(Integer areaId) {
 		this.areaId = areaId;
 	}
 

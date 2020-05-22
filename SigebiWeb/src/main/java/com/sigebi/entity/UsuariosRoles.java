@@ -17,7 +17,7 @@ public class UsuariosRoles {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int usuarioRolId;
+	private Integer usuarioRolId;
 	
 	@Column(name = "usuario_id")
 	@NotEmpty(message ="no puede estar vacio")
@@ -53,9 +53,9 @@ public class UsuariosRoles {
 
 	public int getUsuarioRolId() {
 		return usuarioRolId;
-	}
+	}	
 
-	public void setUsuarioRolId(int usuarioRolId) {
+	public void setUsuarioRolId(Integer usuarioRolId) {
 		this.usuarioRolId = usuarioRolId;
 	}
 

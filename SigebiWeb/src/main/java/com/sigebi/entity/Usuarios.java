@@ -17,7 +17,7 @@ public class Usuarios {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int usuarioId;
+	private Integer usuarioId;
 	
 	@Column(name = "funcionario_id")
 	private Integer funcionarioId;
@@ -58,13 +58,13 @@ public class Usuarios {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
+	}	
 
-	public int getUsuarioId() {
+	public Integer getUsuarioId() {
 		return usuarioId;
 	}
 
-	public void setUsuarioId(int usuarioId) {
+	public void setUsuarioId(Integer usuarioId) {
 		this.usuarioId = usuarioId;
 	}
 

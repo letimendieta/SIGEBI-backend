@@ -17,7 +17,7 @@ public class Dependencias {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int dependenciaId;
+	private Integer dependenciaId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -52,11 +52,11 @@ public class Dependencias {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
 	}
 
-	public int getDependenciaId() {
+	public Integer getDependenciaId() {
 		return dependenciaId;
 	}
 
-	public void setDependenciaId(int dependenciaId) {
+	public void setDependenciaId(Integer dependenciaId) {
 		this.dependenciaId = dependenciaId;
 	}
 
