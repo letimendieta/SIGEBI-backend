@@ -11,14 +11,14 @@ public interface PacientesService{
 
 	public List<Pacientes> findAll();
 	
-	public Pacientes findById(int id);
+	public Pacientes findById(int id);	
 	
-	public Pacientes save(Pacientes paciente);
+	public Pacientes guardar(Pacientes paciente) throws Exception;
+	
+	public Pacientes actualizar(Pacientes paciente) throws Exception;
 	
 	public void delete(int id);
 	
 	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable);
 	
-	public List<Pacientes> busqueda(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable);
-
 }

@@ -1,5 +1,6 @@
 package com.sigebi.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +103,7 @@ public class PersonasController {
 		}				
 		
 		Map<String, Object> response = new HashMap<>();
-		List<Personas> personasList = null;
+		List<Personas> personasList = new ArrayList<Personas>();
 		
 		if ( persona == null ) {
 			persona = new Personas();
@@ -113,12 +114,7 @@ public class PersonasController {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		if( personasList.isEmpty()) {
-			response.put("mensaje", "No se encontraron datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+		}		
 		
         return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
     }

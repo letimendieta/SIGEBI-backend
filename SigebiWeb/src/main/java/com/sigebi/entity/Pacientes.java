@@ -46,8 +46,8 @@ public class Pacientes {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "persona_id", referencedColumnName = "personaId",unique = true)
+	@OneToOne
+    @JoinColumn(name = "persona_id", referencedColumnName = "personaId", unique = true)
     private Personas personas;
 	
 	@PrePersist

@@ -107,12 +107,12 @@ public class PacientesController {
 		}				
 		
 		Map<String, Object> response = new HashMap<>();
-		List<Pacientes> pacientesList = null;
+		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		
 		if ( paciente == null ) {
 			paciente = new Pacientes();
 		}
-		List<Personas> personasList = null;
+		List<Personas> personasList = new ArrayList<Personas>();
 		List<Integer> personasIds = new ArrayList<Integer>();
 		if( paciente.getPersonas() != null) {
 			try {
@@ -122,23 +122,22 @@ public class PacientesController {
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+			for( Personas persona : personasList ){
+				personasIds.add(persona.getPersonaId());
+			}
+			if( personasList.isEmpty()) {
+				return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
+			}
 		}
-		for( Personas persona : personasList ){
-			personasIds.add(persona.getPersonaId());
-		}
+		
 		try {
-			pacientesList = pacientesService.busqueda(fromDate, toDate, paciente, personasIds, pageable);
+			pacientesList = pacientesService.buscar(fromDate, toDate, paciente, personasIds, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		if( pacientesList.isEmpty()) {
-			response.put("mensaje", "No se encontraron datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
+						
         return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
     }
 
@@ -164,14 +163,14 @@ public class PacientesController {
 		}
 		
 		try {
-			pacienteNew = pacientesService.save(paciente);
+			pacienteNew = pacientesService.guardar(paciente);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar el insert en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch( Exception ex ){
 			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getCause().getCause().getMessage());
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -181,7 +180,7 @@ public class PacientesController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Pacientes paciente, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Pacientes paciente, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(paciente.getPacienteId())) ) {
@@ -211,7 +210,7 @@ public class PacientesController {
 
 		try {
 
-			pacienteUpdated = pacientesService.save(paciente);;
+			pacienteUpdated = pacientesService.actualizar(paciente);;
 
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el paciente en la base de datos");
