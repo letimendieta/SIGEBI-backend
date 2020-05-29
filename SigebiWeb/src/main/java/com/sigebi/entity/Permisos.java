@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Permisos {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_permisos")
+	@SequenceGenerator(name="seq_permisos",sequenceName="seq_permisos",allocationSize=1)
 	private Integer permiso_id;
 	
 	@Column(name = "codigo", length = 15, unique = true)

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -17,7 +18,8 @@ import javax.validation.constraints.Size;
 public class DatosConsultas {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_datos_consultas")
+	@SequenceGenerator(name="seq_datos_consultas",sequenceName="seq_datos_consultas",allocationSize=1)
 	private Integer datoConsultaId;
 	
 	@Column(name = "fecha")

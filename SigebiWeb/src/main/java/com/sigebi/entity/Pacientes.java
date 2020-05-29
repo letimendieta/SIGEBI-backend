@@ -12,13 +12,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Size;
 
 @Entity
 public class Pacientes {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_pacientes")
+	@SequenceGenerator(name="seq_pacientes",sequenceName="seq_pacientes",allocationSize=1)
 	private Integer pacienteId;
 	
 	@Column(name = "historial_id")

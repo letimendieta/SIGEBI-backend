@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Carreras {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_carreras")
+	@SequenceGenerator(name="seq_carreras",sequenceName="seq_carreras",allocationSize=1)
 	private Integer carreraId;
 	
 	@Column(name = "codigo", length = 15, unique = true)

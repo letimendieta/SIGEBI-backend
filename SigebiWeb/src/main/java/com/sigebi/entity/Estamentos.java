@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Estamentos {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_estamentos")
+	@SequenceGenerator(name="seq_estamentos",sequenceName="seq_estamentos",allocationSize=1)
 	private Integer estamentoId;
 	
 	@Column(name = "codigo", length = 15, unique = true)

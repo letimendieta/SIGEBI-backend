@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -18,7 +19,8 @@ import javax.validation.constraints.Size;
 public class Citas {
 		
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_citas")
+	@SequenceGenerator(name="seq_citas",sequenceName="seq_citas",allocationSize=1)
 	private Integer citaId;
 	
 	@Column(name = "fecha")

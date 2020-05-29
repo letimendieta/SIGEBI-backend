@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Usuarios {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_usuarios")
+	@SequenceGenerator(name="seq_usuarios",sequenceName="seq_usuarios",allocationSize=1)
 	private Integer usuarioId;
 	
 	@Column(name = "funcionario_id")

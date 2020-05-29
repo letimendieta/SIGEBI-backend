@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Parametros {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_parametros")
+	@SequenceGenerator(name="seq_parametros",sequenceName="seq_parametros",allocationSize=1)
 	private Integer parametroId;
 	
 	@Column(name = "codigo_parametro", length = 20, unique = true)

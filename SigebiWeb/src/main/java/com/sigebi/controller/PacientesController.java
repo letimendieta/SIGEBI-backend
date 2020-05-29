@@ -165,7 +165,7 @@ public class PacientesController {
 		try {
 			pacienteNew = pacientesService.guardar(paciente);
 		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al realizar el insert en la base de datos");
+			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch( Exception ex ){
@@ -183,7 +183,7 @@ public class PacientesController {
 	public ResponseEntity<?> modificar(@Valid @RequestBody Pacientes paciente, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( utiles.isNullOrBlank(String.valueOf(paciente.getPacienteId())) ) {
+		if ( paciente.getPacienteId() == null ) {
 			response.put("mensaje", "Error: paciente id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}

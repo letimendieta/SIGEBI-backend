@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -17,7 +18,8 @@ import javax.validation.constraints.Size;
 public class HorariosDisponibles {	
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_horarios_disponibles")
+	@SequenceGenerator(name="seq_horarios_disponibles",sequenceName="seq_horarios_disponibles",allocationSize=1)
 	private Integer horarioDisponibleId;
 	
 	@Column(name = "funcionario_id")

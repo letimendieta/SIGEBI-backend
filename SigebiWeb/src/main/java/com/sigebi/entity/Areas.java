@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,8 @@ import javax.validation.constraints.Size;
 public class Areas {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_areas")
+	@SequenceGenerator(name="seq_areas",sequenceName="seq_areas",allocationSize=1)
 	private Integer areaId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
@@ -52,7 +54,7 @@ public class Areas {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
-	}
+	}	
 
 	public Integer getAreaId() {
 		return areaId;

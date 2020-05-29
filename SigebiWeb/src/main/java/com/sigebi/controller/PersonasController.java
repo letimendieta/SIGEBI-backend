@@ -138,7 +138,7 @@ public class PersonasController {
 		try {
 			personaNew = personasService.save(persona);
 		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al realizar el insert en la base de datos");
+			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -152,7 +152,7 @@ public class PersonasController {
 	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( utiles.isNullOrBlank(String.valueOf(persona.getPersonaId())) ) {
+		if ( persona.getPersonaId() == null ) {
 			response.put("mensaje", "Error: persona id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}

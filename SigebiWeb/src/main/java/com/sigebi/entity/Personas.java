@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -21,7 +22,8 @@ import javax.validation.constraints.Size;
 public class Personas {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_personas")
+	@SequenceGenerator(name="seq_personas",sequenceName="seq_personas",allocationSize=1)
 	private Integer personaId;
 	
 	@Column(name = "cedula", length = 20, unique = true, nullable = false)	
@@ -102,6 +104,9 @@ public class Personas {
 	
 	@OneToOne(mappedBy = "personas")
     private Pacientes pacientes;
+	
+	@OneToOne(mappedBy = "personas")
+    private Funcionarios funcionarios;
 	
 	@PrePersist
 	private void create() {

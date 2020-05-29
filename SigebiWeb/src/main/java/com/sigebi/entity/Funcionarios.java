@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -17,12 +21,9 @@ import javax.validation.constraints.Size;
 public class Funcionarios {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer funcionarioId;
-	
-	@Column(name = "persona_id")
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer personaId;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_funcionarios")
+	@SequenceGenerator(name="seq_funcionarios",sequenceName="seq_funcionarios",allocationSize=1)
+	private Integer funcionarioId;	
 	
 	@Column(name = "area_id")
 	private Integer areaId;
@@ -51,6 +52,10 @@ public class Funcionarios {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne
+    @JoinColumn(name = "persona_id", referencedColumnName = "personaId", unique = true)
+    private Personas personas;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
@@ -69,12 +74,12 @@ public class Funcionarios {
 		this.funcionarioId = funcionarioId;
 	}
 
-	public Integer getPersonaId() {
-		return personaId;
+	public Personas getPersonas() {
+		return personas;
 	}
 
-	public void setPersonaId(Integer personaId) {
-		this.personaId = personaId;
+	public void setPersonas(Personas personas) {
+		this.personas = personas;
 	}
 
 	public Integer getAreaId() {
