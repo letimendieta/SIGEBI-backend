@@ -37,6 +37,14 @@ public class Parametros {
 	@Size(max=20, message="maximo 20 caracteres")
 	private String valor;
 	
+	@Column(name = "descripcion_valor", length = 30)
+	@Size(max=20, message="maximo 30 caracteres")
+	private String descripcionValor;
+	
+	@Column(name = "estado", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
+	private String estado;
+	
 	@Column(name = "fecha_creacion")
 	private Timestamp fechaCreacion;	
 	
@@ -100,6 +108,14 @@ public class Parametros {
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
+		
+	public String getDescripcionValor() {
+		return descripcionValor;
+	}
+
+	public void setDescripcionValor(String descripcionValor) {
+		this.descripcionValor = descripcionValor;
+	}
 
 	public Timestamp getFechaCreacion() {
 		return fechaCreacion;
@@ -115,6 +131,14 @@ public class Parametros {
 
 	public void setUsuarioCreacion(String usuarioCreacion) {
 		this.usuarioCreacion = usuarioCreacion;
+	}	
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 	public Timestamp getFechaModificacion() {
