@@ -25,7 +25,7 @@ public class Usuarios {
 	private Integer funcionarioId;
 	
 	@Column(name = "persona_id")
-	@NotEmpty(message ="no puede estar vacio")
+	//@NotEmpty(message ="no puede estar vacio")
 	private Integer personaId;
 	
 	@Column(name = "codigo_usuario", length = 15, unique = true)

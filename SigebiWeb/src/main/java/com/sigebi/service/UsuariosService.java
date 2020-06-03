@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IUsuariosDao;
 import com.sigebi.entity.Usuarios;
@@ -42,7 +43,7 @@ public class UsuariosService implements UserDetailsService{
 	public List<GrantedAuthority> buildGrante(byte rol){
 		return null;
 	}
-	
+	@Transactional
 	public void crearUsuario(Usuarios usuario){
 		try {
 			String encodePass = encoder.encode(usuario.getPassword());	
