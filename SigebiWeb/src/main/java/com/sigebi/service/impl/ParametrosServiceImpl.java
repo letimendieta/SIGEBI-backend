@@ -14,12 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IParametrosDao;
-import com.sigebi.dao.IPersonasDao;
 import com.sigebi.entity.Parametros;
-import com.sigebi.entity.Personas;
 import com.sigebi.service.ParametrosService;
-import com.sigebi.service.PersonasService;
-import com.sigebi.service.UtilesService;
 
 
 @Service
@@ -27,10 +23,7 @@ public class ParametrosServiceImpl implements ParametrosService{
 
 	@Autowired
 	private IParametrosDao parametrosDao;
-	
-	@Autowired
-	private UtilesService utiles;
-	
+		
 	public ParametrosServiceImpl(IParametrosDao parametrosDao) {
         this.parametrosDao = parametrosDao;
     }
