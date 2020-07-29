@@ -10,14 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.sigebi.service.UsuariosService;
+import com.sigebi.service.impl.UsuariosServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
-	private UsuariosService userDetailsService;
+	private UsuariosServiceImpl usuariosService;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth)
 	throws Exception{
-		auth.userDetailsService(userDetailsService).passwordEncoder(bcrypt);
+		auth.userDetailsService(usuariosService).passwordEncoder(bcrypt);
 	}
 	
 	@Override

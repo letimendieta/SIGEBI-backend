@@ -136,7 +136,6 @@ public class PacientesServiceImpl implements PacientesService{
 	}
 	
 	@Override
-	//@Transactional(readOnly = true)
 	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable) {
 		List<Pacientes> pacientesList = pacientesDao.findAll((Specification<Pacientes>) (root, cq, cb) -> {
             

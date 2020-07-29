@@ -1,6 +1,6 @@
 package com.sigebi.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,15 +30,19 @@ public class Departamentos {
 	@Size(max=30, message="maximo 30 caracteres")
 	private String descripcion;
 	
+	@Column(name = "estado", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
+	private String estado;
+	
 	@Column(name = "fecha_creacion")
-	private Timestamp fechaCreacion;	
+	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
-	private Timestamp fechaModificacion;
+	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -46,12 +50,12 @@ public class Departamentos {
 
 	@PrePersist
 	private void create() {
-		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+		this.fechaCreacion = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	private void update() {
-		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+		this.fechaModificacion = LocalDateTime.now();
 	}		
 
 	public Integer getDepartamentoId() {
@@ -78,14 +82,6 @@ public class Departamentos {
 		this.descripcion = descripcion;
 	}
 
-	public Timestamp getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public void setFechaCreacion(Timestamp fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
 	public String getUsuarioCreacion() {
 		return usuarioCreacion;
 	}
@@ -94,20 +90,36 @@ public class Departamentos {
 		this.usuarioCreacion = usuarioCreacion;
 	}
 
-	public Timestamp getFechaModificacion() {
-		return fechaModificacion;
-	}
-
-	public void setFechaModificacion(Timestamp fechaModificacion) {
-		this.fechaModificacion = fechaModificacion;
-	}
-
 	public String getUsuarioModificacion() {
 		return usuarioModificacion;
 	}
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public LocalDateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(LocalDateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}	
 
 	

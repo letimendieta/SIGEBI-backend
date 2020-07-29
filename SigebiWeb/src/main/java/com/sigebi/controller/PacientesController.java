@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
+import com.sigebi.service.FilesStorageService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
@@ -47,6 +48,8 @@ public class PacientesController {
 	private PersonasService personasService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	FilesStorageService storageService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -145,7 +148,6 @@ public class PacientesController {
 	public ResponseEntity<?> insertar(@Valid @RequestBody Pacientes paciente, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
 		Pacientes pacienteNew = null;
-		
 		if( result.hasErrors() ) {
 
 			List<String> errors = result.getFieldErrors()
@@ -155,8 +157,8 @@ public class PacientesController {
 			
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}
-		
+		}		
+	
 		if ( paciente.getPersonas() == null ) {
 			response.put("mensaje", "Error: Datos de la persona es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -173,7 +175,7 @@ public class PacientesController {
 			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+						
 		response.put("mensaje", "El paciente ha sido creado con éxito!");
 		response.put("paciente", pacienteNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -218,7 +220,7 @@ public class PacientesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "El paciene ha sido actualizado con éxito!");
+		response.put("mensaje", "El paciente ha sido actualizado con éxito!");
 		response.put("paciente", pacienteUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);

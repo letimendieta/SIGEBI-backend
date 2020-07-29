@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.dao.IParametrosDao;
 import com.sigebi.entity.Parametros;
 import com.sigebi.service.ParametrosService;
 import com.sigebi.service.UtilesService;
@@ -41,21 +44,51 @@ public class ParametrosController {
 	@Autowired
 	private UtilesService utiles;
 	private static final String DATE_PATTERN = "yyyy/MM/dd";
-	
-	@Autowired
-	private IParametrosDao repo;
-	
+		
 	public ParametrosController(ParametrosService parametrosService) {
         this.parametrosService = parametrosService;
     }
 
 	@GetMapping
-	public List<Parametros> listar() {
-		return repo.findAll();
+	public ResponseEntity<?> listar() {
+		Map<String, Object> response = new HashMap<>();
+		List<Parametros> parametrosList = null;
+		try {
+			parametrosList = parametrosService.findAll();
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if( parametrosList.isEmpty()) {
+			response.put("mensaje", "No se encontraron datos");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<Parametros>>(parametrosList, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
+		Map<String, Object> response = new HashMap<>();
+		Parametros parametro = null;
+		try {
+			parametro = parametrosService.findById(id);
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if( parametro == null ) {
+			response.put("mensaje", "El parametro con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<Parametros>(parametro, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarPersonas(
+    public ResponseEntity<?> buscarParametros(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -88,17 +121,106 @@ public class ParametrosController {
     }
 
 	@PostMapping
-	public void insertar(@RequestBody Parametros parametro) {
-		repo.save(parametro);
+	public ResponseEntity<?> insertar(@Valid @RequestBody Parametros parametro, BindingResult result) {
+		Map<String, Object> response = new HashMap<>();		
+		Parametros parametroNew = null;
+		
+		if( result.hasErrors() ) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			parametroNew = parametrosService.save(parametro);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al guardar en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El parametro ha sido creado con éxito!");
+		response.put("parametro", parametroNew);
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody Parametros parametro) {
-		repo.save(parametro);
+	public ResponseEntity<?> modificar(@Valid @RequestBody Parametros parametro, BindingResult result) {
+		Map<String, Object> response = new HashMap<>();
+		
+		if ( parametro.getParametroId() == null ) {
+			response.put("mensaje", "Error: parametro id es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		Parametros parametroActual = parametrosService.findById(parametro.getParametroId());
+		Parametros parametroUpdated = null;
+
+		if( result.hasErrors() ) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+		
+		if ( parametroActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el parametro ID: "
+					.concat(String.valueOf(parametro.getParametroId()).concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		try {
+
+			parametroUpdated = parametrosService.save(parametro);;
+
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al actualizar el parametro en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "El parametro ha sido actualizado con éxito!");
+		response.put("parametro", parametroUpdated);
+
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void eliminar(@PathVariable("id") Integer id) {
-		repo.deleteById(id);
+	public ResponseEntity<?> eliminar(@PathVariable int id) {
+		Map<String, Object> response = new HashMap<>();
+		
+		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
+			response.put("mensaje", "Error: parametro id es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		Parametros parametroActual = parametrosService.findById(id);
+		
+		if ( parametroActual == null ) {
+			response.put("mensaje", "El parametro ID: "
+					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+					
+		try {
+			parametrosService.delete(id);
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al eliminar el parametro de la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "Parametro eliminado con éxito!");
+		
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 }

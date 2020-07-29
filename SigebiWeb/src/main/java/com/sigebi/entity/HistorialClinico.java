@@ -1,16 +1,17 @@
 package com.sigebi.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -21,35 +22,35 @@ public class HistorialClinico {
 	@SequenceGenerator(name="seq_historial_clinico",sequenceName="seq_historial_clinico",allocationSize=1)
 	private Integer historialClinicoId;
 	
-	@Column(name = "paciente_id")
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer paciente_id;
-	
 	@Column(name = "area_id")
 	private Integer areaId;
 	
 	@Column(name = "fecha_creacion")
-	private Timestamp fechaCreacion;	
+	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
-	private Timestamp fechaModificacion;
+	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne
+    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
+    private Pacientes pacientes;
+	
 	@PrePersist
 	private void create() {
-		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+		this.fechaCreacion = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	private void update() {
-		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+		this.fechaModificacion = LocalDateTime.now();
 	}
 
 	public Integer getHistorialClinicoId() {
@@ -60,12 +61,12 @@ public class HistorialClinico {
 		this.historialClinicoId = historialClinicoId;
 	}
 
-	public Integer getPaciente_id() {
-		return paciente_id;
+	public Pacientes getPacientes() {
+		return pacientes;
 	}
 
-	public void setPaciente_id(Integer paciente_id) {
-		this.paciente_id = paciente_id;
+	public void setPacientes(Pacientes pacientes) {
+		this.pacientes = pacientes;
 	}
 
 	public Integer getAreaId() {
@@ -76,14 +77,6 @@ public class HistorialClinico {
 		this.areaId = areaId;
 	}
 
-	public Timestamp getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public void setFechaCreacion(Timestamp fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
 	public String getUsuarioCreacion() {
 		return usuarioCreacion;
 	}
@@ -92,20 +85,28 @@ public class HistorialClinico {
 		this.usuarioCreacion = usuarioCreacion;
 	}
 
-	public Timestamp getFechaModificacion() {
-		return fechaModificacion;
-	}
-
-	public void setFechaModificacion(Timestamp fechaModificacion) {
-		this.fechaModificacion = fechaModificacion;
-	}
-
 	public String getUsuarioModificacion() {
 		return usuarioModificacion;
 	}
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
+	}
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public LocalDateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(LocalDateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
 	
 	

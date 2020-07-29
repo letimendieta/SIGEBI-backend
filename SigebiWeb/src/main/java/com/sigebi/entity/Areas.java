@@ -1,6 +1,6 @@
 package com.sigebi.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "areas")
 public class Areas {
 	
 	@Id
@@ -35,25 +37,26 @@ public class Areas {
 	private String estado;
 	
 	@Column(name = "fecha_creacion")
-	private Timestamp fechaCreacion;	
+	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
-	private Timestamp fechaModificacion;
+	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	private String usuarioModificacion;
 	
+	
 	@PrePersist
 	private void create() {
-		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+		this.fechaCreacion = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	private void update() {
-		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+		this.fechaModificacion = LocalDateTime.now();
 	}	
 
 	public Integer getAreaId() {
@@ -86,13 +89,13 @@ public class Areas {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
-	}
+	}	
 
-	public Timestamp getFechaCreacion() {
+	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
 	}
 
-	public void setFechaCreacion(Timestamp fechaCreacion) {
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
 
@@ -103,12 +106,12 @@ public class Areas {
 	public void setUsuarioCreacion(String usuarioCreacion) {
 		this.usuarioCreacion = usuarioCreacion;
 	}
-
-	public Timestamp getFechaModificacion() {
+	
+	public LocalDateTime getFechaModificacion() {
 		return fechaModificacion;
 	}
 
-	public void setFechaModificacion(Timestamp fechaModificacion) {
+	public void setFechaModificacion(LocalDateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
 

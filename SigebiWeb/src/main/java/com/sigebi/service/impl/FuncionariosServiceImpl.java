@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IFuncionariosDao;
-import com.sigebi.dao.IPersonasDao;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.FuncionariosService;
@@ -24,9 +23,6 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	
 	@Autowired
 	private IFuncionariosDao funcionariosDao;
-	
-	@Autowired
-	private IPersonasDao personasDao;
 	
 	@Autowired
 	private PersonasService personasService;
@@ -64,31 +60,9 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 				if(persona == null) {
 					throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());
 				}
-				
-				persona.setNombres(funcionario.getPersonas().getNombres());
-				persona.setApellidos(funcionario.getPersonas().getApellidos());
-				persona.setCarreraId(funcionario.getPersonas().getCarreraId());
-				persona.setCedula(funcionario.getPersonas().getCedula());
-				persona.setCelular(funcionario.getPersonas().getCelular());
-				persona.setDepartamentoId(funcionario.getPersonas().getDepartamentoId());
-				persona.setDependenciaId(funcionario.getPersonas().getDependenciaId());
-				persona.setDireccion(funcionario.getPersonas().getDireccion());
-				persona.setEdad(funcionario.getPersonas().getEdad());
-				persona.setEmail(funcionario.getPersonas().getEmail());
-				persona.setEstadoCivil(funcionario.getPersonas().getEstadoCivil());
-				persona.setEstamentoId(funcionario.getPersonas().getEstamentoId());
-				persona.setFechaNacimiento(funcionario.getPersonas().getFechaNacimiento());
-				persona.setNacionalidad(funcionario.getPersonas().getNacionalidad());
-				persona.setSexo(funcionario.getPersonas().getSexo());
-				persona.setTelefono(funcionario.getPersonas().getTelefono());
-				persona.setUsuarioModificacion(funcionario.getPersonas().getUsuarioModificacion());
-				
-				funcionario.setPersonas(persona);
 			}else {
-				//Crear nueva persona
-				Personas personaNew = personasDao.save(funcionario.getPersonas());
-				funcionario.setPersonas(personaNew);
-			}
+				throw new Exception("Id de la persona es requerido ");
+			}				
 		}
 		
 		return funcionariosDao.save(funcionario);
@@ -103,26 +77,6 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 		if(persona == null) {
 			throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());
 		}
-		
-		persona.setNombres(funcionario.getPersonas().getNombres());
-		persona.setApellidos(funcionario.getPersonas().getApellidos());
-		persona.setCarreraId(funcionario.getPersonas().getCarreraId());
-		persona.setCedula(funcionario.getPersonas().getCedula());
-		persona.setCelular(funcionario.getPersonas().getCelular());
-		persona.setDepartamentoId(funcionario.getPersonas().getDepartamentoId());
-		persona.setDependenciaId(funcionario.getPersonas().getDependenciaId());
-		persona.setDireccion(funcionario.getPersonas().getDireccion());
-		persona.setEdad(funcionario.getPersonas().getEdad());
-		persona.setEmail(funcionario.getPersonas().getEmail());
-		persona.setEstadoCivil(funcionario.getPersonas().getEstadoCivil());
-		persona.setEstamentoId(funcionario.getPersonas().getEstamentoId());
-		persona.setFechaNacimiento(funcionario.getPersonas().getFechaNacimiento());
-		persona.setNacionalidad(funcionario.getPersonas().getNacionalidad());
-		persona.setSexo(funcionario.getPersonas().getSexo());
-		persona.setTelefono(funcionario.getPersonas().getTelefono());
-		persona.setUsuarioModificacion(funcionario.getPersonas().getUsuarioModificacion());
-		
-		funcionario.setPersonas(persona);
 				
 		return funcionariosDao.save(funcionario);
 	}
@@ -134,13 +88,12 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	}
 	
 	@Override
-	//@Transactional(readOnly = true)
-	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> funcionariosId, Pageable pageable) {
+	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> personasId, Pageable pageable) {
 		List<Funcionarios> funcionariosList = funcionariosDao.findAll((Specification<Funcionarios>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();
-            if( funcionariosId != null && !funcionariosId.isEmpty() ){
-            	p = cb.and(root.get("personas").in(funcionariosId));
+            if( personasId != null && !personasId.isEmpty() ){
+            	p = cb.and(root.get("personas").in(personasId));
             }            
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));

@@ -1,25 +1,29 @@
 package com.sigebi.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "insumos")
 public class Insumos {
 		
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_insumos")
 	@SequenceGenerator(name="seq_insumos",sequenceName="seq_insumos",allocationSize=1)
-	private Integer insumo_id;
+	private Integer insumoId;
 	
 	@Column(name = "codigo", length = 15, unique = true)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -31,38 +35,41 @@ public class Insumos {
 	private String descripcion;
 	
 	@Column(name = "fecha_vencimiento")
-	private Timestamp fechaVencimiento;
+	private LocalDate fechaVencimiento;
 	
 	@Column(name = "fecha_creacion")
-	private Timestamp fechaCreacion;	
+	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
-	private Timestamp fechaModificacion;
+	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne(mappedBy = "insumos")
+    private Stock stock;
+	
 	@PrePersist
 	private void create() {
-		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+		this.fechaCreacion = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	private void update() {
-		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+		this.fechaModificacion = LocalDateTime.now();
 	}	
 
-	public Integer getInsumo_id() {
-		return insumo_id;
+	public Integer getInsumoId() {
+		return insumoId;
 	}
 
-	public void setInsumo_id(Integer insumo_id) {
-		this.insumo_id = insumo_id;
+	public void setInsumoId(Integer insumoId) {
+		this.insumoId = insumoId;
 	}
 
 	public String getCodigo() {
@@ -81,20 +88,12 @@ public class Insumos {
 		this.descripcion = descripcion;
 	}
 
-	public Timestamp getFechaVencimiento() {
+	public LocalDate getFechaVencimiento() {
 		return fechaVencimiento;
 	}
 
-	public void setFechaVencimiento(Timestamp fechaVencimiento) {
+	public void setFechaVencimiento(LocalDate fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
-	}
-
-	public Timestamp getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public void setFechaCreacion(Timestamp fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
 	}
 
 	public String getUsuarioCreacion() {
@@ -105,20 +104,28 @@ public class Insumos {
 		this.usuarioCreacion = usuarioCreacion;
 	}
 
-	public Timestamp getFechaModificacion() {
-		return fechaModificacion;
-	}
-
-	public void setFechaModificacion(Timestamp fechaModificacion) {
-		this.fechaModificacion = fechaModificacion;
-	}
-
 	public String getUsuarioModificacion() {
 		return usuarioModificacion;
 	}
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
+	}
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public LocalDateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(LocalDateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
 	
 	

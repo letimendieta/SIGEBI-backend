@@ -1,18 +1,17 @@
 package com.sigebi.entity;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -21,19 +20,12 @@ public class Procedimientos {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_procedimientos")
 	@SequenceGenerator(name="seq_procedimientos",sequenceName="seq_procedimientos",allocationSize=1)
-	private Integer procedimiento_id;
+	private Integer procedimientoId;
 	
-	@Column(name = "funcionario_id")
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer funcionarioId;
-	
-	@Column(name = "descripcion", length = 500)
+	@Column(name = "notas", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
-	private String descripcion;
-	
-	@Column(name = "paciente_id")
-	private Integer pacienteId;
-	
+	private String notas;
+			
 	@Column(name = "insumo_id")
 	private Integer insumoId;
 	
@@ -41,65 +33,70 @@ public class Procedimientos {
 	private Integer cantidadInsumo;
 	
 	@Column(name = "fecha")
-	private Date fecha;
-	
-	@Column(name = "hora")
-	private Time hora;
-	
+	private LocalDateTime fecha;
+		
 	@Column(name = "fecha_creacion")
-	private Timestamp fechaCreacion;	
+	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
-	private Timestamp fechaModificacion;
+	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
+	@OneToOne
+    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId", unique = true)
+    private Funcionarios funcionarios;
+	
+	@OneToOne
+    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
+    private Pacientes pacientes;
+	
 	@PrePersist
 	private void create() {
-		this.fechaCreacion = new Timestamp(System.currentTimeMillis());
+		this.fechaCreacion = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	private void update() {
-		this.fechaModificacion = new Timestamp(System.currentTimeMillis());
+		this.fechaModificacion = LocalDateTime.now();
 	}
 
-	public Integer getProcedimiento_id() {
-		return procedimiento_id;
+	public Integer getProcedimientoId() {
+		return procedimientoId;
 	}
 
-	public void setProcedimiento_id(Integer procedimiento_id) {
-		this.procedimiento_id = procedimiento_id;
+	public void setProcedimientoId(Integer procedimientoId) {
+		this.procedimientoId = procedimientoId;
 	}
 
-	public Integer getFuncionarioId() {
-		return funcionarioId;
+	public Funcionarios getFuncionarios() {
+		return funcionarios;
 	}
 
-	public void setFuncionarioId(Integer funcionarioId) {
-		this.funcionarioId = funcionarioId;
+	public void setFuncionarios(Funcionarios funcionarios) {
+		this.funcionarios = funcionarios;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getNotas() {
+		return notas;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setNotas(String notas) {
+		this.notas = notas;
 	}
 
-	public Integer getPacienteId() {
-		return pacienteId;
+	public Pacientes getPacientes() {
+		return pacientes;
 	}
 
-	public void setPacienteId(Integer pacienteId) {
-		this.pacienteId = pacienteId;
+	public void setPacientes(Pacientes pacientes) {
+		this.pacientes = pacientes;
 	}
 
 	public Integer getInsumoId() {
@@ -118,28 +115,28 @@ public class Procedimientos {
 		this.cantidadInsumo = cantidadInsumo;
 	}
 
-	public Date getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
-	public Time getHora() {
-		return hora;
-	}
-
-	public void setHora(Time hora) {
-		this.hora = hora;
-	}
-
-	public Timestamp getFechaCreacion() {
+	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
 	}
 
-	public void setFechaCreacion(Timestamp fechaCreacion) {
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
+	}
+
+	public LocalDateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(LocalDateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
 
 	public String getUsuarioCreacion() {
@@ -149,15 +146,7 @@ public class Procedimientos {
 	public void setUsuarioCreacion(String usuarioCreacion) {
 		this.usuarioCreacion = usuarioCreacion;
 	}
-
-	public Timestamp getFechaModificacion() {
-		return fechaModificacion;
-	}
-
-	public void setFechaModificacion(Timestamp fechaModificacion) {
-		this.fechaModificacion = fechaModificacion;
-	}
-
+	
 	public String getUsuarioModificacion() {
 		return usuarioModificacion;
 	}

@@ -76,6 +76,9 @@ public class ParametrosServiceImpl implements ParametrosService{
             if (!StringUtils.isEmpty(parametro.getDescripcionValor())) {
                 p = cb.and(p, cb.like(root.get("descripcionValor"), "%" + parametro.getDescripcionValor() + "%"));
             }
+            if (!StringUtils.isEmpty(parametro.getEstado())) {
+                p = cb.and(p, cb.like(root.get("estado"), "%" + parametro.getEstado() + "%"));
+            }
             String orden = "parametroId";
             if (!StringUtils.isEmpty(orderBy)) {
             	orden = orderBy;
