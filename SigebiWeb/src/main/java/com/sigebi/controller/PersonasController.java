@@ -50,7 +50,7 @@ public class PersonasController {
 	public PersonasController(PersonasService personasService) {
         this.personasService = personasService;
     }
-	@PreAuthorize("hasRole('ADMIN')")
+	
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
@@ -119,7 +119,7 @@ public class PersonasController {
 		
         return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
     }
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> insertar(@Valid @RequestBody Personas persona, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
@@ -148,7 +148,7 @@ public class PersonasController {
 		response.put("persona", personaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping
 	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
@@ -193,7 +193,7 @@ public class PersonasController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  *
  */
 
-@Component
+/*@Component
 public class CreateRoles implements CommandLineRunner {
 
     @Autowired
@@ -22,10 +22,10 @@ public class CreateRoles implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Rol rolAdmin = new Rol(RolNombre.ROLE_ADMIN);
-        Rol rolUser = new Rol(RolNombre.ROLE_USER);
+        Rol rolAdmin = new Rol(RolNombre.ADMIN);
+        Rol rolUser = new Rol(RolNombre.USER);
         rolService.save(rolAdmin);
         rolService.save(rolUser);
          
     }
-}
+}*/
