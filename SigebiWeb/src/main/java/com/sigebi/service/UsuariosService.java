@@ -1,35 +1,33 @@
 package com.sigebi.service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
+import org.aspectj.bridge.AbortException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.sigebi.dao.IUsuariosDao;
 import com.sigebi.entity.Usuarios;
 
+@Service
+public class UsuariosService implements UserDetailsService{
 
-public interface UsuariosService {
-
-	public List<Usuarios> findAll();
+	@Autowired
+	private IUsuariosDao repo;
 	
-	public Usuarios findById(int id);	
-	
-	public Usuarios guardar(Usuarios usuario) throws Exception;
-	
-	public Usuarios actualizar(Usuarios usuario) throws Exception;
-	
-	public void delete(int id);
-	
-	public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable);
-	
-	public UserDetails loadUserByUsername(String username);
-	
-	public List<GrantedAuthority> buildGrante(byte rol);
-	
-	public void crearUsuario(Usuarios usuario);
-	/*@Override
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+		
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		Usuarios us = repo.findByCodigoUsuario(username);
@@ -42,10 +40,10 @@ public interface UsuariosService {
 	    return userDet;
 	}
 
-	/*public List<GrantedAuthority> buildGrante(byte rol){
+	public List<GrantedAuthority> buildGrante(byte rol){
 		return null;
 	}
-	/*@Transactional
+	@Transactional
 	public void crearUsuario(Usuarios usuario){
 		try {
 			String encodePass = encoder.encode(usuario.getPassword());	
@@ -55,5 +53,5 @@ public interface UsuariosService {
 			throw new AbortException("Ocurrio un error al guardar el usuario: " + e.getMessage());
 		}
 		
-	}*/
+	}
 }

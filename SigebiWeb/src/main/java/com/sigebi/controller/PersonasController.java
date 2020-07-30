@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,8 +36,8 @@ import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
 
 @RestController
-@CrossOrigin(origins = "*")
-@RequestMapping("/personas")
+@CrossOrigin
+@RequestMapping("/auth/personas")
 public class PersonasController {
 
 	@Autowired
@@ -49,7 +50,7 @@ public class PersonasController {
 	public PersonasController(PersonasService personasService) {
         this.personasService = personasService;
     }
-
+	
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
@@ -118,7 +119,7 @@ public class PersonasController {
 		
         return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
     }
-
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> insertar(@Valid @RequestBody Personas persona, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
@@ -147,7 +148,7 @@ public class PersonasController {
 		response.put("persona", personaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping
 	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
@@ -192,7 +193,7 @@ public class PersonasController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();

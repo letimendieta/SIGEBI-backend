@@ -13,7 +13,7 @@ import com.sigebi.entity.Areas;
 
 @SpringBootTest
 class SigebiWebApplicationTests {
-
+/*
 	@Autowired
 	private IUsuariosDao repo;
 	
@@ -31,7 +31,7 @@ class SigebiWebApplicationTests {
 		us.setPassword(encoder.encode("123"));
 		Usuarios retorno = repo.save(us);*/
 		
-		Areas ar = new Areas();
+		/*Areas ar = new Areas();
 		ar.setCodigo("MED");;
 		ar.setDescripcion("Clinica");
 		ar.setEstado("A");
@@ -39,6 +39,6 @@ class SigebiWebApplicationTests {
 		
 		
 		assertTrue(retorno.getCodigo() == ar.getCodigo());
-	}
+	}*/
 
 }
