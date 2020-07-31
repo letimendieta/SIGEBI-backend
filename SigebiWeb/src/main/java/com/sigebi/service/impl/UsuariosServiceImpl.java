@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +33,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	@Autowired
 	private IUsuariosDao usuariosDao;
 	
-	@Autowired
-	private BCryptPasswordEncoder encoder;
+	//@Autowired
+	//private BCryptPasswordEncoder encoder;
 	
 	@Autowired
 	private PersonasService personasService;
@@ -76,8 +76,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 			throw new Exception("Id de la persona es requerido ");
 		}		
 		//codificar la contrasenha
-		String encodePass = encoder.encode(usuario.getPassword());	
-		usuario.setPassword(encodePass);
+		//String encodePass = encoder.encode(usuario.getPassword());	
+		//usuario.setPassword(encodePass);
 				
 		return usuariosDao.save(usuario);
 	}
@@ -89,8 +89,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 			usuario.setFuncionarios(null);
 		}		
 		//codificar la contrasenha
-		String encodePass = encoder.encode(usuario.getPassword());	
-		usuario.setPassword(encodePass);
+		//String encodePass = encoder.encode(usuario.getPassword());	
+		//usuario.setPassword(encodePass);
 		
 		return usuariosDao.save(usuario);
 	}
@@ -148,8 +148,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	@Override
 	public void crearUsuario(Usuarios usuario){
 		try {
-			String encodePass = encoder.encode(usuario.getPassword());	
-			usuario.setPassword(encodePass);
+			//String encodePass = encoder.encode(usuario.getPassword());	
+			//usuario.setPassword(encodePass);
 			usuariosDao.save(usuario);
 		} catch (Exception e) {
 			throw new AbortException("Ocurrio un error al guardar el usuario: " + e.getMessage());
