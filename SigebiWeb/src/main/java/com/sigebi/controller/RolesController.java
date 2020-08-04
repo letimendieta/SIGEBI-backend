@@ -18,7 +18,7 @@ import com.sigebi.entity.Roles;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/roles")
+@RequestMapping("/auth/roles")
 public class RolesController {
 
 	@Autowired

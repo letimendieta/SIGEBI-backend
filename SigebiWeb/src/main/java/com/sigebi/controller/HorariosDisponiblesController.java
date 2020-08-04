@@ -44,7 +44,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/horarios-disponibles")
+@RequestMapping("/auth/horarios-disponibles")
 public class HorariosDisponiblesController {
 
 	@Autowired

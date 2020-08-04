@@ -38,7 +38,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/stock")
+@RequestMapping("/auth/stock")
 public class StockController {
 
 	@Autowired

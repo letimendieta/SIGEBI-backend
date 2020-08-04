@@ -39,7 +39,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/insumos")
+@RequestMapping("/auth/insumos")
 public class InsumosController {
 
 	@Autowired

@@ -46,7 +46,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/citas")
+@RequestMapping("/auth/citas")
 public class CitasController {
 
 	@Autowired

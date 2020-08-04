@@ -25,7 +25,7 @@ import com.sigebi.service.FilesStorageService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/archivos")
+@RequestMapping("/auth/archivos")
 public class FilesController {
 
   @Autowired

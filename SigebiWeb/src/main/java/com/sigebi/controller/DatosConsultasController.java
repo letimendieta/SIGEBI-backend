@@ -18,7 +18,7 @@ import com.sigebi.entity.DatosConsultas;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/datos-consultas")
+@RequestMapping("/auth/datos-consultas")
 public class DatosConsultasController {
 
 	@Autowired

@@ -42,7 +42,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/historial-Clinico")
+@RequestMapping("/auth/historial-Clinico")
 public class HistorialClinicoController {
 
 	@Autowired

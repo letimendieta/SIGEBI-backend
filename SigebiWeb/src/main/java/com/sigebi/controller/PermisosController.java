@@ -18,7 +18,7 @@ import com.sigebi.entity.Permisos;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/permisos")
+@RequestMapping("/auth/permisos")
 public class PermisosController {
 
 	@Autowired

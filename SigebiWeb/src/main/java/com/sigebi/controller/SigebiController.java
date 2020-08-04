@@ -15,7 +15,7 @@ public class SigebiController {
 	@Autowired
 	private IPersonasDao repo;
 	
-	@GetMapping("/greeting")
+	@GetMapping("/auth/greeting")
 	public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name,
 			Model model) {
 		

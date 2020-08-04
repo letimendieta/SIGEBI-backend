@@ -36,7 +36,7 @@ import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/parametros")
+@RequestMapping("/auth/parametros")
 public class ParametrosController {
 	
 	@Autowired
