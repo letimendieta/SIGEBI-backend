@@ -55,8 +55,9 @@ public class AreasServiceImpl implements AreasService{
 	@Override
 	@Transactional
 	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, Pageable pageable) {
+		List<Areas> areasList;
 		
-        List<Areas> areasList = areasDao.findAll((Specification<Areas>) (root, cq, cb) -> {
+		Specification<Areas> areasSpec = (Specification<Areas>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -75,7 +76,13 @@ public class AreasServiceImpl implements AreasService{
             }
             cq.orderBy(cb.desc(root.get("areaId")));
             return p;
-        }, pageable).getContent();
+        };
+		if(pageable != null) {
+			areasList = areasDao.findAll(areasSpec, pageable).getContent();			
+		}else {
+			areasList = areasDao.findAll(areasSpec);
+		}
+        
         return areasList;
     }
 
