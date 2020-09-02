@@ -11,13 +11,15 @@ public interface AreasService {
 	
 	public List<Areas> findAll();
 	
+	public int count();
+	
 	public Areas findById(int id);
 	
 	public Areas save(Areas area);
 	
 	public void delete(int id);
 	
-	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, Pageable pageable);
+	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, String orderBy, String orderDir, Pageable pageable);
 	
 	
 }

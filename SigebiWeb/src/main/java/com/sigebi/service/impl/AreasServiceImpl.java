@@ -33,6 +33,12 @@ public class AreasServiceImpl implements AreasService{
 	public List<Areas> findAll() {
 		return (List<Areas>) areasDao.findAll();
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) areasDao.count();
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -54,7 +60,7 @@ public class AreasServiceImpl implements AreasService{
 	
 	@Override
 	@Transactional
-	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, Pageable pageable) {
+	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, String orderBy, String orderDir, Pageable pageable) {
 		List<Areas> areasList;
 		
 		Specification<Areas> areasSpec = (Specification<Areas>) (root, cq, cb) -> {
@@ -74,7 +80,16 @@ public class AreasServiceImpl implements AreasService{
             if (!StringUtils.isEmpty(area.getEstado())) {
                 p = cb.and(p, cb.like(root.get("estado"), "%" + area.getEstado() + "%"));
             }
-            cq.orderBy(cb.desc(root.get("areaId")));
+                        
+            String orden = "areaId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
         };
 		if(pageable != null) {
