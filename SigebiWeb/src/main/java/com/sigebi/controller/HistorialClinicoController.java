@@ -105,7 +105,7 @@ public class HistorialClinicoController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
-            Pageable pageable) throws JsonMappingException, JsonProcessingException{
+            Pageable pageable) throws JsonMappingException, JsonProcessingException{		
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 					
@@ -126,6 +126,7 @@ public class HistorialClinicoController {
 						
 		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		List<Integer> pacientesIds = new ArrayList<Integer>();
+		
 		if( historialClinico.getPacientes() != null) {
 			try {
 				personasId = new ArrayList<Integer>();
@@ -137,9 +138,19 @@ public class HistorialClinicoController {
 					for( Personas persona : personasList ){
 						personasId.add(persona.getPersonaId());
 					}
+					
+					//Si se reciben datos de persona y si no se encuentra, retornar vacio
+					if(personasList.isEmpty()) {
+						return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
+					}
 				}
 				pacientesList = pacientesService.buscar(null, null, historialClinico.getPacientes(), personasId, PageRequest.of(0, 20));
-									
+				
+				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
+				if(pacientesList.isEmpty()) {
+					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
+				}					
+				
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

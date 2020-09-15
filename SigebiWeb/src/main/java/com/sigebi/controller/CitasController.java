@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Citas;
 import com.sigebi.entity.Funcionarios;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.CitasService;
@@ -147,11 +148,21 @@ public class CitasController {
 			try {
 				if(cita.getFuncionarios().getPersonas() != null) {
 					personasList = personasService.buscar(null, null, cita.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+					
+					//Si se reciben datos de persona y si no se encuentra, retornar vacio
+					if(personasList.isEmpty()) {
+						return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
+					}
 					for( Personas persona : personasList ){
 						personasId.add(persona.getPersonaId());
 					}
 				}				
 				funcionariosList = funcionariosService.buscar(null, null, cita.getFuncionarios(), personasId, PageRequest.of(0, 20));
+				
+				//Si se reciben datos de funcionario y si no se encuentra, retornar vacio
+				if(funcionariosList.isEmpty()) {
+					return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
+				}
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -172,11 +183,20 @@ public class CitasController {
 				if(cita.getPacientes().getPersonas() != null) {
 					personasList = personasService.buscar(null, null, cita.getPacientes().getPersonas(), PageRequest.of(0, 20));
 					
+					//Si se reciben datos de persona y si no se encuentra, retornar vacio
+					if(personasList.isEmpty()) {
+						return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
+					}
 					for( Personas persona : personasList ){
 						personasId.add(persona.getPersonaId());
 					}
 				}
 				pacientesList = pacientesService.buscar(null, null, cita.getPacientes(), personasId, PageRequest.of(0, 20));
+				
+				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
+				if(pacientesList.isEmpty()) {
+					return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
+				}
 									
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
