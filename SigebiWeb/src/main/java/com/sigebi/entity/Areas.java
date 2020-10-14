@@ -28,8 +28,8 @@ public class Areas {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String codigo;
 	
-	@Column(name = "descripcion", length = 30)
-	@Size(max=30, message="maximo 30 caracteres")
+	@Column(name = "descripcion", length = 50)
+	@Size(max=50, message="maximo 50 caracteres")
 	private String descripcion;	
 	
 	@Column(name = "estado", length = 1)
