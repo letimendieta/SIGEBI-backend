@@ -65,7 +65,7 @@ public class PersonasServiceImpl implements PersonasService{
                 p = cb.and(p, cb.equal(root.get("personaId"), persona.getPersonaId()) );
             }
             if (!StringUtils.isEmpty(persona.getCedula())) {
-                p = cb.and(p, cb.like(root.get("cedula"), "%" + persona.getCedula() + "%"));
+                p = cb.and(p, cb.equal(root.get("cedula"), persona.getCedula()));
             }
             if (!StringUtils.isEmpty(persona.getNombres())) {
                 p = cb.and(p, cb.like(root.get("nombres"), "%" + persona.getNombres() + "%"));
