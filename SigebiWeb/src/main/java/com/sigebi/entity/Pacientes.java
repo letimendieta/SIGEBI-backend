@@ -24,9 +24,6 @@ public class Pacientes {
 	@SequenceGenerator(name="seq_pacientes",sequenceName="seq_pacientes",allocationSize=1)
 	private Integer pacienteId;
 	
-	@Column(name = "historial_id")
-	private Integer historialId;
-	
 	@Column(name = "grupo_sanguineo", length = 5)
 	@Size(max=5, message="maximo 5 caracteres")
 	private String grupoSanguineo;
@@ -50,6 +47,10 @@ public class Pacientes {
 	private String usuarioModificacion;
 	
 	@OneToOne
+    @JoinColumn(name = "historial_clinico_id", referencedColumnName = "historialClinicoId", unique = true)
+    private HistorialClinico historialClinico;
+	
+	@OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "personaId", unique = true)
     private Personas personas;
 	
@@ -69,14 +70,6 @@ public class Pacientes {
 
 	public void setPacienteId(Integer pacienteId) {
 		this.pacienteId = pacienteId;
-	}
-
-	public Integer getHistorialId() {
-		return historialId;
-	}
-
-	public void setHistorialId(Integer historialId) {
-		this.historialId = historialId;
 	}
 
 	public String getGrupoSanguineo() {
@@ -117,6 +110,14 @@ public class Pacientes {
 
 	public void setPersonas(Personas personas) {
 		this.personas = personas;
+	}
+
+	public HistorialClinico getHistorialClinico() {
+		return historialClinico;
+	}
+
+	public void setHistorialClinico(HistorialClinico historialClinico) {
+		this.historialClinico = historialClinico;
 	}
 
 	public LocalDateTime getFechaCreacion() {

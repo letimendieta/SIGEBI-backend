@@ -13,29 +13,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.dao.IDatosConsultasDao;
-import com.sigebi.entity.DatosConsultas;
+import com.sigebi.dao.IConsultasDao;
+import com.sigebi.entity.Consultas;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/datos-consultas")
-public class DatosConsultasController {
+@RequestMapping("/auth/consultas")
+public class ConsultasController {
 
 	@Autowired
-	private IDatosConsultasDao repo;
+	private IConsultasDao repo;
 
 	@GetMapping
-	public List<DatosConsultas> listar() {
+	public List<Consultas> listar() {
 		return repo.findAll();
 	}
 
 	@PostMapping
-	public void insertar(@RequestBody DatosConsultas datoConsulta) {
+	public void insertar(@RequestBody Consultas datoConsulta) {
 		repo.save(datoConsulta);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody DatosConsultas datoConsulta) {
+	public void modificar(@RequestBody Consultas datoConsulta) {
 		repo.save(datoConsulta);
 	}
 

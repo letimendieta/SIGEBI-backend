@@ -1,5 +1,6 @@
 package com.sigebi.entity;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -7,23 +8,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "historial_clinico")
-public class HistorialClinico {
+public class Consultas {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_historial_clinico")
-	@SequenceGenerator(name="seq_historial_clinico",sequenceName="seq_historial_clinico",allocationSize=1)
-	private Integer historialClinicoId;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_consultas")
+	@SequenceGenerator(name="seq_consultas",sequenceName="seq_consultas",allocationSize=1)
+	private Integer consultaId;
+	
+	@Column(name = "fecha")
+	@NotEmpty(message ="no puede estar vacio")
+	private Date fecha;
 		
+	@Column(name = "historial_clinico_id")
+	private Integer historialClinicoId;
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -38,10 +43,6 @@ public class HistorialClinico {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
-	@OneToOne
-    @JoinColumn(name = "area_id", referencedColumnName = "areaId")
-    private Areas areas;
-	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = LocalDateTime.now();
@@ -51,6 +52,22 @@ public class HistorialClinico {
 	private void update() {
 		this.fechaModificacion = LocalDateTime.now();
 	}
+	
+	public Integer getConsultaId() {
+		return consultaId;
+	}
+
+	public void setConsultaId(Integer datoConsultaId) {
+		this.consultaId = datoConsultaId;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
 
 	public Integer getHistorialClinicoId() {
 		return historialClinicoId;
@@ -58,14 +75,6 @@ public class HistorialClinico {
 
 	public void setHistorialClinicoId(Integer historialClinicoId) {
 		this.historialClinicoId = historialClinicoId;
-	}
-
-	public Areas getAreas() {
-		return areas;
-	}
-
-	public void setAreas(Areas areas) {
-		this.areas = areas;
 	}
 
 	public String getUsuarioCreacion() {

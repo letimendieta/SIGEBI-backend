@@ -30,26 +30,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.HistorialClinico;
-import com.sigebi.entity.Pacientes;
-import com.sigebi.entity.Personas;
+import com.sigebi.entity.Alergias;
+import com.sigebi.service.AlergiasService;
 import com.sigebi.service.FilesStorageService;
-import com.sigebi.service.HistorialesClinicosService;
-import com.sigebi.service.PacientesService;
-import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/historial-Clinico")
-public class HistorialClinicoController {
+@RequestMapping("/auth/alergias")
+public class AlergiasController {
 
 	@Autowired
-	private HistorialesClinicosService historialesClinicosService;
-	@Autowired
-	private PacientesService pacientesService;
-	@Autowired
-	private PersonasService personasService;
+	private AlergiasService alergiasService;
 	@Autowired
 	private UtilesService utiles;
 	@Autowired
@@ -57,50 +49,50 @@ public class HistorialClinicoController {
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public HistorialClinicoController(HistorialesClinicosService historialesClinicosService) {
-        this.historialesClinicosService = historialesClinicosService;
+	public AlergiasController(AlergiasService alergiasService) {
+        this.alergiasService = alergiasService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<HistorialClinico> historialClinicosList = null;
+		List<Alergias> alergiaList = null;
 		try {
-			historialClinicosList = historialesClinicosService.findAll();
+			alergiaList = alergiasService.findAll();
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if( historialClinicosList.isEmpty()) {
+		if( alergiaList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
+		return new ResponseEntity<List<Alergias>>(alergiaList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		HistorialClinico historialClinico = null;
+		Alergias alergia = null;
 		try {
-			historialClinico = historialesClinicosService.findById(id);
+			alergia = alergiasService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if( historialClinico == null ) {
-			response.put("mensaje", "El historialClinico con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( alergia == null ) {
+			response.put("mensaje", "El alergia con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<HistorialClinico>(historialClinico, HttpStatus.OK);
+		return new ResponseEntity<Alergias>(alergia, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarHistorialClinico(
+    public ResponseEntity<?> buscarAlergias(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -108,78 +100,33 @@ public class HistorialClinicoController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 					
-		HistorialClinico historialClinico = null;
-		Pacientes pacientes = null;
-		
+		Alergias alergia = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			historialClinico = objectMapper.readValue(filtros, HistorialClinico.class);
+			alergia = objectMapper.readValue(filtros, Alergias.class);
 		}
-		/*if(!utiles.isNullOrBlank(filtros)) {
-			pacientes = objectMapper.readValue(filtros, Pacientes.class);
-		}*/
+		
 		Map<String, Object> response = new HashMap<>();
-		List<HistorialClinico> historialClinicosList = new ArrayList<HistorialClinico>();
+		List<Alergias> alergiaList = new ArrayList<Alergias>();
 		
-		if ( historialClinico == null ) {
-			historialClinico = new HistorialClinico();
+		if ( alergia == null ) {
+			alergia = new Alergias();
 		}
-		
-		List<Personas> personasList = new ArrayList<Personas>();
-		List<Integer> personasId = new ArrayList<Integer>();
-						
-		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
-		List<Integer> pacientesIds = new ArrayList<Integer>();
-		
-		/*if( historialClinico.getPacientes() != null) {
-			try {
-				personasId = new ArrayList<Integer>();
-				personasList = new ArrayList<Personas>();
-				
-				if(historialClinico.getPacientes().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, historialClinico.getPacientes().getPersonas(), PageRequest.of(0, 20));
-					
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
-					
-					//Si se reciben datos de persona y si no se encuentra, retornar vacio
-					if(personasList.isEmpty()) {
-						return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
-					}
-				}
-				pacientesList = pacientesService.buscar(null, null, historialClinico.getPacientes(), personasId, PageRequest.of(0, 20));
-				
-				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
-				if(pacientesList.isEmpty()) {
-					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
-				}					
-				
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			for( Pacientes paciente : pacientesList ){
-				pacientesIds.add(paciente.getPacienteId());
-			}
-		}*/
-		
+
 		try {
-			historialClinicosList = historialesClinicosService.buscar(fromDate, toDate, historialClinico, 
-																pacientesIds, pageable);
+			alergiaList = alergiasService.buscar(fromDate, toDate, alergia, pageable);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del historialClinico");
+			response.put("mensaje", "Error al realizar la consulta de los datos de la alergia");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-						
-        return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
-    }
+							
+	        return new ResponseEntity<List<Alergias>>(alergiaList, HttpStatus.OK);
+	    }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody HistorialClinico historialClinico, BindingResult result) throws Exception {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Alergias alergia, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
-		HistorialClinico historialClinicoNew = null;
+		Alergias alergiaNew = null;
 		if( result.hasErrors() ) {
 
 			List<String> errors = result.getFieldErrors()
@@ -192,7 +139,7 @@ public class HistorialClinicoController {
 		}
 				
 		try {
-			historialClinicoNew = historialesClinicosService.guardar(historialClinico);
+			alergiaNew = alergiasService.guardar(alergia);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -203,22 +150,22 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "El historialClinico ha sido creado con éxito!");
-		response.put("historialClinico", historialClinicoNew);
+		response.put("mensaje", "La alergia ha sido creado con éxito!");
+		response.put("alergia", alergiaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody HistorialClinico historialClinico, BindingResult result) throws Exception {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Alergias alergia, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( historialClinico.getHistorialClinicoId() == null ) {
-			response.put("mensaje", "Error: historialClinico id es requerido");
+		if ( alergia.getAlergiaId() == null ) {
+			response.put("mensaje", "Error: alergia id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		HistorialClinico historialClinicoActual = historialesClinicosService.findById(historialClinico.getHistorialClinicoId());
-		HistorialClinico historialClinicoUpdated = null;
+		Alergias alergiaActual = alergiasService.findById(alergia.getAlergiaId());
+		Alergias alergiaUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -231,24 +178,24 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( historialClinicoActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el historialClinico ID: "
-					.concat(String.valueOf(historialClinico.getHistorialClinicoId()).concat(" no existe en la base de datos!")));
+		if ( alergiaActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, la alergia ID: "
+					.concat(String.valueOf(alergia.getAlergiaId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 
-			historialClinicoUpdated = historialesClinicosService.actualizar(historialClinico);;
+			alergiaUpdated = alergiasService.actualizar(alergia);;
 
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el historialClinico en la base de datos");
+			response.put("mensaje", "Error al actualizar la alergia en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "El historialClinico ha sido actualizado con éxito!");
-		response.put("historialClinico", historialClinicoUpdated);
+		response.put("mensaje", "La alergia ha sido actualizada con éxito!");
+		response.put("alergia", alergiaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -258,27 +205,27 @@ public class HistorialClinicoController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: historialClinico id es requerido");
+			response.put("mensaje", "Error: alergia id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		HistorialClinico historialClinicoActual = historialesClinicosService.findById(id);
+		Alergias alergiaActual = alergiasService.findById(id);
 		
-		if ( historialClinicoActual == null ) {
-			response.put("mensaje", "El historialClinico ID: "
+		if ( alergiaActual == null ) {
+			response.put("mensaje", "La alergia ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		try {
-			historialesClinicosService.delete(id);
+			alergiasService.delete(id);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el historialClinico de la base de datos");
+			response.put("mensaje", "Error al eliminar la alergia de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "HistorialClinico eliminado con éxito!");
+		response.put("mensaje", "Alergias eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -60,18 +61,22 @@ public class Personas {
 	@Size(max=20, message="maximo 20 caracteres")
 	private String celular;
 	
-	@Column(name = "estamento_id")
-	private Integer estamentoId;
+	@OneToOne
+    @JoinColumn(name = "estamento_id", referencedColumnName = "estamentoId")
+    private Estamentos estamentos;
 	
-	@Column(name = "carrera_id")
-	private Integer carreraId;
+	@OneToOne
+    @JoinColumn(name = "carrera_id", referencedColumnName = "carreraId")
+    private Carreras carreras;
 	
-	@Column(name = "departamento_id")
-	private Integer departamentoId;
+	@OneToOne
+    @JoinColumn(name = "departamento_id", referencedColumnName = "departamentoId")
+    private Departamentos departamentos;
 	
-	@Column(name = "dependencia_id")
-	private Integer dependenciaId;
-	
+	@OneToOne
+    @JoinColumn(name = "dependencia_id", referencedColumnName = "dependenciaId")
+    private Dependencias dependencias;
+		
 	@Column(name = "sexo", length = 1)
 	@Size(max=1, message="maximo 1 caracteres")
 	private String sexo;
@@ -193,36 +198,36 @@ public class Personas {
 		this.celular = celular;
 	}
 
-	public Integer getEstamentoId() {
-		return estamentoId;
+	public Estamentos getEstamentos() {
+		return estamentos;
 	}
 
-	public void setEstamentoId(Integer estamentoId) {
-		this.estamentoId = estamentoId;
+	public void setEstamentos(Estamentos estamentos) {
+		this.estamentos = estamentos;
 	}
 
-	public Integer getCarreraId() {
-		return carreraId;
+	public Carreras getCarreras() {
+		return carreras;
 	}
 
-	public void setCarreraId(Integer carreraId) {
-		this.carreraId = carreraId;
+	public void setCarreras(Carreras carreras) {
+		this.carreras = carreras;
 	}
 
-	public Integer getDepartamentoId() {
-		return departamentoId;
+	public Departamentos getDepartamentos() {
+		return departamentos;
 	}
 
-	public void setDepartamentoId(Integer departamentoId) {
-		this.departamentoId = departamentoId;
+	public void setDepartamentos(Departamentos departamentos) {
+		this.departamentos = departamentos;
 	}
 
-	public Integer getDependenciaId() {
-		return dependenciaId;
+	public Dependencias getDependencias() {
+		return dependencias;
 	}
 
-	public void setDependenciaId(Integer dependenciaId) {
-		this.dependenciaId = dependenciaId;
+	public void setDependencias(Dependencias dependencias) {
+		this.dependencias = dependencias;
 	}
 
 	public String getSexo() {

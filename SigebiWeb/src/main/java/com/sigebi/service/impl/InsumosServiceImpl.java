@@ -67,6 +67,9 @@ public class InsumosServiceImpl implements InsumosService{
             if (!StringUtils.isEmpty(insumo.getCodigo())) {
                 p = cb.and(p, cb.like(root.get("codigo"), "%" + insumo.getCodigo() + "%"));
             }
+            if (!StringUtils.isEmpty(insumo.getTipo())) {
+                p = cb.and(p, cb.like(root.get("tipo"), "%" + insumo.getTipo() + "%"));
+            }
             if (!StringUtils.isEmpty(insumo.getDescripcion())) {
                 p = cb.and(p, cb.like(root.get("descripcion"), "%" + insumo.getDescripcion() + "%"));
             }

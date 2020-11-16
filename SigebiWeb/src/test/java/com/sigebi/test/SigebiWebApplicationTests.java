@@ -1,15 +1,6 @@
 package com.sigebi.test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.sigebi.dao.IAreasDao;
-import com.sigebi.dao.IUsuariosDao;
-import com.sigebi.entity.Areas;
 
 @SpringBootTest
 class SigebiWebApplicationTests {

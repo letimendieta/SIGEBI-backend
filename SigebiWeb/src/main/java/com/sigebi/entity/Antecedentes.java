@@ -13,34 +13,39 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table(name = "historial_clinico")
-public class HistorialClinico {
+@Table(name = "antecedentes")
+public class Antecedentes {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_historial_clinico")
-	@SequenceGenerator(name="seq_historial_clinico",sequenceName="seq_historial_clinico",allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_antecedentes")
+	@SequenceGenerator(name="seq_antecedentes",sequenceName="seq_antecedentes",allocationSize=1)
+	private Integer antecedenteId;
+	
+	@Column(name = "historial_clinico_id")
 	private Integer historialClinicoId;
-		
+	
+	@Column(name = "tipo", length = 20, nullable = false)
+	@NotEmpty(message ="no puede estar vacio")
+	private String tipo;
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
 	@Column(name = "usuario_creacion", length = 15)
-	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioCreacion;
 	
 	@Column(name = "fecha_modificacion")
 	private LocalDateTime fechaModificacion;
 	
 	@Column(name = "usuario_modificacion", length = 15)
-	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
 	
 	@OneToOne
-    @JoinColumn(name = "area_id", referencedColumnName = "areaId")
-    private Areas areas;
+    @JoinColumn(name = "patologia_procedimiento_id", referencedColumnName = "patologiaProcedimientoId")
+    private PatologiasProcedimientos patologiasProcedimientos;		
 	
 	@PrePersist
 	private void create() {
@@ -50,6 +55,14 @@ public class HistorialClinico {
 	@PreUpdate
 	private void update() {
 		this.fechaModificacion = LocalDateTime.now();
+	}	
+	
+	public Integer getAntecedenteId() {
+		return antecedenteId;
+	}
+
+	public void setAntecedenteId(Integer antecedenteId) {
+		this.antecedenteId = antecedenteId;
 	}
 
 	public Integer getHistorialClinicoId() {
@@ -60,28 +73,20 @@ public class HistorialClinico {
 		this.historialClinicoId = historialClinicoId;
 	}
 
-	public Areas getAreas() {
-		return areas;
+	public String getTipo() {
+		return tipo;
 	}
 
-	public void setAreas(Areas areas) {
-		this.areas = areas;
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
-	public String getUsuarioCreacion() {
-		return usuarioCreacion;
+	public PatologiasProcedimientos getPatologiasProcedimientos() {
+		return patologiasProcedimientos;
 	}
 
-	public void setUsuarioCreacion(String usuarioCreacion) {
-		this.usuarioCreacion = usuarioCreacion;
-	}
-
-	public String getUsuarioModificacion() {
-		return usuarioModificacion;
-	}
-
-	public void setUsuarioModificacion(String usuarioModificacion) {
-		this.usuarioModificacion = usuarioModificacion;
+	public void setPatologiasProcedimientos(PatologiasProcedimientos patologiasProcedimientos) {
+		this.patologiasProcedimientos = patologiasProcedimientos;
 	}
 
 	public LocalDateTime getFechaCreacion() {
@@ -92,6 +97,14 @@ public class HistorialClinico {
 		this.fechaCreacion = fechaCreacion;
 	}
 
+	public String getUsuarioCreacion() {
+		return usuarioCreacion;
+	}
+
+	public void setUsuarioCreacion(String usuarioCreacion) {
+		this.usuarioCreacion = usuarioCreacion;
+	}
+	
 	public LocalDateTime getFechaModificacion() {
 		return fechaModificacion;
 	}
@@ -99,6 +112,13 @@ public class HistorialClinico {
 	public void setFechaModificacion(LocalDateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
-	
+
+	public String getUsuarioModificacion() {
+		return usuarioModificacion;
+	}
+
+	public void setUsuarioModificacion(String usuarioModificacion) {
+		this.usuarioModificacion = usuarioModificacion;
+	}	
 	
 }
