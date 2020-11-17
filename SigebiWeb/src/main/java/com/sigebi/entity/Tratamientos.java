@@ -21,10 +21,7 @@ public class Tratamientos {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_tratamientos")
 	@SequenceGenerator(name="seq_tratamientos",sequenceName="seq_tratamientos",allocationSize=1)
 	private Integer tratamientoId;
-	
-	@Column(name = "consulta_id")
-	private Integer consultaId;
-	
+		
 	@Column(name = "prescripcion_farm", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String prescripcionFarm;
@@ -61,14 +58,6 @@ public class Tratamientos {
 
 	public void setTratamientoId(Integer tratamientoId) {
 		this.tratamientoId = tratamientoId;
-	}
-
-	public Integer getConsultaId() {
-		return consultaId;
-	}
-
-	public void setConsultaId(Integer consultaId) {
-		this.consultaId = consultaId;
 	}
 
 	public String getPrescripcionFarm() {

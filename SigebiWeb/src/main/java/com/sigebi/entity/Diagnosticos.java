@@ -31,10 +31,7 @@ public class Diagnosticos {
 	@Column(name = "diagnostico_secundario", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String diagnosticoSecundario;
-	
-	@Column(name = "consulta_id")
-	private Integer consultaId;
-	
+			
 	@Column(name = "termino_estandar_principal_id")
 	private Integer terminoEstandarPrincipal;
 	
@@ -69,14 +66,6 @@ public class Diagnosticos {
 
 	public void setDiagnosticoId(Integer diagnosticoId) {
 		this.diagnosticoId = diagnosticoId;
-	}
-
-	public Integer getConsultaId() {
-		return consultaId;
-	}
-
-	public void setConsultaId(Integer consultaId) {
-		this.consultaId = consultaId;
 	}
 
 	public String getDiagnosticoPrincipal() {

@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -42,6 +44,14 @@ public class Consultas {
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
+	
+	@OneToOne
+    @JoinColumn(name = "diagnostico_id", referencedColumnName = "diagnosticoId")
+    private Diagnosticos diagnosticos;
+	
+	@OneToOne
+    @JoinColumn(name = "tratamiento_id", referencedColumnName = "tratamientoId")
+    private Tratamientos tratamientos;
 	
 	@PrePersist
 	private void create() {
@@ -83,6 +93,22 @@ public class Consultas {
 
 	public void setUsuarioCreacion(String usuarioCreacion) {
 		this.usuarioCreacion = usuarioCreacion;
+	}
+
+	public Diagnosticos getDiagnosticos() {
+		return diagnosticos;
+	}
+
+	public void setDiagnosticos(Diagnosticos diagnosticos) {
+		this.diagnosticos = diagnosticos;
+	}
+
+	public Tratamientos getTratamientos() {
+		return tratamientos;
+	}
+
+	public void setTratamientos(Tratamientos tratamientos) {
+		this.tratamientos = tratamientos;
 	}
 
 	public String getUsuarioModificacion() {

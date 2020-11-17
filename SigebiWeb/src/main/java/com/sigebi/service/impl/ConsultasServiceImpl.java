@@ -71,6 +71,12 @@ public class ConsultasServiceImpl implements ConsultasService{
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
+            if ( consulta.getDiagnosticos() != null && consulta.getDiagnosticos().getDiagnosticoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("diagnosticoId"), consulta.getDiagnosticos().getDiagnosticoId()) );
+            }
+            if ( consulta.getTratamientos() != null && consulta.getTratamientos().getTratamientoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("tratamientoId"), consulta.getTratamientos().getTratamientoId()) );
+            }
             if ( consulta.getConsultaId() != null ) {
                 p = cb.and(p, cb.equal(root.get("consultaId"), consulta.getConsultaId()) );
             }

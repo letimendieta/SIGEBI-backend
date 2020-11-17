@@ -44,7 +44,7 @@ public class Stock {
 	private String usuarioModificacion;
 	
 	@OneToOne
-    @JoinColumn(name = "insumo_id", referencedColumnName = "insumoId", unique = true)
+    @JoinColumn(name = "insumo_id", referencedColumnName = "insumoId")
     private Insumos insumos;
 	
 	@PrePersist
