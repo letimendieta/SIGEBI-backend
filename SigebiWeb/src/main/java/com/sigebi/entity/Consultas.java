@@ -1,6 +1,7 @@
 package com.sigebi.entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -23,8 +24,7 @@ public class Consultas {
 	private Integer consultaId;
 	
 	@Column(name = "fecha")
-	@NotEmpty(message ="no puede estar vacio")
-	private Date fecha;
+	private LocalDateTime fecha;
 		
 	@Column(name = "historial_clinico_id")
 	private Integer historialClinicoId;
@@ -61,11 +61,11 @@ public class Consultas {
 		this.consultaId = datoConsultaId;
 	}
 
-	public Date getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 

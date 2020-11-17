@@ -1,12 +1,12 @@
 package com.sigebi.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ProcesoDiagnosticoTratamiento {
 		
 	Diagnosticos diagnostico;
 	Tratamientos tratamiento;
-	List<TratamientosInsumos> tratamientoInsumo;	
+	ArrayList<TratamientosInsumos> tratamientoInsumoList;	
 	Consultas consulta;
 	
 	public Diagnosticos getDiagnostico() {
@@ -21,11 +21,12 @@ public class ProcesoDiagnosticoTratamiento {
 	public void setTratamiento(Tratamientos tratamiento) {
 		this.tratamiento = tratamiento;
 	}
-	public List<TratamientosInsumos> getTratamientoInsumo() {
-		return tratamientoInsumo;
+
+	public ArrayList<TratamientosInsumos> getTratamientoInsumoList() {
+		return tratamientoInsumoList;
 	}
-	public void setTratamientoInsumo(List<TratamientosInsumos> tratamientoInsumo) {
-		this.tratamientoInsumo = tratamientoInsumo;
+	public void setTratamientoInsumoList(ArrayList<TratamientosInsumos> tratamientoInsumoList) {
+		this.tratamientoInsumoList = tratamientoInsumoList;
 	}
 	public Consultas getConsulta() {
 		return consulta;

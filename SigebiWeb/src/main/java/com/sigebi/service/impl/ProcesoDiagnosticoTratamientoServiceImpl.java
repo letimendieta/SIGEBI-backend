@@ -1,5 +1,7 @@
 package com.sigebi.service.impl;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		//Guardar la consulta
 		Consultas consulta;
 		try {
+			procesoDiagnosticoTratamiento.getConsulta().setFecha(LocalDateTime.now());;
 			consulta = consultaDao.save(procesoDiagnosticoTratamiento.getConsulta());
 		} catch (Exception e) {
 			throw new Exception("Error al guardar el diagnostico " + e.getMessage());
@@ -64,11 +67,16 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		
 		//Guardar el tratamiento insumo
 		try {
-			for(TratamientosInsumos tratamientoInsumo : procesoDiagnosticoTratamiento.getTratamientoInsumo()) {
+			for(TratamientosInsumos tratamientoInsumo : procesoDiagnosticoTratamiento.getTratamientoInsumoList()) {
 				tratamientoInsumo.setTratamientos(tratamiento);
 				tratamientoInsumoDao.save(tratamientoInsumo);
 				
-				if( tratamientoInsumo.getCantidad() > 0) {
+				int cantidadUsada = 0;
+				if ( tratamientoInsumo.getCantidad() != null ) {
+					cantidadUsada = tratamientoInsumo.getCantidad();
+				}						
+				
+				if( cantidadUsada > 0) {
 					descontarStock(tratamientoInsumo);
 				}
 			}			
