@@ -114,7 +114,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			stockDao.save(stockAdescontar);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new Exception("Error al descontar stock " + e.getMessage());
 		}
 	}
 	
