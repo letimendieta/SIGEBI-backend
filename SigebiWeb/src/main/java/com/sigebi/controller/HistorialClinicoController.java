@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.entity.BusquedaHistorialPaciente;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
@@ -107,13 +109,17 @@ public class HistorialClinicoController {
             Pageable pageable) throws JsonMappingException, JsonProcessingException{		
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-					
+		
+		BusquedaHistorialPaciente busqueda = null;
 		HistorialClinico historialClinico = null;
-		Pacientes pacientes = null;
+		Pacientes paciente = null;
+		List<BusquedaHistorialPaciente> busquedaList = new ArrayList<BusquedaHistorialPaciente>();
 		
 		if(!utiles.isNullOrBlank(filtros)) {
-			historialClinico = objectMapper.readValue(filtros, HistorialClinico.class);
+			busqueda = objectMapper.readValue(filtros, BusquedaHistorialPaciente.class);
 		}
+		historialClinico = busqueda.getHistorialClinico();
+		paciente = busqueda.getPaciente();
 		/*if(!utiles.isNullOrBlank(filtros)) {
 			pacientes = objectMapper.readValue(filtros, Pacientes.class);
 		}*/
@@ -124,19 +130,19 @@ public class HistorialClinicoController {
 			historialClinico = new HistorialClinico();
 		}
 		
-		List<Personas> personasList = new ArrayList<Personas>();
-		List<Integer> personasId = new ArrayList<Integer>();
+		//List<Personas> personasList = new ArrayList<Personas>();
+		//List<Integer> personasId = new ArrayList<Integer>();
 						
-		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
-		List<Integer> pacientesIds = new ArrayList<Integer>();
+		Pacientes pacienteDb = new Pacientes();
+		//List<Integer> pacientesIds = new ArrayList<Integer>();
 		
-		/*if( historialClinico.getPacientes() != null) {
+		if( paciente != null) {
 			try {
-				personasId = new ArrayList<Integer>();
-				personasList = new ArrayList<Personas>();
+				//personasId = new ArrayList<Integer>();
+				//personasList = new ArrayList<Personas>();
 				
-				if(historialClinico.getPacientes().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, historialClinico.getPacientes().getPersonas(), PageRequest.of(0, 20));
+				/*if(pacientes.getPersonas() != null) {
+					personasList = personasService.buscar(null, null, pacientes.getPersonas(), PageRequest.of(0, 20));
 					
 					for( Personas persona : personasList ){
 						personasId.add(persona.getPersonaId());
@@ -146,11 +152,11 @@ public class HistorialClinicoController {
 					if(personasList.isEmpty()) {
 						return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
 					}
-				}
-				pacientesList = pacientesService.buscar(null, null, historialClinico.getPacientes(), personasId, PageRequest.of(0, 20));
+				}*/
+				pacienteDb = pacientesService.findById(paciente.getPacienteId());
 				
 				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
-				if(pacientesList.isEmpty()) {
+				if(pacienteDb == null) {
 					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
 				}					
 				
@@ -159,21 +165,43 @@ public class HistorialClinicoController {
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			for( Pacientes paciente : pacientesList ){
+			/*for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
+			}*/
+			if(paciente != null && paciente.getPacienteId() != null) {
+				historialClinico.setHistorialClinicoId(paciente.getHistorialClinico().getHistorialClinicoId());;
 			}
-		}*/
+		}
 		
 		try {
 			historialClinicosList = historialesClinicosService.buscar(fromDate, toDate, historialClinico, 
-																pacientesIds, pageable);
+																null, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta de los datos del historialClinico");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		for( HistorialClinico historialClin : historialClinicosList ){
+			BusquedaHistorialPaciente busquedaHp = new BusquedaHistorialPaciente();
+			Pacientes pacienteExample = new Pacientes();
+			Pacientes pacienteVacio = new Pacientes();
+			List<Pacientes>  pacienteList = new ArrayList<Pacientes>();			
+			
+			pacienteExample.setHistorialClinico(historialClin);
+			busquedaHp.setHistorialClinico(historialClin);
+			
+			pacienteList = pacientesService.buscarNoPaginable(null, null, pacienteExample, null);
+			if( !pacienteList.isEmpty() ) {
+				busquedaHp.setPaciente(pacienteList.get(0));
+			}else {
+				busquedaHp.setPaciente(pacienteVacio);
+			}
+			
+			busquedaList.add(busquedaHp);
+		}
 						
-        return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
+        return new ResponseEntity<List<BusquedaHistorialPaciente>>(busquedaList, HttpStatus.OK);
     }
 
 	@PostMapping

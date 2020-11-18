@@ -22,6 +22,7 @@ import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
 import com.sigebi.entity.Estamentos;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PacientesService;
@@ -218,5 +219,34 @@ public class PacientesServiceImpl implements PacientesService{
         }, pageable).getContent();
         return pacientesList;
     }
+	
+	@Override
+	@Transactional
+	public List<Pacientes> buscarNoPaginable(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId) {
+		List<Pacientes> pacientesList = pacientesDao.findAll((Specification<Pacientes>) (root, cq, cb) -> {
+            
+			Predicate p = cb.conjunction();
+            if( personasId != null && !personasId.isEmpty() ){
+            	p = cb.and(root.get("personas").in(personasId));
+            }            
+            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( paciente.getPacienteId() != null ) {
+                p = cb.and(p, cb.equal(root.get("pacienteId"), paciente.getPacienteId()) );
+            }
+            if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("historialClinico"), paciente.getHistorialClinico().getHistorialClinicoId()) );
+            }
+            cq.orderBy(cb.desc(root.get("pacienteId")));
+            return p;
+        });
+        return pacientesList;
+    }
+
+	@Override
+	public Pacientes findByHistorialClinico(HistorialClinico historialClinico) {
+		return pacientesDao.findByHistorialClinico(historialClinico);		
+	}
 	
 }
