@@ -22,7 +22,6 @@ import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
 import com.sigebi.entity.Estamentos;
-import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PacientesService;
@@ -243,10 +242,5 @@ public class PacientesServiceImpl implements PacientesService{
         });
         return pacientesList;
     }
-
-	@Override
-	public Pacientes findByHistorialClinico(HistorialClinico historialClinico) {
-		return pacientesDao.findByHistorialClinico(historialClinico);		
-	}
 	
 }

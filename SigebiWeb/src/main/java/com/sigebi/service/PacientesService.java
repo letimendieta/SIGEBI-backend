@@ -13,9 +13,7 @@ public interface PacientesService{
 	public List<Pacientes> findAll();
 	
 	public Pacientes findById(int id);	
-	
-	public Pacientes findByHistorialClinico(HistorialClinico historialClinico);
-	
+		
 	public Pacientes guardar(Pacientes paciente) throws Exception;
 	
 	public Pacientes actualizar(Pacientes paciente) throws Exception;

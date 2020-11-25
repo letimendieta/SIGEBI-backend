@@ -11,7 +11,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -31,27 +30,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.BusquedaHistorialPaciente;
 import com.sigebi.entity.HistorialClinico;
+import com.sigebi.entity.HistorialClinicoPaciente;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.FilesStorageService;
 import com.sigebi.service.HistorialesClinicosService;
 import com.sigebi.service.PacientesService;
-import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/historial-Clinico")
+@RequestMapping("/auth/historial-clinico")
 public class HistorialClinicoController {
 
 	@Autowired
 	private HistorialesClinicosService historialesClinicosService;
 	@Autowired
 	private PacientesService pacientesService;
-	@Autowired
-	private PersonasService personasService;
 	@Autowired
 	private UtilesService utiles;
 	@Autowired
@@ -110,19 +106,17 @@ public class HistorialClinicoController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		BusquedaHistorialPaciente busqueda = null;
+		HistorialClinicoPaciente busqueda = null;
 		HistorialClinico historialClinico = null;
 		Pacientes paciente = null;
-		List<BusquedaHistorialPaciente> busquedaList = new ArrayList<BusquedaHistorialPaciente>();
+		List<HistorialClinicoPaciente> busquedaList = new ArrayList<HistorialClinicoPaciente>();
 		
 		if(!utiles.isNullOrBlank(filtros)) {
-			busqueda = objectMapper.readValue(filtros, BusquedaHistorialPaciente.class);
+			busqueda = objectMapper.readValue(filtros, HistorialClinicoPaciente.class);
 		}
 		historialClinico = busqueda.getHistorialClinico();
 		paciente = busqueda.getPaciente();
-		/*if(!utiles.isNullOrBlank(filtros)) {
-			pacientes = objectMapper.readValue(filtros, Pacientes.class);
-		}*/
+
 		Map<String, Object> response = new HashMap<>();
 		List<HistorialClinico> historialClinicosList = new ArrayList<HistorialClinico>();
 		
@@ -130,46 +124,28 @@ public class HistorialClinicoController {
 			historialClinico = new HistorialClinico();
 		}
 		
-		//List<Personas> personasList = new ArrayList<Personas>();
-		//List<Integer> personasId = new ArrayList<Integer>();
-						
 		Pacientes pacienteDb = new Pacientes();
-		//List<Integer> pacientesIds = new ArrayList<Integer>();
 		
-		if( paciente != null) {
+		if( paciente != null && paciente.getPacienteId() != null) {
 			try {
-				//personasId = new ArrayList<Integer>();
-				//personasList = new ArrayList<Personas>();
 				
-				/*if(pacientes.getPersonas() != null) {
-					personasList = personasService.buscar(null, null, pacientes.getPersonas(), PageRequest.of(0, 20));
-					
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
-					
-					//Si se reciben datos de persona y si no se encuentra, retornar vacio
-					if(personasList.isEmpty()) {
-						return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
-					}
-				}*/
 				pacienteDb = pacientesService.findById(paciente.getPacienteId());
 				
 				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
 				if(pacienteDb == null) {
 					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
-				}					
+				}
+				//Si el paciente no tiene historial clinico retornar vacio
+				if(pacienteDb.getHistorialClinico() == null) {
+					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
+				}
+				
+				historialClinico.setHistorialClinicoId(pacienteDb.getHistorialClinico().getHistorialClinicoId());				
 				
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			/*for( Pacientes paciente : pacientesList ){
-				pacientesIds.add(paciente.getPacienteId());
-			}*/
-			if(paciente != null && paciente.getPacienteId() != null) {
-				historialClinico.setHistorialClinicoId(paciente.getHistorialClinico().getHistorialClinicoId());;
 			}
 		}
 		
@@ -183,7 +159,7 @@ public class HistorialClinicoController {
 		}
 		
 		for( HistorialClinico historialClin : historialClinicosList ){
-			BusquedaHistorialPaciente busquedaHp = new BusquedaHistorialPaciente();
+			HistorialClinicoPaciente busquedaHp = new HistorialClinicoPaciente();
 			Pacientes pacienteExample = new Pacientes();
 			Pacientes pacienteVacio = new Pacientes();
 			List<Pacientes>  pacienteList = new ArrayList<Pacientes>();			
@@ -195,19 +171,21 @@ public class HistorialClinicoController {
 			if( !pacienteList.isEmpty() ) {
 				busquedaHp.setPaciente(pacienteList.get(0));
 			}else {
+				pacienteVacio.setPersonas(new Personas());
 				busquedaHp.setPaciente(pacienteVacio);
 			}
 			
 			busquedaList.add(busquedaHp);
 		}
 						
-        return new ResponseEntity<List<BusquedaHistorialPaciente>>(busquedaList, HttpStatus.OK);
+        return new ResponseEntity<List<HistorialClinicoPaciente>>(busquedaList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody HistorialClinico historialClinico, BindingResult result) throws Exception {
+	public ResponseEntity<?> insertar(@Valid @RequestBody HistorialClinicoPaciente historialClinicoPaciente, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		HistorialClinico historialClinicoNew = null;
+		HistorialClinico historialClinicoExistente = null;
 		if( result.hasErrors() ) {
 
 			List<String> errors = result.getFieldErrors()
@@ -218,9 +196,27 @@ public class HistorialClinicoController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
+		
+		if ( historialClinicoPaciente.getPaciente() == null || historialClinicoPaciente.getPaciente().getPacienteId() == null ) {
+			response.put("mensaje", "Error: Datos del paciente es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
+		
+		Pacientes paciente = pacientesService.findById(historialClinicoPaciente.getPaciente().getPacienteId());
+		
+		if ( paciente == null ) {
+			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinicoPaciente.getPaciente().getPacienteId() );
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
+		if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
+			response.put("mensaje", "Error: El paciente con id " + paciente.getPacienteId() 
+			+ " ya cuenta con historial clinico con id " + paciente.getHistorialClinico().getHistorialClinicoId() );
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
 				
 		try {
-			historialClinicoNew = historialesClinicosService.guardar(historialClinico);
+			historialClinicoPaciente.setPaciente(paciente);
+			historialClinicoNew = historialesClinicosService.guardar(historialClinicoPaciente);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

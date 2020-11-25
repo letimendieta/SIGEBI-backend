@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IHistorialClinicoDao;
+import com.sigebi.dao.IPacientesDao;
 import com.sigebi.entity.HistorialClinico;
+import com.sigebi.entity.HistorialClinicoPaciente;
 import com.sigebi.service.HistorialesClinicosService;
 
 
@@ -22,6 +24,8 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 
 	@Autowired
 	private IHistorialClinicoDao historialClinicosDao;
+	@Autowired
+	private IPacientesDao pacientesDao;
 	
 	public HistorialesClinicosServiceImpl(IHistorialClinicoDao historialClinicosDao) {
         this.historialClinicosDao = historialClinicosDao;
@@ -40,9 +44,15 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 	}
 
 	@Transactional
-	public HistorialClinico guardar(HistorialClinico historialClinico) throws Exception {
-						
-		return historialClinicosDao.save(historialClinico);
+	public HistorialClinico guardar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception {
+		//Guardar el historial clinico
+		HistorialClinico historialClinico = historialClinicosDao.save(historialClinicoPaciente.getHistorialClinico());
+		
+		//Relacionar el historial clinico al paciente recibido
+		historialClinicoPaciente.getPaciente().setHistorialClinico(historialClinico);
+		pacientesDao.save(historialClinicoPaciente.getPaciente());
+		
+		return historialClinico;
 	}
 	
 	@Transactional

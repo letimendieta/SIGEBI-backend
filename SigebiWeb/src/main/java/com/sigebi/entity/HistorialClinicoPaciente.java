@@ -1,6 +1,6 @@
 package com.sigebi.entity;
 
-public class BusquedaHistorialPaciente {
+public class HistorialClinicoPaciente {
 		
 	HistorialClinico historialClinico;
 	Pacientes paciente;
