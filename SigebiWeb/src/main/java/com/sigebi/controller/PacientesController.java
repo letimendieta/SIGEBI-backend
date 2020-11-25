@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.FilesStorageService;
@@ -135,6 +136,12 @@ public class PacientesController {
 		
 		try {
 			pacientesList = pacientesService.buscar(fromDate, toDate, paciente, personasIds, pageable);
+			
+			for( Pacientes pacienteFor : pacientesList) {
+				if( pacienteFor.getHistorialClinico() == null ) {
+					pacienteFor.setHistorialClinico(new HistorialClinico());
+				}
+			}
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import com.sigebi.entity.HistorialClinico;
+import com.sigebi.entity.HistorialClinicoPaciente;
 
 public interface HistorialesClinicosService{
 
@@ -13,7 +14,7 @@ public interface HistorialesClinicosService{
 	
 	public HistorialClinico findById(int id);	
 	
-	public HistorialClinico guardar(HistorialClinico historialClinico) throws Exception;
+	public HistorialClinico guardar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception;
 	
 	public HistorialClinico actualizar(HistorialClinico historialClinico) throws Exception;
 	
