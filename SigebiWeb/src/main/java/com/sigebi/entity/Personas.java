@@ -93,6 +93,10 @@ public class Personas {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String estadoCivil;
 	
+	@Column(name = "observacion", length = 200)
+	@Size(max=200, message="maximo 200 caracteres")
+	private String observacion;	
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -262,6 +266,14 @@ public class Personas {
 		this.estadoCivil = estadoCivil;
 	}
 	
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+
 	public String getUsuarioCreacion() {
 		return usuarioCreacion;
 	}

@@ -42,8 +42,8 @@ public class PersonasServiceImpl implements PersonasService{
 
 	@Override
 	@Transactional
-	public Personas save(Personas cliente) {
-		return personasDao.save(cliente);
+	public Personas save(Personas persona) {
+		return personasDao.save(persona);
 	}
 
 	@Override

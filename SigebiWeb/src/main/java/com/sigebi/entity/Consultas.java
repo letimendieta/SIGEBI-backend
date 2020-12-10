@@ -1,7 +1,5 @@
 package com.sigebi.entity;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -14,7 +12,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -44,6 +41,10 @@ public class Consultas {
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
+	
+	@OneToOne
+    @JoinColumn(name = "area_id", referencedColumnName = "areaId")
+    private Areas areas;
 	
 	@OneToOne
     @JoinColumn(name = "diagnostico_id", referencedColumnName = "diagnosticoId")
@@ -109,6 +110,14 @@ public class Consultas {
 
 	public void setTratamientos(Tratamientos tratamientos) {
 		this.tratamientos = tratamientos;
+	}
+
+	public Areas getAreas() {
+		return areas;
+	}
+
+	public void setAreas(Areas areas) {
+		this.areas = areas;
 	}
 
 	public String getUsuarioModificacion() {

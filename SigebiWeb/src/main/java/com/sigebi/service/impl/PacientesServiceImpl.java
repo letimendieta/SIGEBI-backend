@@ -123,6 +123,7 @@ public class PacientesServiceImpl implements PacientesService{
 				persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
 				persona.setSexo(paciente.getPersonas().getSexo());
 				persona.setTelefono(paciente.getPersonas().getTelefono());
+				persona.setObservacion(paciente.getPersonas().getObservacion());
 				persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
 				
 				paciente.setPersonas(persona);
@@ -182,6 +183,7 @@ public class PacientesServiceImpl implements PacientesService{
 		persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
 		persona.setSexo(paciente.getPersonas().getSexo());
 		persona.setTelefono(paciente.getPersonas().getTelefono());
+		persona.setObservacion(paciente.getPersonas().getObservacion());
 		persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
 		
 		paciente.setPersonas(persona);
@@ -216,7 +218,9 @@ public class PacientesServiceImpl implements PacientesService{
             cq.orderBy(cb.desc(root.get("pacienteId")));
             return p;
         }, pageable).getContent();
+						
         return pacientesList;
+        
     }
 	
 	@Override
