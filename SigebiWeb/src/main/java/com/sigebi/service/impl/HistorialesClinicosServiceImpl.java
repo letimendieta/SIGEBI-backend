@@ -85,7 +85,7 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
                 p = cb.and(p, cb.equal(root.get("historialClinicoId"), historialClinico.getHistorialClinicoId()) );
             }
             if ( historialClinico.getAreas() != null && historialClinico.getAreas().getAreaId() != null ) {
-                p = cb.and(p, cb.equal(root.get("areaId"), historialClinico.getAreas().getAreaId()) );
+                p = cb.and(p, cb.equal(root.get("areas"), historialClinico.getAreas().getAreaId()) );
             }
            
             cq.orderBy(cb.desc(root.get("historialClinicoId")));

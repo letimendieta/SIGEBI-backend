@@ -156,6 +156,9 @@ public class HorariosDisponiblesController {
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
 			}
+			if( funcionariosList.isEmpty()) {
+				return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
+			}
 		}		
 		
 		try {

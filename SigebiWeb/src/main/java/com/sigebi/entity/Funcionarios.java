@@ -25,9 +25,6 @@ public class Funcionarios {
 	@SequenceGenerator(name="seq_funcionarios",sequenceName="seq_funcionarios",allocationSize=1)
 	private Integer funcionarioId;	
 	
-	@Column(name = "area_id")
-	private Integer areaId;
-	
 	@Column(name = "fecha_ingreso")
 	private LocalDate fechaIngreso;
 	
@@ -51,6 +48,10 @@ public class Funcionarios {
 	@Column(name = "usuario_modificacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
+	
+	@OneToOne
+    @JoinColumn(name = "area_id", referencedColumnName = "areaId")
+    private Areas areas;
 	
 	@OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "personaId", unique = true)
@@ -82,12 +83,12 @@ public class Funcionarios {
 		this.personas = personas;
 	}
 
-	public Integer getAreaId() {
-		return areaId;
+	public Areas getAreas() {
+		return areas;
 	}
 
-	public void setAreaId(Integer areaId) {
-		this.areaId = areaId;
+	public void setAreas(Areas areas) {
+		this.areas = areas;
 	}
 
 	public String getEstado() {

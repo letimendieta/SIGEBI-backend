@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IFuncionariosDao;
 import com.sigebi.entity.Funcionarios;
@@ -100,6 +101,12 @@ public class FuncionariosServiceImpl implements FuncionariosService{
             }
             if ( funcionario.getFuncionarioId() != null ) {
                 p = cb.and(p, cb.equal(root.get("funcionarioId"), funcionario.getFuncionarioId()) );
+            }
+            if ( funcionario.getAreas() != null && funcionario.getAreas().getAreaId() != null ) {
+                p = cb.and(p, cb.equal(root.get("areas"), funcionario.getAreas().getAreaId()) );
+            }
+            if (funcionario.getEstado() != null ) {
+                p = cb.and(p, cb.equal(root.get("estado"), funcionario.getEstado() ));
             }
             cq.orderBy(cb.desc(root.get("funcionarioId")));
             return p;

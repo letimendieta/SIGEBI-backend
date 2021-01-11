@@ -159,7 +159,7 @@ public class InsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "El insumo ha sido creada con éxito!");
+		response.put("mensaje", "El insumo ha sido creado con éxito!");
 		response.put("insumo", insumoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
