@@ -31,66 +31,66 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.TratamientosInsumos;
-import com.sigebi.service.TratamientosInsumosService;
+import com.sigebi.entity.ProcedimientosInsumos;
+import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/tratamientos-insumos")
-public class TratamientosInsumosController {
+@RequestMapping("/auth/procedimientos-insumos")
+public class ProcedimientosInsumosController {
 
 	@Autowired
-	private TratamientosInsumosService tratamientosInsumosService;
+	private ProcedimientosInsumosService procedimientosInsumosService;
 	@Autowired
 	private UtilesService utiles;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public TratamientosInsumosController(TratamientosInsumosService tratamientosInsumosService) {
-        this.tratamientosInsumosService = tratamientosInsumosService;
+	public ProcedimientosInsumosController(ProcedimientosInsumosService procedimientosInsumosService) {
+        this.procedimientosInsumosService = procedimientosInsumosService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<TratamientosInsumos> tratamientosInsumosList = null;
+		List<ProcedimientosInsumos> procedimientosInsumosList = null;
 		try {
-			tratamientosInsumosList = tratamientosInsumosService.findAll();
+			procedimientosInsumosList = procedimientosInsumosService.findAll();
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if( tratamientosInsumosList.isEmpty()) {
+		if( procedimientosInsumosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<TratamientosInsumos>>(tratamientosInsumosList, HttpStatus.OK);
+		return new ResponseEntity<List<ProcedimientosInsumos>>(procedimientosInsumosList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		TratamientosInsumos tratamientoInsumo = null;
+		ProcedimientosInsumos procedimientoInsumo = null;
 		try {
-			tratamientoInsumo = tratamientosInsumosService.findById(id);
+			procedimientoInsumo = procedimientosInsumosService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if( tratamientoInsumo == null ) {
-			response.put("mensaje", "El tratamientoInsumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( procedimientoInsumo == null ) {
+			response.put("mensaje", "El procedimiento insumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<TratamientosInsumos>(tratamientoInsumo, HttpStatus.OK);
+		return new ResponseEntity<ProcedimientosInsumos>(procedimientoInsumo, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarTratamientosInsumos(
+    public ResponseEntity<?> buscarProcedimientosInsumos(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -102,38 +102,38 @@ public class TratamientosInsumosController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		TratamientosInsumos tratamientoInsumo = null;
+		ProcedimientosInsumos procedimientoInsumo = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			tratamientoInsumo = objectMapper.readValue(filtros, TratamientosInsumos.class);
+			procedimientoInsumo = objectMapper.readValue(filtros, ProcedimientosInsumos.class);
 		}				
 		
 		Map<String, Object> response = new HashMap<>();
-		List<TratamientosInsumos> tratamientosInsumosList = new ArrayList<TratamientosInsumos>();
+		List<ProcedimientosInsumos> procedimientosInsumosList = new ArrayList<ProcedimientosInsumos>();
 		
-		if ( tratamientoInsumo == null ) {
-			tratamientoInsumo = new TratamientosInsumos();
+		if ( procedimientoInsumo == null ) {
+			procedimientoInsumo = new ProcedimientosInsumos();
 		}
 		if ( "-1".equals(size) ) {
-			int total = tratamientosInsumosService.count();
+			int total = procedimientosInsumosService.count();
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
 		try {
-			tratamientosInsumosList = tratamientosInsumosService.buscar(fromDate, toDate, tratamientoInsumo, orderBy, orderDir, pageable);
+			procedimientosInsumosList = procedimientosInsumosService.buscar(fromDate, toDate, procedimientoInsumo, orderBy, orderDir, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
 		
-        return new ResponseEntity<List<TratamientosInsumos>>(tratamientosInsumosList, HttpStatus.OK);
+        return new ResponseEntity<List<ProcedimientosInsumos>>(procedimientosInsumosList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody TratamientosInsumos tratamientoInsumo, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody ProcedimientosInsumos procedimientoInsumo, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		TratamientosInsumos tratamientoInsumoNew = null;
+		ProcedimientosInsumos procedimientoInsumoNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -147,29 +147,29 @@ public class TratamientosInsumosController {
 		}
 		
 		try {
-			tratamientoInsumoNew = tratamientosInsumosService.save(tratamientoInsumo);
+			procedimientoInsumoNew = procedimientosInsumosService.save(procedimientoInsumo);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "El tratamientoInsumo ha sido creada con éxito!");
-		response.put("tratamientoInsumo", tratamientoInsumoNew);
+		response.put("mensaje", "El procedimiento insumo ha sido creada con éxito!");
+		response.put("procedimientoInsumo", procedimientoInsumoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody TratamientosInsumos tratamientoInsumo, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody ProcedimientosInsumos procedimientoInsumo, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( tratamientoInsumo.getTratamientoInsumoId() == null ) {
-			response.put("mensaje", "Error: tratamientoInsumo id es requerido");
+		if ( procedimientoInsumo.getProcedimientoInsumoId() == null ) {
+			response.put("mensaje", "Error: procedimiento insumo id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		TratamientosInsumos tratamientoInsumoActual = tratamientosInsumosService.findById(tratamientoInsumo.getTratamientoInsumoId());
-		TratamientosInsumos tratamientoInsumoUpdated = null;
+		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.findById(procedimientoInsumo.getProcedimientoInsumoId());
+		ProcedimientosInsumos procedimientoInsumoUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -182,24 +182,24 @@ public class TratamientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( tratamientoInsumoActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el tratamientoInsumo ID: "
-					.concat(String.valueOf(tratamientoInsumo.getTratamientoInsumoId()).concat(" no existe en la base de datos!")));
+		if ( procedimientoInsumoActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el procedimiento insumo ID: "
+					.concat(String.valueOf(procedimientoInsumo.getProcedimientoInsumoId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 
-			tratamientoInsumoUpdated = tratamientosInsumosService.save(tratamientoInsumo);;
+			procedimientoInsumoUpdated = procedimientosInsumosService.save(procedimientoInsumo);;
 
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el tratamientoInsumo en la base de datos");
+			response.put("mensaje", "Error al actualizar el procedimiento insumo en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "El tratamientoInsumo ha sido actualizada con éxito!");
-		response.put("tratamientoInsumo", tratamientoInsumoUpdated);
+		response.put("mensaje", "El procedimiento insumo ha sido actualizada con éxito!");
+		response.put("procedimientoInsumo", procedimientoInsumoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -209,27 +209,27 @@ public class TratamientosInsumosController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: tratamientoInsumo id es requerido");
+			response.put("mensaje", "Error: procedimiento insumo id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		TratamientosInsumos tratamientoInsumoActual = tratamientosInsumosService.findById(id);
+		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.findById(id);
 		
-		if ( tratamientoInsumoActual == null ) {
-			response.put("mensaje", "El tratamientoInsumo ID: "
+		if ( procedimientoInsumoActual == null ) {
+			response.put("mensaje", "El procedimiento insumo ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		try {
-			tratamientosInsumosService.delete(id);
+			procedimientosInsumosService.delete(id);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el tratamientoInsumo de la base de datos");
+			response.put("mensaje", "Error al eliminar el procedimiento insumo de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "TratamientoInsumo eliminada con éxito!");
+		response.put("mensaje", "procedimiento insumo eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

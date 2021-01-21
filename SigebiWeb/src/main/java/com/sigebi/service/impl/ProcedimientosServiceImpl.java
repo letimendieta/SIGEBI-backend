@@ -1,5 +1,8 @@
 package com.sigebi.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -7,13 +10,20 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IProcedimientosDao;
+import com.sigebi.dao.IProcedimientosInsumosDao;
+import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcedimientosInsumos;
+import com.sigebi.entity.ProcesoProcedimientos;
+import com.sigebi.entity.TratamientosInsumos;
+import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
 
 
@@ -22,6 +32,10 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 
 	@Autowired
 	private IProcedimientosDao procedimientosDao;
+	@Autowired
+	private IProcedimientosInsumosDao procedimientosInsumosDao;
+	@Autowired
+	private ProcedimientosInsumosService procedimientosInsumosService;
 		
 	public ProcedimientosServiceImpl(IProcedimientosDao procedimientosDao) {
         this.procedimientosDao = procedimientosDao;
@@ -40,15 +54,50 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	}
 
 	@Transactional
-	public Procedimientos guardar(Procedimientos procedimiento) throws Exception {
-						
-		return procedimientosDao.save(procedimiento);
+	public Procedimientos guardar(ProcesoProcedimientos procesoProcedimiento) throws Exception {
+		procesoProcedimiento.getProcedimiento().setCantidadInsumo(procesoProcedimiento.getProcedimientoInsumoList().size());
+		Procedimientos procedimientoResult = procedimientosDao.save(procesoProcedimiento.getProcedimiento());
+		
+		//Guardar el procedimiento insumo
+		try {
+			for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
+				procedimientoInsumo.setProcedimientos(procedimientoResult);
+				
+				procedimientosInsumosDao.save(procedimientoInsumo);
+			}			
+		} catch (Exception e) {
+			throw new Exception("Error al guardar los insumos utilizados " + e.getMessage());
+		}
+				
+		return procedimientoResult;
 	}
 	
 	@Transactional
-	public Procedimientos actualizar(Procedimientos procedimiento) throws Exception {
-						
-		return procedimientosDao.save(procedimiento);
+	public Procedimientos actualizar(ProcesoProcedimientos procesoProcedimiento) throws Exception {
+				
+		ProcedimientosInsumos procedimientoBusqueda = new ProcedimientosInsumos();
+		procedimientoBusqueda.setProcedimientos(new Procedimientos());
+		
+		procedimientoBusqueda.getProcedimientos().setProcedimientoId(procesoProcedimiento.getProcedimiento().getProcedimientoId());
+		
+		List<ProcedimientosInsumos> procedimientoInsumoDbList = procedimientosInsumosService.buscarNoPaginable(null, null, procedimientoBusqueda);
+		
+		try {
+			//Actualizar el estado de los insumos si se cambio
+			for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
+				for(ProcedimientosInsumos procedimientoInsumoDb : procedimientoInsumoDbList) {										
+					if( procedimientoInsumoDb.getProcedimientoInsumoId().equals(procedimientoInsumo.getProcedimientoInsumoId()) ) {
+						if( !procedimientoInsumoDb.getEstado().equals(procedimientoInsumo.getEstado())) {							
+							procedimientosInsumosDao.save(procedimientoInsumo);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new Exception("Error al actualizar los insumos utilizados " + e.getMessage());
+		}
+		
+		return procedimientosDao.save(procesoProcedimiento.getProcedimiento());
 	}
 
 	@Override

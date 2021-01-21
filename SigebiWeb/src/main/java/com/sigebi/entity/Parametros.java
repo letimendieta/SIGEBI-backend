@@ -25,13 +25,13 @@ public class Parametros {
 	@NotEmpty(message ="no puede estar vacio")
 	private String codigoParametro;
 	
+	@Column(name = "descripcion", length = 100)
+	@Size(max=100, message="maximo 100 caracteres")
+	private String descripcion;
+	
 	@Column(name = "nombre", length = 20)
 	@Size(max=20, message="maximo 20 caracteres")
 	private String nombre;
-	
-	@Column(name = "descripcion", length = 50)
-	@Size(max=50, message="maximo 50 caracteres")
-	private String descripcion;
 	
 	@Column(name = "valor", length = 20)
 	@Size(max=20, message="maximo 20 caracteres")

@@ -38,6 +38,7 @@ import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcesoProcedimientos;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PersonasService;
@@ -201,7 +202,7 @@ public class ProcedimientosController {
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Procedimientos procedimiento, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody ProcesoProcedimientos procesoProcedimiento, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
 		Procedimientos procedimientoNew = null;
 		
@@ -215,9 +216,9 @@ public class ProcedimientosController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-				
+						
 		try {
-			procedimientoNew = procedimientosService.guardar(procedimiento);
+			procedimientoNew = procedimientosService.guardar(procesoProcedimiento);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -234,15 +235,15 @@ public class ProcedimientosController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Procedimientos procedimiento, BindingResult result) throws Exception {
+	public ResponseEntity<?> modificar(@Valid @RequestBody ProcesoProcedimientos procesoProcedimiento, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( procedimiento.getProcedimientoId() == null ) {
+		if ( procesoProcedimiento.getProcedimiento().getProcedimientoId() == null ) {
 			response.put("mensaje", "Error: procedimiento id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Procedimientos procedimientoActual = procedimientosService.findById(procedimiento.getProcedimientoId());
+		Procedimientos procedimientoActual = procedimientosService.findById(procesoProcedimiento.getProcedimiento().getProcedimientoId());
 		Procedimientos procedimientoUpdated = null;
 
 		if( result.hasErrors() ) {
@@ -258,13 +259,13 @@ public class ProcedimientosController {
 		
 		if ( procedimientoActual == null ) {
 			response.put("mensaje", "Error: no se pudo editar, el procedimiento ID: "
-					.concat(String.valueOf(procedimiento.getProcedimientoId()).concat(" no existe en la base de datos!")));
+					.concat(String.valueOf(procesoProcedimiento.getProcedimiento().getProcedimientoId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 
-			procedimientoUpdated = procedimientosService.actualizar(procedimiento);;
+			procedimientoUpdated = procedimientosService.actualizar(procesoProcedimiento);;
 
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el procedimiento en la base de datos");

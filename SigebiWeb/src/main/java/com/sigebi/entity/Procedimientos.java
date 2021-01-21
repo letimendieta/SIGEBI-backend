@@ -25,10 +25,7 @@ public class Procedimientos {
 	@Column(name = "notas", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String notas;
-			
-	@Column(name = "insumo_id")
-	private Integer insumoId;
-	
+				
 	@Column(name = "cantidad_insumo")
 	private Integer cantidadInsumo;
 	
@@ -97,14 +94,6 @@ public class Procedimientos {
 
 	public void setPacientes(Pacientes pacientes) {
 		this.pacientes = pacientes;
-	}
-
-	public Integer getInsumoId() {
-		return insumoId;
-	}
-
-	public void setInsumoId(Integer insumoId) {
-		this.insumoId = insumoId;
 	}
 
 	public Integer getCantidadInsumo() {

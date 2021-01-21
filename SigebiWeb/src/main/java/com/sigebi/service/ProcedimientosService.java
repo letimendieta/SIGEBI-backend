@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcesoProcedimientos;
 
 public interface ProcedimientosService{
 
@@ -13,9 +14,9 @@ public interface ProcedimientosService{
 	
 	public Procedimientos findById(int id);	
 	
-	public Procedimientos guardar(Procedimientos procedimiento) throws Exception;
+	public Procedimientos guardar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
-	public Procedimientos actualizar(Procedimientos procedimiento) throws Exception;
+	public Procedimientos actualizar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
 	public void delete(int id);
 	
