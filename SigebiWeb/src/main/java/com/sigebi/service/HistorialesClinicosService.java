@@ -16,7 +16,7 @@ public interface HistorialesClinicosService{
 	
 	public HistorialClinico guardar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception;
 	
-	public HistorialClinico actualizar(HistorialClinico historialClinico) throws Exception;
+	public HistorialClinico actualizar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception;
 	
 	public void delete(int id);
 	

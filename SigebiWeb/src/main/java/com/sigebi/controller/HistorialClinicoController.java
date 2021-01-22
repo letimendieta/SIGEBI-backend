@@ -185,7 +185,6 @@ public class HistorialClinicoController {
 	public ResponseEntity<?> insertar(@Valid @RequestBody HistorialClinicoPaciente historialClinicoPaciente, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		HistorialClinico historialClinicoNew = null;
-		HistorialClinico historialClinicoExistente = null;
 		if( result.hasErrors() ) {
 
 			List<String> errors = result.getFieldErrors()
@@ -233,15 +232,15 @@ public class HistorialClinicoController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody HistorialClinico historialClinico, BindingResult result) throws Exception {
+	public ResponseEntity<?> modificar(@Valid @RequestBody HistorialClinicoPaciente historialClinicoPaciente, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( historialClinico.getHistorialClinicoId() == null ) {
+		if ( historialClinicoPaciente.getHistorialClinico().getHistorialClinicoId() == null ) {
 			response.put("mensaje", "Error: historialClinico id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		HistorialClinico historialClinicoActual = historialesClinicosService.findById(historialClinico.getHistorialClinicoId());
+		HistorialClinico historialClinicoActual = historialesClinicosService.findById(historialClinicoPaciente.getHistorialClinico().getHistorialClinicoId());
 		HistorialClinico historialClinicoUpdated = null;
 
 		if( result.hasErrors() ) {
@@ -257,13 +256,32 @@ public class HistorialClinicoController {
 		
 		if ( historialClinicoActual == null ) {
 			response.put("mensaje", "Error: no se pudo editar, el historialClinico ID: "
-					.concat(String.valueOf(historialClinico.getHistorialClinicoId()).concat(" no existe en la base de datos!")));
+					.concat(String.valueOf(historialClinicoPaciente.getHistorialClinico().getHistorialClinicoId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
+		
+		if ( historialClinicoPaciente.getPaciente() == null || historialClinicoPaciente.getPaciente().getPacienteId() == null ) {
+			response.put("mensaje", "Error: Datos del paciente es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
+		
+		Pacientes paciente = pacientesService.findById(historialClinicoPaciente.getPaciente().getPacienteId());
+		
+		if ( paciente == null ) {
+			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinicoPaciente.getPaciente().getPacienteId() );
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
+		if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
+			response.put("mensaje", "Error: El paciente con id " + paciente.getPacienteId() 
+			+ " ya cuenta con historial clinico con id " + paciente.getHistorialClinico().getHistorialClinicoId() );
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
+		}
+		
+		historialClinicoPaciente.setPaciente(paciente);
 
 		try {
 
-			historialClinicoUpdated = historialesClinicosService.actualizar(historialClinico);;
+			historialClinicoUpdated = historialesClinicosService.actualizar(historialClinicoPaciente);;
 
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el historialClinico en la base de datos");
