@@ -86,6 +86,24 @@ public class PacientesController {
 		Pacientes paciente = null;
 		try {
 			paciente = pacientesService.findById(id);
+			if( paciente != null) {				
+				
+				if( paciente.getHistorialClinico() == null ) {
+					paciente.setHistorialClinico( new HistorialClinico() );
+				}
+				if( paciente.getPersonas().getDepartamentos() == null ) {
+					paciente.getPersonas().setDepartamentos(new Departamentos());
+				}
+				if( paciente.getPersonas().getDependencias() == null ) {
+					paciente.getPersonas().setDependencias(new Dependencias());
+				}
+				if( paciente.getPersonas().getCarreras() == null ) {
+					paciente.getPersonas().setCarreras(new Carreras());
+				}
+				if( paciente.getPersonas().getEstamentos() == null ) {
+					paciente.getPersonas().setEstamentos(new Estamentos());
+				}
+			}
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

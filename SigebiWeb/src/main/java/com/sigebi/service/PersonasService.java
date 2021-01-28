@@ -13,7 +13,7 @@ public interface PersonasService {
 	
 	public Personas findById(int id);
 	
-	public Personas save(Personas persona);
+	public Personas save(Personas persona) throws Exception;
 	
 	public void delete(int id);
 	

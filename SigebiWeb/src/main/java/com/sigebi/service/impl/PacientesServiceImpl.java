@@ -70,11 +70,7 @@ public class PacientesServiceImpl implements PacientesService{
 
 	@Transactional
 	public Pacientes guardar(Pacientes paciente) throws Exception {
-		Departamentos departamento = null;
-		Dependencias dependencia = null;
-		Carreras carrera = null;
-		Estamentos estamento = null;
-		
+				
 		if( paciente.getPersonas() != null ) {
 			//Buscar si la persona ya es paciente
 			List<Pacientes> pacienteDb = pacientesDao.findByPersonas(paciente.getPersonas());
@@ -90,35 +86,18 @@ public class PacientesServiceImpl implements PacientesService{
 				if(persona == null) {
 					throw new Exception("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
 				}
-				if( paciente.getPersonas().getDepartamentos() != null && 
-						paciente.getPersonas().getDepartamentos().getDepartamentoId() != null) {
-					departamento = departamentosDao.getOne(paciente.getPersonas().getDepartamentos().getDepartamentoId());
-				}
-				if( paciente.getPersonas().getDependencias() != null && 
-						paciente.getPersonas().getDependencias().getDependenciaId() != null) {
-					dependencia = dependenciasDao.getOne(paciente.getPersonas().getDependencias().getDependenciaId());
-				}
-				if( paciente.getPersonas().getCarreras() != null && 
-						paciente.getPersonas().getCarreras().getCarreraId() != null) {
-					carrera = carrerasDao.getOne(paciente.getPersonas().getCarreras().getCarreraId());
-				}
-				if( paciente.getPersonas().getEstamentos() != null && 
-						paciente.getPersonas().getEstamentos().getEstamentoId() != null) {
-					estamento = estamentosDao.getOne(paciente.getPersonas().getEstamentos().getEstamentoId());
-				}
-				
+								
 				persona.setNombres(paciente.getPersonas().getNombres());
 				persona.setApellidos(paciente.getPersonas().getApellidos());
-				persona.setCarreras(carrera);
+				persona.setCarreras(paciente.getPersonas().getCarreras());
 				persona.setCedula(paciente.getPersonas().getCedula());
 				persona.setCelular(paciente.getPersonas().getCelular());
-				persona.setDepartamentos(departamento);
-				persona.setDependencias(dependencia);
+				persona.setDepartamentos(paciente.getPersonas().getDepartamentos());
+				persona.setDependencias(paciente.getPersonas().getDependencias());
 				persona.setDireccion(paciente.getPersonas().getDireccion());
-				persona.setEdad(paciente.getPersonas().getEdad());
 				persona.setEmail(paciente.getPersonas().getEmail());
 				persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
-				persona.setEstamentos(estamento);
+				persona.setEstamentos(paciente.getPersonas().getEstamentos());
 				persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());
 				persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
 				persona.setSexo(paciente.getPersonas().getSexo());
@@ -127,6 +106,7 @@ public class PacientesServiceImpl implements PacientesService{
 				persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
 				
 				paciente.setPersonas(persona);
+				personasService.save(persona);
 			}else {
 				//Crear nueva persona
 				Personas personaNew = personasDao.save(paciente.getPersonas());
@@ -139,46 +119,25 @@ public class PacientesServiceImpl implements PacientesService{
 	
 	@Transactional
 	public Pacientes actualizar(Pacientes paciente) throws Exception {
-		Departamentos departamento = null;
-		Dependencias dependencia = null;
-		Carreras carrera = null;
-		Estamentos estamento = null;
-		
+				
 		//Busca a la persona y actualizar sus datos
 		Personas persona = personasService.findById(paciente.getPersonas().getPersonaId());
 		
 		if(persona == null) {
 			throw new Exception("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
 		}
-		if( paciente.getPersonas().getDepartamentos() != null && 
-				paciente.getPersonas().getDepartamentos().getDepartamentoId() != null) {
-			departamento = departamentosDao.getOne(paciente.getPersonas().getDepartamentos().getDepartamentoId());
-		}
-		if( paciente.getPersonas().getDependencias() != null && 
-				paciente.getPersonas().getDependencias().getDependenciaId() != null) {
-			dependencia = dependenciasDao.getOne(paciente.getPersonas().getDependencias().getDependenciaId());
-		}
-		if( paciente.getPersonas().getCarreras() != null && 
-				paciente.getPersonas().getCarreras().getCarreraId() != null) {
-			carrera = carrerasDao.getOne(paciente.getPersonas().getCarreras().getCarreraId());
-		}
-		if( paciente.getPersonas().getEstamentos() != null && 
-				paciente.getPersonas().getEstamentos().getEstamentoId() != null) {
-			estamento = estamentosDao.getOne(paciente.getPersonas().getEstamentos().getEstamentoId());
-		}
-		
+				
 		persona.setNombres(paciente.getPersonas().getNombres());
 		persona.setApellidos(paciente.getPersonas().getApellidos());
-		persona.setCarreras(carrera);
+		persona.setCarreras(paciente.getPersonas().getCarreras());
 		persona.setCedula(paciente.getPersonas().getCedula());
 		persona.setCelular(paciente.getPersonas().getCelular());
-		persona.setDepartamentos(departamento);
-		persona.setDependencias(dependencia);
+		persona.setDepartamentos(paciente.getPersonas().getDepartamentos());
+		persona.setDependencias(paciente.getPersonas().getDependencias());
 		persona.setDireccion(paciente.getPersonas().getDireccion());
-		persona.setEdad(paciente.getPersonas().getEdad());
 		persona.setEmail(paciente.getPersonas().getEmail());
 		persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
-		persona.setEstamentos(estamento);
+		persona.setEstamentos(paciente.getPersonas().getEstamentos());
 		persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());
 		persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
 		persona.setSexo(paciente.getPersonas().getSexo());

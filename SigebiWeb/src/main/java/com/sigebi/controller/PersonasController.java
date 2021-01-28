@@ -31,6 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.entity.Carreras;
+import com.sigebi.entity.Departamentos;
+import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
@@ -75,6 +79,20 @@ public class PersonasController {
 		Personas persona = null;
 		try {
 			persona = personasService.findById(id);
+			if ( persona != null ) {
+				if( persona.getDepartamentos() == null ) {
+					persona.setDepartamentos(new Departamentos());
+				}
+				if( persona.getDependencias() == null ) {
+					persona.setDependencias(new Dependencias());
+				}
+				if( persona.getCarreras() == null ) {
+					persona.setCarreras(new Carreras());
+				}
+				if( persona.getEstamentos() == null ) {
+					persona.setEstamentos(new Estamentos());
+				}
+			}
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -121,7 +139,7 @@ public class PersonasController {
     }
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Personas persona, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Personas persona, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Personas personaNew = null;
 		
@@ -150,7 +168,7 @@ public class PersonasController {
 	}
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( persona.getPersonaId() == null ) {

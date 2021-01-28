@@ -13,8 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.sigebi.dao.ICarrerasDao;
+import com.sigebi.dao.IDepartamentosDao;
+import com.sigebi.dao.IDependenciasDao;
+import com.sigebi.dao.IEstamentosDao;
 import com.sigebi.dao.IPersonasDao;
+import com.sigebi.entity.Carreras;
+import com.sigebi.entity.Departamentos;
+import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Personas;
+import com.sigebi.service.CarrerasService;
+import com.sigebi.service.DepartamentosService;
+import com.sigebi.service.DependenciasService;
+import com.sigebi.service.EstamentosService;
 import com.sigebi.service.PersonasService;
 
 
@@ -23,6 +35,14 @@ public class PersonasServiceImpl implements PersonasService{
 
 	@Autowired
 	private IPersonasDao personasDao;
+	@Autowired
+	private CarrerasService carrerasService;
+	@Autowired
+	private DepartamentosService departamentosService;
+	@Autowired
+	private DependenciasService dependenciasService;
+	@Autowired
+	private EstamentosService estamentosService;
 	
 	public PersonasServiceImpl(IPersonasDao personasDao) {
         this.personasDao = personasDao;
@@ -42,7 +62,35 @@ public class PersonasServiceImpl implements PersonasService{
 
 	@Override
 	@Transactional
-	public Personas save(Personas persona) {
+	public Personas save(Personas persona) throws Exception {
+		if( persona.getCarreras() != null) {
+			Carreras carrera = carrerasService.findById(persona.getCarreras().getCarreraId());
+			if(carrera == null) {
+				throw new Exception("No se encontro carrera con id: " + persona.getCarreras().getCarreraId());
+			}
+			persona.setCarreras(carrera);
+		}
+		if( persona.getDepartamentos() != null) {
+			Departamentos departamento = departamentosService.findById(persona.getDepartamentos().getDepartamentoId());
+			if(departamento == null) {
+				throw new Exception("No se encontro departamento con id: " + persona.getDepartamentos().getDepartamentoId());
+			}
+			persona.setDepartamentos(departamento);
+		}
+		if( persona.getDependencias() != null) {
+			Dependencias dependencia = dependenciasService.findById(persona.getDependencias().getDependenciaId());
+			if(dependencia == null) {
+				throw new Exception("No se encontro dependencia con id: " + persona.getDependencias().getDependenciaId());
+			}
+			persona.setDependencias(dependencia);
+		}
+		if( persona.getEstamentos() != null) {
+			Estamentos estamento = estamentosService.findById(persona.getEstamentos().getEstamentoId());
+			if(estamento == null) {
+				throw new Exception("No se encontro estamento con id: " + persona.getEstamentos().getEstamentoId());
+			}
+			persona.setEstamentos(estamento);
+		}
 		return personasDao.save(persona);
 	}
 

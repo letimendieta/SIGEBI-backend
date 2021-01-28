@@ -271,12 +271,7 @@ public class HistorialClinicoController {
 			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinicoPaciente.getPaciente().getPacienteId() );
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
-		if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
-			response.put("mensaje", "Error: El paciente con id " + paciente.getPacienteId() 
-			+ " ya cuenta con historial clinico con id " + paciente.getHistorialClinico().getHistorialClinicoId() );
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
-		}
-		
+				
 		historialClinicoPaciente.setPaciente(paciente);
 
 		try {

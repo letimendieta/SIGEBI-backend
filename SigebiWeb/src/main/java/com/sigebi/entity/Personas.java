@@ -41,9 +41,7 @@ public class Personas {
 	@NotEmpty(message ="no puede estar vacio")
 	@Size(max=50, message="maximo 50 caracteres")
 	private String apellidos;
-	
-	@Column(name = "edad")
-	private Integer edad;
+
 	
 	@Column(name = "fecha_nacimiento")
 	private LocalDate fechaNacimiento;
@@ -160,14 +158,6 @@ public class Personas {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
-	}
-
-	public Integer getEdad() {
-		return edad;
-	}
-
-	public void setEdad(Integer edad) {
-		this.edad = edad;
 	}
 
 	public LocalDate getFechaNacimiento() {
