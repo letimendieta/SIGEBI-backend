@@ -63,8 +63,8 @@ public class AlergiasServiceImpl implements AlergiasService{
 		List<Alergias> AlergiasList = alergiasDao.findAll((Specification<Alergias>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
-            if( alergias.getHistorialClinicoId() != null ){
-            	p = cb.and(p, cb.equal(root.get("historialClinicoId"), alergias.getHistorialClinicoId()) );
+            if( alergias.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), alergias.getPacienteId()) );
             } 
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));

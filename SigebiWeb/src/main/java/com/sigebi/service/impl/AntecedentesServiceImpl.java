@@ -63,8 +63,8 @@ public class AntecedentesServiceImpl implements AntecedentesService{
 		List<Antecedentes> AntecedentesList = antecedentesDao.findAll((Specification<Antecedentes>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
-            if( antecedentes.getHistorialClinicoId() != null ){
-            	p = cb.and(p, cb.equal(root.get("historialClinicoId"), antecedentes.getHistorialClinicoId()) );
+            if( antecedentes.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), antecedentes.getPacienteId()) );
             } 
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));

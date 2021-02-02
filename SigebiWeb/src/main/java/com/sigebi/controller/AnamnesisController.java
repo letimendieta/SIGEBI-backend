@@ -146,8 +146,8 @@ public class AnamnesisController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if(anamnesis.getHistorialClinicoId() == null) {
-			response.put("errors", "El historial clinico id es requerido");
+		if(anamnesis.getPacienteId() == null) {
+			response.put("errors", "El pacienteid es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		

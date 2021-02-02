@@ -1,8 +1,5 @@
 package com.sigebi.service.impl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +7,6 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,11 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
-import com.sigebi.entity.Pacientes;
+import com.sigebi.dao.IStockDao;
+import com.sigebi.entity.Insumos;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.entity.ProcesoProcedimientos;
-import com.sigebi.entity.TratamientosInsumos;
+import com.sigebi.entity.Stock;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
 
@@ -36,6 +33,8 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	private IProcedimientosInsumosDao procedimientosInsumosDao;
 	@Autowired
 	private ProcedimientosInsumosService procedimientosInsumosService;
+	@Autowired
+	private IStockDao stockDao;
 		
 	public ProcedimientosServiceImpl(IProcedimientosDao procedimientosDao) {
         this.procedimientosDao = procedimientosDao;
@@ -64,6 +63,15 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 				procedimientoInsumo.setProcedimientos(procedimientoResult);
 				
 				procedimientosInsumosDao.save(procedimientoInsumo);
+				//Realizar el descuento de insumos
+				int cantidadUsada = 0;
+				if ( procedimientoInsumo.getCantidad() != null ) {
+					cantidadUsada = procedimientoInsumo.getCantidad();
+				}						
+				
+				if( cantidadUsada > 0) {
+					descontarStock(procedimientoInsumo);
+				}
 			}			
 		} catch (Exception e) {
 			throw new Exception("Error al guardar los insumos utilizados " + e.getMessage());
@@ -135,5 +143,36 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
         }, pageable).getContent();
         return ProcedimientosList;
     }
+	
+	public void descontarStock(ProcedimientosInsumos procedimientoInsumo) throws Exception {
+		try {
+			Insumos insumo = new Insumos();
+			insumo.setInsumoId(procedimientoInsumo.getInsumos().getInsumoId());
+			Stock stockAdescontar = stockDao.findByInsumos(insumo);
+			
+			int cantidadActual = stockAdescontar.getCantidad();
+			int cantidadUsada = procedimientoInsumo.getCantidad();
+			
+			if( cantidadActual <= 0) {
+				throw new Exception("El insumo "+ stockAdescontar.getInsumos().getInsumoId() 
+						+ " - " + stockAdescontar.getInsumos().getDescripcion()
+						+" no cuenta con stock");
+			}
+			
+			if( cantidadActual < cantidadUsada) {
+				throw new Exception("El insumo "+ stockAdescontar.getInsumos().getInsumoId() 
+						+ " - " + stockAdescontar.getInsumos().getDescripcion()
+						+" no cuenta con stock suficiente, cantidad stock: " + cantidadActual +", "
+						+" cantidad usada: " + cantidadUsada);
+			}
+			
+			stockAdescontar.setCantidad(cantidadActual - cantidadUsada);
+			
+			stockDao.save(stockAdescontar);
+			
+		} catch (Exception e) {
+			throw new Exception("Error al descontar stock " + e.getMessage());
+		}
+	}
 	
 }

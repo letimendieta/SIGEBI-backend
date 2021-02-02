@@ -80,6 +80,9 @@ public class ConsultasServiceImpl implements ConsultasService{
             if ( consulta.getConsultaId() != null ) {
                 p = cb.and(p, cb.equal(root.get("consultaId"), consulta.getConsultaId()) );
             }
+            if( consulta.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), consulta.getPacienteId()) );
+            }
                         
             String orden = "consultaId";
             if (!StringUtils.isEmpty(orderBy)) {

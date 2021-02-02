@@ -30,8 +30,8 @@ public class Anamnesis {
 	@Size(max=500, message="maximo 500 caracteres")
 	private String antecedentesRemotos;
 	
-	@Column(name = "historial_clinico_id")
-	private Integer historialClinicoId;
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 			
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -63,6 +63,14 @@ public class Anamnesis {
 		this.anamnesisId = anamnesisId;
 	}
 
+	public Integer getPacienteId() {
+		return pacienteId;
+	}
+
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
+	}
+
 	public String getAntecedentes() {
 		return antecedentes;
 	}
@@ -77,14 +85,6 @@ public class Anamnesis {
 
 	public void setAntecedentesRemotos(String antecedentesRemotos) {
 		this.antecedentesRemotos = antecedentesRemotos;
-	}
-
-	public Integer getHistorialClinicoId() {
-		return historialClinicoId;
-	}
-
-	public void setHistorialClinicoId(Integer historialClinicoId) {
-		this.historialClinicoId = historialClinicoId;
 	}
 
 	public LocalDateTime getFechaCreacion() {
@@ -117,8 +117,6 @@ public class Anamnesis {
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
-	}	
-	
-	
+	}			
 	
 }

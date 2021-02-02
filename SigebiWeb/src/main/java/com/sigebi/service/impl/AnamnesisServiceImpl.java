@@ -70,6 +70,9 @@ public class AnamnesisServiceImpl implements AnamnesisService{
             }
             if ( anamnesis.getAnamnesisId() != null ) {
                 p = cb.and(p, cb.equal(root.get("anamnesisId"), anamnesis.getAnamnesisId()) );
+            }
+            if( anamnesis.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), anamnesis.getPacienteId()) );
             } 
                         
             String orden = "anamnesisId";

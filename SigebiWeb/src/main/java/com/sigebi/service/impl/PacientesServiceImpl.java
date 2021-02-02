@@ -171,9 +171,7 @@ public class PacientesServiceImpl implements PacientesService{
             if ( paciente.getPacienteId() != null ) {
                 p = cb.and(p, cb.equal(root.get("pacienteId"), paciente.getPacienteId()) );
             }
-            if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
-                p = cb.and(p, cb.equal(root.get("historialClinico"), paciente.getHistorialClinico().getHistorialClinicoId()) );
-            }
+   
             cq.orderBy(cb.desc(root.get("pacienteId")));
             return p;
         }, pageable).getContent();
@@ -197,9 +195,7 @@ public class PacientesServiceImpl implements PacientesService{
             if ( paciente.getPacienteId() != null ) {
                 p = cb.and(p, cb.equal(root.get("pacienteId"), paciente.getPacienteId()) );
             }
-            if ( paciente.getHistorialClinico() != null && paciente.getHistorialClinico().getHistorialClinicoId() != null ) {
-                p = cb.and(p, cb.equal(root.get("historialClinico"), paciente.getHistorialClinico().getHistorialClinicoId()) );
-            }
+         
             cq.orderBy(cb.desc(root.get("pacienteId")));
             return p;
         });

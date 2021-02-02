@@ -14,15 +14,17 @@ public interface HistorialesClinicosService{
 	
 	public HistorialClinico findById(int id);	
 	
-	public HistorialClinico guardar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception;
+	public HistorialClinico guardar(HistorialClinico historialClinico) throws Exception;
 	
-	public HistorialClinico actualizar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception;
+	public HistorialClinico actualizar(HistorialClinico historialClinico) throws Exception;
 	
 	public void delete(int id);
 	
 	public List<HistorialClinico> buscar(Date fromDate, Date toDate, 
 										HistorialClinico historialClinico, 
-										List<Integer> pacientesId,
 										Pageable pageable);
+	
+	public List<HistorialClinico> buscarNoPaginable(Date fromDate, Date toDate, 
+			HistorialClinico historialClinico);
 	
 }

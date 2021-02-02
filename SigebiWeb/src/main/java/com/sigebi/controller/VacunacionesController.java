@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,162 +31,110 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.Carreras;
-import com.sigebi.entity.Departamentos;
-import com.sigebi.entity.Dependencias;
-import com.sigebi.entity.Estamentos;
-import com.sigebi.entity.HistorialClinico;
-import com.sigebi.entity.Pacientes;
-import com.sigebi.entity.Personas;
-import com.sigebi.service.FilesStorageService;
-import com.sigebi.service.PacientesService;
-import com.sigebi.service.PersonasService;
+import com.sigebi.entity.Anamnesis;
+import com.sigebi.service.AnamnesisService;
 import com.sigebi.service.UtilesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/pacientes")
-public class PacientesController {
+@RequestMapping("/auth/vacunaciones")
+public class VacunacionesController {
 
-	@Autowired
-	private PacientesService pacientesService;
-	@Autowired
-	private PersonasService personasService;
+	/*@Autowired
+	private AnamnesisService vacunacionesService;
 	@Autowired
 	private UtilesService utiles;
-	@Autowired
-	FilesStorageService storageService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public PacientesController(PacientesService pacientesService) {
-        this.pacientesService = pacientesService;
+	public VacunacionesController(AnamnesisService vacunacionesService) {
+        this.vacunacionesService = vacunacionesService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<Pacientes> pacientesList = null;
+		List<Anamnesis> vacunacionesList = null;
 		try {
-			pacientesList = pacientesService.findAll();
+			vacunacionesList = vacunacionesService.findAll();
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if( pacientesList.isEmpty()) {
+		if( vacunacionesList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
+		return new ResponseEntity<List<Anamnesis>>(vacunacionesList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		Pacientes paciente = null;
+		Anamnesis vacunaciones = null;
 		try {
-			paciente = pacientesService.findById(id);
-			if( paciente != null) {				
-								
-				if( paciente.getPersonas().getDepartamentos() == null ) {
-					paciente.getPersonas().setDepartamentos(new Departamentos());
-				}
-				if( paciente.getPersonas().getDependencias() == null ) {
-					paciente.getPersonas().setDependencias(new Dependencias());
-				}
-				if( paciente.getPersonas().getCarreras() == null ) {
-					paciente.getPersonas().setCarreras(new Carreras());
-				}
-				if( paciente.getPersonas().getEstamentos() == null ) {
-					paciente.getPersonas().setEstamentos(new Estamentos());
-				}
-			}
+			vacunaciones = vacunacionesService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if( paciente == null ) {
-			response.put("mensaje", "El paciente con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( vacunaciones == null ) {
+			response.put("mensaje", "El vacunaciones con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Pacientes>(paciente, HttpStatus.OK);
+		return new ResponseEntity<Anamnesis>(vacunaciones, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarPacientes(
+    public ResponseEntity<?> buscarAnamnesis(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		Pacientes paciente = null;
+		Anamnesis vacunaciones = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			paciente = objectMapper.readValue(filtros, Pacientes.class);
+			vacunaciones = objectMapper.readValue(filtros, Anamnesis.class);
 		}				
 		
 		Map<String, Object> response = new HashMap<>();
-		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
+		List<Anamnesis> vacunacionesList = new ArrayList<Anamnesis>();
 		
-		if ( paciente == null ) {
-			paciente = new Pacientes();
+		if ( vacunaciones == null ) {
+			vacunaciones = new Anamnesis();
 		}
-		List<Personas> personasList = new ArrayList<Personas>();
-		List<Integer> personasIds = new ArrayList<Integer>();
-		if( paciente.getPersonas() != null) {
-			try {
-				personasList = personasService.buscar(fromDate, toDate, paciente.getPersonas(), pageable);
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta en la base de datos");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			for( Personas persona : personasList ){
-				personasIds.add(persona.getPersonaId());
-			}
-			if( personasList.isEmpty()) {
-				return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
-			}
-		}
+		if ( "-1".equals(size) ) {
+			int total = vacunacionesService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}			
 		
 		try {
-			
-			pacientesList = pacientesService.buscar(fromDate, toDate, paciente, personasIds, pageable);
-			
-			for( Pacientes pacienteFor : pacientesList) {
-				
-				if( pacienteFor.getPersonas().getDepartamentos() == null ) {
-					pacienteFor.getPersonas().setDepartamentos(new Departamentos());
-				}
-				if( pacienteFor.getPersonas().getDependencias() == null ) {
-					pacienteFor.getPersonas().setDependencias(new Dependencias());
-				}
-				if( pacienteFor.getPersonas().getCarreras() == null ) {
-					pacienteFor.getPersonas().setCarreras(new Carreras());
-				}
-				if( pacienteFor.getPersonas().getEstamentos() == null ) {
-					pacienteFor.getPersonas().setEstamentos(new Estamentos());
-				}
-			}
-			
+			vacunacionesList = vacunacionesService.buscar(fromDate, toDate, vacunaciones, orderBy, orderDir, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-						
-        return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
+		}		
+		
+        return new ResponseEntity<List<Anamnesis>>(vacunacionesList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Pacientes paciente, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Anamnesis vacunaciones, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		Pacientes pacienteNew = null;
+		Anamnesis vacunacionesNew = null;
+		
 		if( result.hasErrors() ) {
 
 			List<String> errors = result.getFieldErrors()
@@ -195,41 +144,37 @@ public class PacientesController {
 			
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}		
-	
-		if ( paciente.getPersonas() == null ) {
-			response.put("mensaje", "Error: Datos de la persona es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		if(vacunaciones.getHistorialClinicoId() == null) {
+			response.put("errors", "El historial clinico id es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
 		try {
-			pacienteNew = pacientesService.guardar(paciente);
+			vacunacionesNew = vacunacionesService.save(vacunaciones);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-						
-		response.put("mensaje", "El paciente ha sido creado con éxito!");
-		response.put("paciente", pacienteNew);
+		
+		response.put("mensaje", "El vacunaciones ha sido creada con éxito!");
+		response.put("vacunaciones", vacunacionesNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Pacientes paciente, BindingResult result) throws Exception {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Anamnesis vacunaciones, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( paciente.getPacienteId() == null ) {
-			response.put("mensaje", "Error: paciente id es requerido");
+		if ( vacunaciones.getAnamnesisId() == null ) {
+			response.put("mensaje", "Error: vacunaciones id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Pacientes pacienteActual = pacientesService.findById(paciente.getPacienteId());
-		Pacientes pacienteUpdated = null;
+		Anamnesis vacunacionesActual = vacunacionesService.findById(vacunaciones.getAnamnesisId());
+		Anamnesis vacunacionesUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -242,24 +187,24 @@ public class PacientesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( pacienteActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el paciente ID: "
-					.concat(String.valueOf(paciente.getPacienteId()).concat(" no existe en la base de datos!")));
+		if ( vacunacionesActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el vacunaciones ID: "
+					.concat(String.valueOf(vacunaciones.getAnamnesisId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 
-			pacienteUpdated = pacientesService.actualizar(paciente);;
+			vacunacionesUpdated = vacunacionesService.save(vacunaciones);;
 
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el paciente en la base de datos");
+			response.put("mensaje", "Error al actualizar el vacunaciones en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "El paciente ha sido actualizado con éxito!");
-		response.put("paciente", pacienteUpdated);
+		response.put("mensaje", "El vacunaciones ha sido actualizada con éxito!");
+		response.put("vacunaciones", vacunacionesUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -269,28 +214,28 @@ public class PacientesController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: paciente id es requerido");
+			response.put("mensaje", "Error: vacunaciones id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Pacientes pacienteActual = pacientesService.findById(id);
+		Anamnesis vacunacionesActual = vacunacionesService.findById(id);
 		
-		if ( pacienteActual == null ) {
-			response.put("mensaje", "El paciente ID: "
+		if ( vacunacionesActual == null ) {
+			response.put("mensaje", "La vacunaciones ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		try {
-			pacientesService.delete(id);
+			vacunacionesService.delete(id);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el paciente de la base de datos");
+			response.put("mensaje", "Error al eliminar el vacunaciones de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "Paciente eliminado con éxito!");
+		response.put("mensaje", "Anamnesis eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-	}
+	}*/
 }

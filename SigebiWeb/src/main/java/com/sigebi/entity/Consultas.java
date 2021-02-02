@@ -25,8 +25,8 @@ public class Consultas {
 	@Column(name = "fecha")
 	private LocalDateTime fecha;
 		
-	@Column(name = "historial_clinico_id")
-	private Integer historialClinicoId;
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -80,12 +80,12 @@ public class Consultas {
 		this.fecha = fecha;
 	}
 
-	public Integer getHistorialClinicoId() {
-		return historialClinicoId;
+	public Integer getPacienteId() {
+		return pacienteId;
 	}
 
-	public void setHistorialClinicoId(Integer historialClinicoId) {
-		this.historialClinicoId = historialClinicoId;
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
 	}
 
 	public String getUsuarioCreacion() {

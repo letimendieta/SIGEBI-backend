@@ -23,7 +23,7 @@ public class HistorialClinico {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_historial_clinico")
 	@SequenceGenerator(name="seq_historial_clinico",sequenceName="seq_historial_clinico",allocationSize=1)
 	private Integer historialClinicoId;
-		
+			
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -42,6 +42,10 @@ public class HistorialClinico {
     @JoinColumn(name = "area_id", referencedColumnName = "areaId")
     private Areas areas;
 	
+	@OneToOne
+    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
+    private Pacientes pacientes;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = LocalDateTime.now();
@@ -58,6 +62,14 @@ public class HistorialClinico {
 
 	public void setHistorialClinicoId(Integer historialClinicoId) {
 		this.historialClinicoId = historialClinicoId;
+	}
+	
+	public Pacientes getPacientes() {
+		return pacientes;
+	}
+
+	public void setPacientes(Pacientes pacientes) {
+		this.pacientes = pacientes;
 	}
 
 	public Areas getAreas() {

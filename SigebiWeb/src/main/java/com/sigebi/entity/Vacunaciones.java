@@ -23,8 +23,8 @@ public class Vacunaciones {
 	@SequenceGenerator(name="seq_vacunaciones",sequenceName="seq_vacunaciones",allocationSize=1)
 	private Integer vacunacionId;
 	
-	@Column(name = "historial_clinico_id")
-	private Integer historialClinicoId;
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 		
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -60,12 +60,20 @@ public class Vacunaciones {
 		this.vacunacionId = vacunacionId;
 	}
 
-	public Integer getHistorialClinicoId() {
-		return historialClinicoId;
+	public Integer getPacienteId() {
+		return pacienteId;
 	}
 
-	public void setHistorialClinicoId(Integer historialClinicoId) {
-		this.historialClinicoId = historialClinicoId;
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
+	}
+
+	public Vacunas getVacunas() {
+		return vacunas;
+	}
+
+	public void setVacunas(Vacunas vacunas) {
+		this.vacunas = vacunas;
 	}
 
 	public LocalDateTime getFechaCreacion() {

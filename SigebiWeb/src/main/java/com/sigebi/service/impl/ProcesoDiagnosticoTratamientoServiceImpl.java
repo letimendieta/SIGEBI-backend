@@ -6,13 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sigebi.dao.IAreasDao;
 import com.sigebi.dao.IConsultasDao;
 import com.sigebi.dao.IDiagnosticosDao;
 import com.sigebi.dao.IStockDao;
 import com.sigebi.dao.ITratamientosDao;
 import com.sigebi.dao.ITratamientosInsumosDao;
-import com.sigebi.entity.Consultas;
 import com.sigebi.entity.Diagnosticos;
 import com.sigebi.entity.Insumos;
 import com.sigebi.entity.ProcesoDiagnosticoTratamiento;
@@ -33,8 +31,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	private ITratamientosInsumosDao tratamientoInsumoDao;
 	@Autowired
 	private IConsultasDao consultaDao;
-	@Autowired
-	private IStockDao stockDao;
+	
 
 	@Override
 	@Transactional
@@ -60,16 +57,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		try {
 			for(TratamientosInsumos tratamientoInsumo : procesoDiagnosticoTratamiento.getTratamientoInsumoList()) {
 				tratamientoInsumo.setTratamientos(tratamiento);
-				tratamientoInsumoDao.save(tratamientoInsumo);
-				
-				int cantidadUsada = 0;
-				if ( tratamientoInsumo.getCantidad() != null ) {
-					cantidadUsada = tratamientoInsumo.getCantidad();
-				}						
-				
-				if( cantidadUsada > 0) {
-					descontarStock(tratamientoInsumo);
-				}
+				tratamientoInsumoDao.save(tratamientoInsumo);				
 			}			
 		} catch (Exception e) {
 			throw new Exception("Error al guardar los medicamentos del tratamiento " + e.getMessage());
@@ -86,37 +74,4 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			throw new Exception("Error al guardar la consulta " + e.getMessage());
 		}		
 	}
-
-	public void descontarStock(TratamientosInsumos tratamientoInsumo) throws Exception {
-		try {
-			Insumos insumo = new Insumos();
-			insumo.setInsumoId(tratamientoInsumo.getInsumos().getInsumoId());
-			Stock stockAdescontar = stockDao.findByInsumos(insumo);
-			
-			int cantidadActual = stockAdescontar.getCantidad();
-			int cantidadUsada = tratamientoInsumo.getCantidad();
-			
-			if( cantidadActual <= 0) {
-				throw new Exception("El insumo "+ stockAdescontar.getInsumos().getInsumoId() 
-						+ " - " + stockAdescontar.getInsumos().getDescripcion()
-						+" no cuenta con stock");
-			}
-			
-			if( cantidadActual < cantidadUsada) {
-				throw new Exception("El insumo "+ stockAdescontar.getInsumos().getInsumoId() 
-						+ " - " + stockAdescontar.getInsumos().getDescripcion()
-						+" no cuenta con stock suficiente, cantidad stock: " + cantidadActual +", "
-						+" cantidad usada: " + cantidadUsada);
-			}
-			
-			stockAdescontar.setCantidad(cantidadActual - cantidadUsada);
-			
-			stockDao.save(stockAdescontar);
-			
-		} catch (Exception e) {
-			throw new Exception("Error al descontar stock " + e.getMessage());
-		}
-	}
-	
-
 }

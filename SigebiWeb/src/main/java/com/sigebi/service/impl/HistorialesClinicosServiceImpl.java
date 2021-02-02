@@ -44,27 +44,13 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 	}
 
 	@Transactional
-	public HistorialClinico guardar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception {
-		//Guardar el historial clinico
-		HistorialClinico historialClinico = historialClinicosDao.save(historialClinicoPaciente.getHistorialClinico());
-		
-		//Relacionar el historial clinico al paciente recibido
-		historialClinicoPaciente.getPaciente().setHistorialClinico(historialClinico);
-		pacientesDao.save(historialClinicoPaciente.getPaciente());
-		
-		return historialClinico;
+	public HistorialClinico guardar(HistorialClinico historialClinico) throws Exception {		
+		return historialClinicosDao.save(historialClinico);
 	}
 	
 	@Transactional
-	public HistorialClinico actualizar(HistorialClinicoPaciente historialClinicoPaciente) throws Exception {
-		//Guardar el historial clinico
-		HistorialClinico historialClinico = historialClinicosDao.save(historialClinicoPaciente.getHistorialClinico());
-		
-		//Relacionar el historial clinico al paciente recibido
-		historialClinicoPaciente.getPaciente().setHistorialClinico(historialClinico);
-		pacientesDao.save(historialClinicoPaciente.getPaciente());
-		
-		return historialClinico;
+	public HistorialClinico actualizar(HistorialClinico historialClinico) throws Exception {			
+		return historialClinicosDao.save(historialClinico);
 	}
 
 	@Override
@@ -76,13 +62,12 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 	@Override
 	public List<HistorialClinico> buscar(Date fromDate, Date toDate, 
 										HistorialClinico historialClinico, 
-										List<Integer> pacientesId,
 										Pageable pageable) {
 		List<HistorialClinico> HistorialClinicoList = historialClinicosDao.findAll((Specification<HistorialClinico>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
-            if( pacientesId != null && !pacientesId.isEmpty() ){
-            	p = cb.and(root.get("pacientes").in(pacientesId));
+			if( historialClinico.getPacientes() != null && historialClinico.getPacientes().getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacientes"), historialClinico.getPacientes().getPacienteId()) );
             } 
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -97,6 +82,32 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
             cq.orderBy(cb.desc(root.get("historialClinicoId")));
             return p;
         }, pageable).getContent();
+        return HistorialClinicoList;
+    }
+	
+	@Override
+	public List<HistorialClinico> buscarNoPaginable(Date fromDate, Date toDate, 
+										HistorialClinico historialClinico) {
+		
+		List<HistorialClinico> HistorialClinicoList = historialClinicosDao.findAll((Specification<HistorialClinico>) (root, cq, cb) -> {
+            
+			Predicate p = cb.conjunction();            
+			if( historialClinico.getPacientes() != null && historialClinico.getPacientes().getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacientes"), historialClinico.getPacientes().getPacienteId()) );
+            } 
+            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( historialClinico.getHistorialClinicoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("historialClinicoId"), historialClinico.getHistorialClinicoId()) );
+            }
+            if ( historialClinico.getAreas() != null && historialClinico.getAreas().getAreaId() != null ) {
+                p = cb.and(p, cb.equal(root.get("areas"), historialClinico.getAreas().getAreaId()) );
+            }
+           
+            cq.orderBy(cb.desc(root.get("historialClinicoId")));
+            return p;
+		});
         return HistorialClinicoList;
     }
 	

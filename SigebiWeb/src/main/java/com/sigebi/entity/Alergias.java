@@ -23,8 +23,8 @@ public class Alergias {
 	@SequenceGenerator(name="seq_alergias",sequenceName="seq_alergias",allocationSize=1)
 	private Integer alergiaId;
 	
-	@Column(name = "historial_clinico_id")
-	private Integer historialClinicoId;
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 		
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -51,13 +51,13 @@ public class Alergias {
 	private void update() {
 		this.fechaModificacion = LocalDateTime.now();
 	}
-		
-	public Integer getHistorialClinicoId() {
-		return historialClinicoId;
+	
+	public Integer getPacienteId() {
+		return pacienteId;
 	}
 
-	public void setHistorialClinicoId(Integer historialClinicoId) {
-		this.historialClinicoId = historialClinicoId;
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
 	}
 
 	public Integer getAlergiaId() {

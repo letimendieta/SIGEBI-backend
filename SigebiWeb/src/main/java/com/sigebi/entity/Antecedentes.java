@@ -24,8 +24,8 @@ public class Antecedentes {
 	@SequenceGenerator(name="seq_antecedentes",sequenceName="seq_antecedentes",allocationSize=1)
 	private Integer antecedenteId;
 	
-	@Column(name = "historial_clinico_id")
-	private Integer historialClinicoId;
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 	
 	@Column(name = "tipo", length = 20, nullable = false)
 	@NotEmpty(message ="no puede estar vacio")
@@ -64,13 +64,13 @@ public class Antecedentes {
 	public void setAntecedenteId(Integer antecedenteId) {
 		this.antecedenteId = antecedenteId;
 	}
-
-	public Integer getHistorialClinicoId() {
-		return historialClinicoId;
+	
+	public Integer getPacienteId() {
+		return pacienteId;
 	}
 
-	public void setHistorialClinicoId(Integer historialClinicoId) {
-		this.historialClinicoId = historialClinicoId;
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
 	}
 
 	public String getTipo() {
