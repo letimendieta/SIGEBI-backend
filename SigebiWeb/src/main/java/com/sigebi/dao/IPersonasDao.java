@@ -11,4 +11,6 @@ public interface IPersonasDao extends JpaRepository<Personas, Integer>, JpaSpeci
 	
 	List<Personas> findByNombres(String nombres);
 	
+	List<Personas> findByCedula(String cedula);
+	
 }

@@ -1,5 +1,6 @@
 package com.sigebi.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,16 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sigebi.dao.ICarrerasDao;
-import com.sigebi.dao.IDepartamentosDao;
-import com.sigebi.dao.IDependenciasDao;
-import com.sigebi.dao.IEstamentosDao;
 import com.sigebi.dao.IPacientesDao;
 import com.sigebi.dao.IPersonasDao;
-import com.sigebi.entity.Carreras;
-import com.sigebi.entity.Departamentos;
-import com.sigebi.entity.Dependencias;
-import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PacientesService;
@@ -36,18 +29,6 @@ public class PacientesServiceImpl implements PacientesService{
 	
 	@Autowired
 	private IPersonasDao personasDao;
-	
-	@Autowired
-	private IDepartamentosDao departamentosDao;
-	
-	@Autowired
-	private IDependenciasDao dependenciasDao;
-	
-	@Autowired
-	private ICarrerasDao carrerasDao;
-	
-	@Autowired
-	private IEstamentosDao estamentosDao;
 	
 	@Autowired
 	private PersonasService personasService;
@@ -73,12 +54,18 @@ public class PacientesServiceImpl implements PacientesService{
 				
 		if( paciente.getPersonas() != null ) {
 			//Buscar si la persona ya es paciente
-			List<Pacientes> pacienteDb = pacientesDao.findByPersonas(paciente.getPersonas());
 			
-			if( !pacienteDb.isEmpty() ) {
-				throw new Exception("La persona ya existe como paciente");
+			List<Personas> personaDb = personasDao.findByCedula(paciente.getPersonas().getCedula());
+			if( personaDb != null && !personaDb.isEmpty() ) {
+				List<Integer> pacienteIds = new ArrayList<Integer>();
+				pacienteIds.add(personaDb.get(0).getPersonaId());
+				
+				List<Pacientes> pacienteDb = buscarNoPaginable(null, null, new Pacientes(), pacienteIds);
+				
+				if( !pacienteDb.isEmpty() ) {
+					throw new Exception("La persona ya existe como paciente");
+				}
 			}
-			
 			if( paciente.getPersonas().getPersonaId() != null ) {
 				//Busca a la persona y si existe actualizar sus datos
 				Personas persona = personasService.findById(paciente.getPersonas().getPersonaId());
