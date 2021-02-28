@@ -1,4 +1,7 @@
-package com.sigebi.entity;
+package com.sigebi.clases;
+
+import com.sigebi.entity.HistorialClinico;
+import com.sigebi.entity.Pacientes;
 
 public class HistorialClinicoPaciente {
 		

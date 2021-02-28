@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import com.sigebi.clases.HistorialClinicoPaciente;
 import com.sigebi.entity.HistorialClinico;
-import com.sigebi.entity.HistorialClinicoPaciente;
 
 public interface HistorialesClinicosService{
 

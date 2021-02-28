@@ -31,10 +31,7 @@ public class Diagnosticos {
 	@Column(name = "diagnostico_secundario", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String diagnosticoSecundario;
-			
-	@Column(name = "termino_estandar_principal_id")
-	private Integer terminoEstandarPrincipal;
-	
+		
 	@Column(name = "termino_estandar_secundario_id")
 	private Integer terminoEstandarSecundario;
 	
@@ -49,6 +46,10 @@ public class Diagnosticos {
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	private String usuarioModificacion;
+	
+	@OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id", updatable = true)
+    private TerminoEstandar terminoEstandarPrincipal;
 		
 	@PrePersist
 	private void create() {
@@ -82,13 +83,13 @@ public class Diagnosticos {
 
 	public void setDiagnosticoSecundario(String diagnosticoSecundario) {
 		this.diagnosticoSecundario = diagnosticoSecundario;
-	}
+	}	
 
-	public Integer getTerminoEstandarPrincipal() {
+	public TerminoEstandar getTerminoEstandarPrincipal() {
 		return terminoEstandarPrincipal;
 	}
 
-	public void setTerminoEstandarPrincipal(Integer terminoEstandarPrincipal) {
+	public void setTerminoEstandarPrincipal(TerminoEstandar terminoEstandarPrincipal) {
 		this.terminoEstandarPrincipal = terminoEstandarPrincipal;
 	}
 
@@ -130,8 +131,6 @@ public class Diagnosticos {
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
-	}	
-	
-	
+	}
 	
 }

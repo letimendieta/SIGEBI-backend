@@ -12,10 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigebi.clases.HistorialClinicoPaciente;
 import com.sigebi.dao.IHistorialClinicoDao;
 import com.sigebi.dao.IPacientesDao;
 import com.sigebi.entity.HistorialClinico;
-import com.sigebi.entity.HistorialClinicoPaciente;
 import com.sigebi.service.HistorialesClinicosService;
 
 

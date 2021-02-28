@@ -7,34 +7,35 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "anamnesis")
-public class Anamnesis {
+@Table(name = "motivos_consulta")
+public class MotivosConsulta {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_anamnesis")
-	@SequenceGenerator(name="seq_anamnesis",sequenceName="seq_anamnesis",allocationSize=1)
-	private Integer anamnesisId;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_motivos_consulta")
+	@SequenceGenerator(name="seq_motivos_consulta",sequenceName="seq_motivos_consulta",allocationSize=1)
+	private Integer motivoConsultaId;
 	
-	@Column(name = "antecedentes", length = 500)
-	@Size(max=500, message="maximo 500 caracteres")
-	private String antecedentes;
+	@Column(name = "codigo", length = 15, unique = true)
+	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=15, message="maximo 15 caracteres")
+	private String codigo;
 	
-	@Column(name = "antecedentes_remotos", length = 500)
-	@Size(max=500, message="maximo 500 caracteres")
-	private String antecedentesRemotos;
+	@Column(name = "descripcion", length = 50)
+	@Size(max=50, message="maximo 50 caracteres")
+	private String descripcion;	
 	
-	@Column(name = "paciente_id")
-	private Integer pacienteId;
-			
+	@Column(name = "estado", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
+	private String estado;
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -47,9 +48,6 @@ public class Anamnesis {
 	@Column(name = "usuario_modificacion", length = 15)
 	private String usuarioModificacion;
 	
-	@OneToOne
-    @JoinColumn(name = "motivo_consulta_id", referencedColumnName = "motivoConsultaId", updatable = true)
-    private MotivosConsulta motivoConsulta;
 	
 	@PrePersist
 	private void create() {
@@ -61,45 +59,37 @@ public class Anamnesis {
 		this.fechaModificacion = LocalDateTime.now();
 	}	
 
-	public Integer getAnamnesisId() {
-		return anamnesisId;
+	public Integer getMotivoConsultaId() {
+		return motivoConsultaId;
 	}
 
-	public void setAnamnesisId(Integer anamnesisId) {
-		this.anamnesisId = anamnesisId;
+	public void setMotivoConsultaId(Integer motivoConsultaId) {
+		this.motivoConsultaId = motivoConsultaId;
 	}
 
-	public MotivosConsulta getMotivoConsulta() {
-		return motivoConsulta;
+	public String getCodigo() {
+		return codigo;
 	}
 
-	public void setMotivoConsulta(MotivosConsulta motivoConsulta) {
-		this.motivoConsulta = motivoConsulta;
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
-	public Integer getPacienteId() {
-		return pacienteId;
+	public String getDescripcion() {
+		return descripcion;
 	}
 
-	public void setPacienteId(Integer pacienteId) {
-		this.pacienteId = pacienteId;
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
-	public String getAntecedentes() {
-		return antecedentes;
+	public String getEstado() {
+		return estado;
 	}
 
-	public void setAntecedentes(String antecedentes) {
-		this.antecedentes = antecedentes;
-	}
-
-	public String getAntecedentesRemotos() {
-		return antecedentesRemotos;
-	}
-
-	public void setAntecedentesRemotos(String antecedentesRemotos) {
-		this.antecedentesRemotos = antecedentesRemotos;
-	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}	
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
@@ -131,6 +121,6 @@ public class Anamnesis {
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
-	}			
+	}	
 	
 }

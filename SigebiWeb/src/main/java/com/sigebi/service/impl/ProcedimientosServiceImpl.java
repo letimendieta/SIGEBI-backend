@@ -12,13 +12,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigebi.clases.ProcesoProcedimientos;
 import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.dao.IStockDao;
 import com.sigebi.entity.Insumos;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
-import com.sigebi.entity.ProcesoProcedimientos;
 import com.sigebi.entity.Stock;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;

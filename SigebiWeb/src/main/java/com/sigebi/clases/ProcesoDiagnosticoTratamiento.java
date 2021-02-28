@@ -1,14 +1,28 @@
-package com.sigebi.entity;
+package com.sigebi.clases;
 
 import java.util.ArrayList;
 
+import com.sigebi.entity.Anamnesis;
+import com.sigebi.entity.Consultas;
+import com.sigebi.entity.Diagnosticos;
+import com.sigebi.entity.Tratamientos;
+import com.sigebi.entity.TratamientosInsumos;
+
 public class ProcesoDiagnosticoTratamiento {
-		
+	
+	Anamnesis anamnesis;
 	Diagnosticos diagnostico;
 	Tratamientos tratamiento;
 	ArrayList<TratamientosInsumos> tratamientoInsumoList;	
 	Consultas consulta;
+	ArrayList<FichaMedica> fichaMedicaList;
 	
+	public Anamnesis getAnamnesis() {
+		return anamnesis;
+	}
+	public void setAnamnesis(Anamnesis anamnesis) {
+		this.anamnesis = anamnesis;
+	}
 	public Diagnosticos getDiagnostico() {
 		return diagnostico;
 	}
@@ -33,5 +47,12 @@ public class ProcesoDiagnosticoTratamiento {
 	}
 	public void setConsulta(Consultas consulta) {
 		this.consulta = consulta;
+	}
+	public ArrayList<FichaMedica> getFichaMedicaList() {
+		return fichaMedicaList;
+	}
+	public void setFichaMedicaList(ArrayList<FichaMedica> fichaMedicaList) {
+		this.fichaMedicaList = fichaMedicaList;
 	}		
+	
 }

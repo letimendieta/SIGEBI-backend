@@ -1,6 +1,9 @@
-package com.sigebi.entity;
+package com.sigebi.clases;
 
 import java.util.ArrayList;
+
+import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcedimientosInsumos;
 
 public class ProcesoProcedimientos {
 		

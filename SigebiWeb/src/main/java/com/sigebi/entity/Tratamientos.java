@@ -29,6 +29,10 @@ public class Tratamientos {
 	@Column(name = "descripcion_tratamiento", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String descripcionTratamiento;	
+	
+	@Column(name = "descripcion_plan_trabajo", length = 500)
+	@Size(max=500, message="maximo 500 caracteres")
+	private String descripcionPlanTrabajo;
 		
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -74,6 +78,14 @@ public class Tratamientos {
 
 	public void setDescripcionTratamiento(String descripcionTratamiento) {
 		this.descripcionTratamiento = descripcionTratamiento;
+	}
+
+	public String getDescripcionPlanTrabajo() {
+		return descripcionPlanTrabajo;
+	}
+
+	public void setDescripcionPlanTrabajo(String descripcionPlanTrabajo) {
+		this.descripcionPlanTrabajo = descripcionPlanTrabajo;
 	}
 
 	public LocalDateTime getFechaCreacion() {

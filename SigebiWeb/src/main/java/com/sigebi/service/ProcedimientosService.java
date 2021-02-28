@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import com.sigebi.clases.ProcesoProcedimientos;
 import com.sigebi.entity.Procedimientos;
-import com.sigebi.entity.ProcesoProcedimientos;
 
 public interface ProcedimientosService{
 

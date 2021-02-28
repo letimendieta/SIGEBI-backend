@@ -1,6 +1,6 @@
 package com.sigebi.service;
 
-import com.sigebi.entity.ProcesoDiagnosticoTratamiento;
+import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
 
 public interface ProcesoDiagnosticoTratamientoService {
 		

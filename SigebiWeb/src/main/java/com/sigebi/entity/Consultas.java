@@ -54,6 +54,14 @@ public class Consultas {
     @JoinColumn(name = "tratamiento_id", referencedColumnName = "tratamientoId")
     private Tratamientos tratamientos;
 	
+	@OneToOne
+    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId", updatable = true)
+    private Funcionarios funcionarios;
+	
+	@OneToOne
+    @JoinColumn(name = "anamnesis_id", referencedColumnName = "anamnesisId", updatable = true)
+    private Anamnesis anamnesis;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = LocalDateTime.now();
@@ -110,6 +118,22 @@ public class Consultas {
 
 	public void setTratamientos(Tratamientos tratamientos) {
 		this.tratamientos = tratamientos;
+	}
+
+	public Funcionarios getFuncionarios() {
+		return funcionarios;
+	}
+
+	public void setFuncionarios(Funcionarios funcionarios) {
+		this.funcionarios = funcionarios;
+	}
+
+	public Anamnesis getAnamnesis() {
+		return anamnesis;
+	}
+
+	public void setAnamnesis(Anamnesis anamnesis) {
+		this.anamnesis = anamnesis;
 	}
 
 	public Areas getAreas() {

@@ -28,7 +28,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.dao.IConsultasDao;
+import com.sigebi.entity.Anamnesis;
 import com.sigebi.entity.Consultas;
+import com.sigebi.entity.MotivosConsulta;
+import com.sigebi.entity.TerminoEstandar;
 import com.sigebi.service.ConsultasService;
 import com.sigebi.service.UtilesService;
 
@@ -98,6 +101,20 @@ public class ConsultasController {
 		
 		try {
 			consultasList = consultasService.buscar(fromDate, toDate, consulta, orderBy, orderDir, pageable);
+			
+			for(Consultas consultaResult : consultasList) {
+				if( consultaResult.getDiagnosticos() != null
+						&& consultaResult.getDiagnosticos().getTerminoEstandarPrincipal() == null ) {
+					consultaResult.getDiagnosticos().setTerminoEstandarPrincipal(new TerminoEstandar());
+				}
+				if( consultaResult.getAnamnesis() == null ) {
+					consultaResult.setAnamnesis(new Anamnesis());
+				}
+				if( consultaResult.getAnamnesis() != null
+						&& consultaResult.getAnamnesis().getMotivoConsulta() == null ) {
+					consultaResult.getAnamnesis().setMotivoConsulta(new MotivosConsulta());
+				}
+			}
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
