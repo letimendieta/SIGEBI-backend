@@ -31,9 +31,12 @@ public class Diagnosticos {
 	@Column(name = "diagnostico_secundario", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
 	private String diagnosticoSecundario;
-		
-	@Column(name = "termino_estandar_secundario_id")
-	private Integer terminoEstandarSecundario;
+	
+	@Column(name = "enfermedad_cie10_primaria_id")
+	private Integer enfermedadCie10PrimariaId;
+	
+	@Column(name = "enfermedad_cie10_secundaria_id")
+	private Integer enfermedadCie10SecundariaId;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -46,10 +49,6 @@ public class Diagnosticos {
 	
 	@Column(name = "usuario_modificacion", length = 15)
 	private String usuarioModificacion;
-	
-	@OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id", updatable = true)
-    private TerminoEstandar terminoEstandarPrincipal;
 		
 	@PrePersist
 	private void create() {
@@ -85,20 +84,20 @@ public class Diagnosticos {
 		this.diagnosticoSecundario = diagnosticoSecundario;
 	}	
 
-	public TerminoEstandar getTerminoEstandarPrincipal() {
-		return terminoEstandarPrincipal;
+	public Integer getEnfermedadCie10PrimariaId() {
+		return enfermedadCie10PrimariaId;
 	}
 
-	public void setTerminoEstandarPrincipal(TerminoEstandar terminoEstandarPrincipal) {
-		this.terminoEstandarPrincipal = terminoEstandarPrincipal;
+	public void setEnfermedadCie10PrimariaId(Integer enfermedadCie10PrimariaId) {
+		this.enfermedadCie10PrimariaId = enfermedadCie10PrimariaId;
 	}
 
-	public Integer getTerminoEstandarSecundario() {
-		return terminoEstandarSecundario;
+	public Integer getEnfermedadCie10SecundariaId() {
+		return enfermedadCie10SecundariaId;
 	}
 
-	public void setTerminoEstandarSecundario(Integer terminoEstandarSecundario) {
-		this.terminoEstandarSecundario = terminoEstandarSecundario;
+	public void setEnfermedadCie10SecundariaId(Integer enfermedadCie10SecundariaId) {
+		this.enfermedadCie10SecundariaId = enfermedadCie10SecundariaId;
 	}
 
 	public LocalDateTime getFechaCreacion() {

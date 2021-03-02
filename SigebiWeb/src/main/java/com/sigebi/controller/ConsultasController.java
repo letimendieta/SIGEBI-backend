@@ -2,12 +2,15 @@ package com.sigebi.controller;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sigebi.clases.ConsultasResult;
+import com.sigebi.clases.DiagnosticosResult;
 import com.sigebi.clases.Reporte;
 import com.sigebi.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
@@ -25,10 +28,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.dao.IConsultasDao;
 import com.sigebi.entity.Anamnesis;
+import com.sigebi.entity.Areas;
 import com.sigebi.entity.Consultas;
+import com.sigebi.entity.Diagnosticos;
+import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.TerminoEstandar;
+import com.sigebi.entity.Tratamientos;
 import com.sigebi.service.ConsultasService;
+import com.sigebi.service.EnfermedadesCie10Service;
 import com.sigebi.service.UtilesService;
 
 @RestController
@@ -44,6 +53,8 @@ public class ConsultasController {
 	private UtilesService utiles;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private EnfermedadesCie10Service enfermedadesCie10Service;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";
 
@@ -87,6 +98,9 @@ public class ConsultasController {
 		
 		Map<String, Object> response = new HashMap<>();
 		List<Consultas> consultasList = new ArrayList<Consultas>();
+		List<ConsultasResult> consultasListResult = new ArrayList<ConsultasResult>();
+		
+		ConsultasResult consultaResult = null;
 		
 		if ( consulta == null ) {
 			consulta = new Consultas();
@@ -100,11 +114,55 @@ public class ConsultasController {
 		try {
 			consultasList = consultasService.buscar(fromDate, toDate, consulta, orderBy, orderDir, pageable);
 			
-			for(Consultas consultaResult : consultasList) {
-				if( consultaResult.getDiagnosticos() != null
-						&& consultaResult.getDiagnosticos().getTerminoEstandarPrincipal() == null ) {
-					consultaResult.getDiagnosticos().setTerminoEstandarPrincipal(new TerminoEstandar());
+			for(Consultas consultaBusqueda : consultasList) {
+				consultaResult = new ConsultasResult();
+				
+				consultaResult.setConsultaId(consultaBusqueda.getConsultaId());
+				consultaResult.setFecha(consultaBusqueda.getFecha());
+				consultaResult.setPacienteId(consultaBusqueda.getPacienteId());
+				consultaResult.setFechaCreacion(consultaBusqueda.getFechaCreacion());
+				consultaResult.setUsuarioCreacion(consultaBusqueda.getUsuarioCreacion());
+				consultaResult.setFechaModificacion(consultaBusqueda.getFechaModificacion());
+				consultaResult.setUsuarioModificacion(consultaBusqueda.getUsuarioModificacion());
+				consultaResult.setAreas(consultaBusqueda.getAreas());
+				consultaResult.setTratamientos(consultaBusqueda.getTratamientos());
+				consultaResult.setFuncionarios(consultaBusqueda.getFuncionarios());
+				consultaResult.setAnamnesis(consultaBusqueda.getAnamnesis());
+				
+				if ( consultaBusqueda.getDiagnosticos() != null ) {
+					DiagnosticosResult diagnosticoResult = new DiagnosticosResult();
+					
+					diagnosticoResult.setDiagnosticoId(consultaBusqueda.getDiagnosticos().getDiagnosticoId());	
+					diagnosticoResult.setDiagnosticoPrincipal(consultaBusqueda.getDiagnosticos().getDiagnosticoPrincipal());
+					diagnosticoResult.setDiagnosticoSecundario(consultaBusqueda.getDiagnosticos().getDiagnosticoSecundario());					
+					diagnosticoResult.setFechaCreacion(consultaBusqueda.getDiagnosticos().getFechaCreacion());
+					diagnosticoResult.setUsuarioCreacion(consultaBusqueda.getDiagnosticos().getUsuarioCreacion());
+					diagnosticoResult.setFechaModificacion(consultaBusqueda.getDiagnosticos().getFechaModificacion());
+					diagnosticoResult.setUsuarioModificacion(consultaBusqueda.getDiagnosticos().getUsuarioModificacion());
+					
+					consultaResult.setDiagnosticos(diagnosticoResult);
+				}				
+				
+				if( consultaBusqueda.getDiagnosticos() != null
+						&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId() == null ) {
+					consultaResult.getDiagnosticos().setEnfermedadCie10Primaria(new EnfermedadesCie10());
+				}else if( consultaBusqueda.getDiagnosticos() != null
+						&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId() != null ) {
+					EnfermedadesCie10 cie10 = enfermedadesCie10Service.findById(consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId());
+					
+					consultaResult.getDiagnosticos().setEnfermedadCie10Primaria(cie10);
 				}
+				
+				if( consultaBusqueda.getDiagnosticos() != null
+						&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId() == null ) {
+					consultaResult.getDiagnosticos().setEnfermedadCie10Secundaria(new EnfermedadesCie10());
+				}else if( consultaBusqueda.getDiagnosticos() != null
+						&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId() != null ) {
+					EnfermedadesCie10 cie10 = enfermedadesCie10Service.findById(consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId());
+					
+					consultaResult.getDiagnosticos().setEnfermedadCie10Secundaria(cie10);
+				}
+				
 				if( consultaResult.getAnamnesis() == null ) {
 					consultaResult.setAnamnesis(new Anamnesis());
 				}
@@ -112,6 +170,8 @@ public class ConsultasController {
 						&& consultaResult.getAnamnesis().getMotivoConsulta() == null ) {
 					consultaResult.getAnamnesis().setMotivoConsulta(new MotivosConsulta());
 				}
+				
+				consultasListResult.add(consultaResult);
 			}
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
@@ -119,7 +179,7 @@ public class ConsultasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
 		
-        return new ResponseEntity<List<Consultas>>(consultasList, HttpStatus.OK);
+        return new ResponseEntity<List<ConsultasResult>>(consultasListResult, HttpStatus.OK);
     }
 
 	@PostMapping ("/reportes")
