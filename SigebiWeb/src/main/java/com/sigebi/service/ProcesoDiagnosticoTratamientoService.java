@@ -1,9 +1,10 @@
 package com.sigebi.service;
 
 import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
+import com.sigebi.entity.Consultas;
 
 public interface ProcesoDiagnosticoTratamientoService {
 		
-	public void save(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws Exception;
+	public Consultas save(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws Exception;
 	
 }

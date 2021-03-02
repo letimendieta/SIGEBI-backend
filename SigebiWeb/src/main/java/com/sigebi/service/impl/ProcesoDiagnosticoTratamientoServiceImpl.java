@@ -24,6 +24,7 @@ import com.sigebi.entity.Alergenos;
 import com.sigebi.entity.Alergias;
 import com.sigebi.entity.Anamnesis;
 import com.sigebi.entity.Antecedentes;
+import com.sigebi.entity.Consultas;
 import com.sigebi.entity.Diagnosticos;
 import com.sigebi.entity.Insumos;
 import com.sigebi.entity.MotivosConsulta;
@@ -71,7 +72,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 
 	@Override
 	@Transactional
-	public void save(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws Exception {
+	public Consultas save(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws Exception {
 		
 		//Guardar el Anamnesis
 		Anamnesis anamnesis = null;
@@ -142,15 +143,18 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		}
 		
 		//Guardar la consulta
+		Consultas consulta;
 		try {
 			procesoDiagnosticoTratamiento.getConsulta().setFecha(LocalDateTime.now());
 			procesoDiagnosticoTratamiento.getConsulta().setDiagnosticos(diagnostico);
 			procesoDiagnosticoTratamiento.getConsulta().setTratamientos(tratamiento);
 			procesoDiagnosticoTratamiento.getConsulta().setAnamnesis(anamnesis);
 			
-			consultaDao.save(procesoDiagnosticoTratamiento.getConsulta());
+			consulta = consultaDao.save(procesoDiagnosticoTratamiento.getConsulta());
 		} catch (Exception e) {
 			throw new Exception("Error al guardar la consulta " + e.getMessage());
-		}		
+		}
+		
+		return consulta;
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
+import com.sigebi.entity.Consultas;
 import com.sigebi.service.ProcesoDiagnosticoTratamientoService;
 
 @RestController
@@ -48,16 +49,18 @@ public class ProcesoDiagnosticoTratamientoController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-		
+		Consultas consulta;
 		try {
-			procesoDiagnosticoTratamientoService.save(procesoDiagnosticoTratamiento);
+			consulta = procesoDiagnosticoTratamientoService.save(procesoDiagnosticoTratamiento);			
+			
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "El diagnostico y el tratamiento han sido creados con éxito!");
+		response.put("mensaje", "La consulta ha sido creada con éxito!");
+		response.put("consulta", consulta);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
