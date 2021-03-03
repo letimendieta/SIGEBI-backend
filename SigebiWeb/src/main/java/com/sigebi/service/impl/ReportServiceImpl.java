@@ -3,6 +3,7 @@ package com.sigebi.service.impl;
 import com.sigebi.dao.IPersonasDao;
 import com.sigebi.service.ReportService;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -39,9 +40,14 @@ public class ReportServiceImpl implements ReportService {
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
         if (reportFormat.equalsIgnoreCase("html")) {
             JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "/receta.html");
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+            jasperViewer.setVisible(true);
         }
         if (reportFormat.equalsIgnoreCase("pdf")) {
             JasperExportManager.exportReportToPdfFile(jasperPrint, path + "/receta.pdf");
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+            jasperViewer.setVisible(true);
+
         }
 
         return "report generated in path : " + path;

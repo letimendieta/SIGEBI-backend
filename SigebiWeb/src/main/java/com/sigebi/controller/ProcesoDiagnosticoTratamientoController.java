@@ -35,7 +35,7 @@ public class ProcesoDiagnosticoTratamientoController {
     }
 	
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento,
+	public ResponseEntity<Map<String, Object>> insertar(@Valid @RequestBody ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento,
 			BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		

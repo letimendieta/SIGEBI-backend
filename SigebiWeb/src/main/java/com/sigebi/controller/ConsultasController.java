@@ -1,6 +1,7 @@
 package com.sigebi.controller;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -184,9 +185,10 @@ public class ConsultasController {
 
 	@PostMapping ("/reportes")
 	@ResponseBody
-	public ResponseEntity generateReport(@RequestBody Reporte reporte) throws FileNotFoundException, JRException, SQLException {
+	public ResponseEntity generateReport(@RequestBody Reporte reporte) throws IOException, JRException, SQLException {
 
-		reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));
+
+		String resultado = reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));
 
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
