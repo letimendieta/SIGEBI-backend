@@ -46,6 +46,10 @@ public class Personas {
 	@Column(name = "fecha_nacimiento")
 	private LocalDate fechaNacimiento;
 	
+	@Column(name = "lugar_nacimiento", length = 50)
+	@Size(max=50, message="maximo 50 caracteres")
+	private String lugarNacimiento;
+	
 	@Column(name = "direccion", length = 100)
 	@Size(max=100, message="maximo 100 caracteres")
 	private String direccion;
@@ -78,6 +82,10 @@ public class Personas {
 	@Column(name = "sexo", length = 1)
 	@Size(max=1, message="maximo 1 caracteres")
 	private String sexo;
+	
+	@Column(name = "profesion", length = 50)
+	@Size(max=50, message="maximo 50 caracteres")
+	private String profesion;
 	
 	@Column(name = "nacionalidad", length = 30)
 	@Size(max=30, message="maximo 30 caracteres")
@@ -168,12 +176,28 @@ public class Personas {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
+	public String getLugarNacimiento() {
+		return lugarNacimiento;
+	}
+
+	public void setLugarNacimiento(String lugarNacimiento) {
+		this.lugarNacimiento = lugarNacimiento;
+	}
+
 	public String getDireccion() {
 		return direccion;
 	}
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public String getProfesion() {
+		return profesion;
+	}
+
+	public void setProfesion(String profesion) {
+		this.profesion = profesion;
 	}
 
 	public String getEmail() {

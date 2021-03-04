@@ -22,6 +22,9 @@ public class SignosVitales {
 	@SequenceGenerator(name="seq_signos_vitales",sequenceName="seq_signos_vitales",allocationSize=1)
 	private Integer signoVitalId;
 	
+	@Column(name = "pulso")
+	private Integer pulso;
+	
 	@Column(name = "frecuencia_cardiaca")
 	private Integer frecuenciaCardiaca;
 	
@@ -42,6 +45,12 @@ public class SignosVitales {
 	
 	@Column(name = "talla")
 	private Double talla;
+	
+	@Column(name = "indice_masa_corporal")
+	private Double indiceMasaCorporal;
+	
+	@Column(name = "cia_abdominal")
+	private Double ciaAbdominal;
 	
 	@Column(name = "notas", length = 500)
 	@Size(max=500, message="maximo 500 caracteres")
@@ -88,6 +97,14 @@ public class SignosVitales {
 
 	public void setSignoVitalId(Integer signoVitalId) {
 		this.signoVitalId = signoVitalId;
+	}
+
+	public Integer getPulso() {
+		return pulso;
+	}
+
+	public void setPulso(Integer pulso) {
+		this.pulso = pulso;
 	}
 
 	public Integer getFrecuenciaCardiaca() {
@@ -144,6 +161,22 @@ public class SignosVitales {
 
 	public void setTalla(Double talla) {
 		this.talla = talla;
+	}
+
+	public Double getCiaAbdominal() {
+		return ciaAbdominal;
+	}
+
+	public void setCiaAbdominal(Double ciaAbdominal) {
+		this.ciaAbdominal = ciaAbdominal;
+	}
+
+	public Double getIndiceMasaCorporal() {
+		return indiceMasaCorporal;
+	}
+
+	public void setIndiceMasaCorporal(Double indiceMasaCorporal) {
+		this.indiceMasaCorporal = indiceMasaCorporal;
 	}
 
 	public Funcionarios getFuncionarios() {

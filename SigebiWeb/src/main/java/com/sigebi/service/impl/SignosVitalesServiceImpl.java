@@ -68,7 +68,7 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
             if ( signoVital.getSignoVitalId() != null ) {
                 p = cb.and(p, cb.equal(root.get("signoVitalId"), signoVital.getSignoVitalId()) );
             }
-            if( signoVital.getPacientes().getPacienteId() != null ){
+            if( signoVital.getPacientes() != null && signoVital.getPacientes().getPacienteId() != null ){
             	p = cb.and(p, cb.equal(root.get("pacientes"), signoVital.getPacientes().getPacienteId()) );
             }
                         

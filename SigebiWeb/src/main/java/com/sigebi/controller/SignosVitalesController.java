@@ -76,6 +76,10 @@ public class SignosVitalesController {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if( signosVitalesList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
@@ -93,6 +97,10 @@ public class SignosVitalesController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -113,22 +121,9 @@ public class SignosVitalesController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		/*JSONObject jo = new JSONObject(filtros);
-		String fechaString = jo.length()>0 && !jo.get("fecha").equals(null) ? (String) jo.get("fecha") : "";
-		LocalDateTime fecha = null;
-		
-		//se quita fecha de filtros por que da error al mapear
-		if(!fechaString.equals(null) && !fechaString.equals("")) {
-			String fechaAquitar = '"' + (String) jo.get("fecha") + '"';
-			filtros = filtros.replace(fechaAquitar, "null");			
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-			fecha = LocalDateTime.parse(fechaString, format);					
-		}*/
-		
 		SignosVitales signoVital = null;
 		if(!utiles.isNullOrBlank(filtros)) {
 			signoVital = objectMapper.readValue(filtros, SignosVitales.class);
-			//signoVital.setFecha(fecha);
 		}
 		
 		Map<String, Object> response = new HashMap<>();
@@ -152,9 +147,13 @@ public class SignosVitalesController {
 					}
 				}				
 				funcionariosList = funcionariosService.buscar(null, null, signoVital.getFuncionarios(), personasId, PageRequest.of(0, 20));
-			} catch (DataAccessException e) {
+			} catch (DataAccessException  e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}  catch( Exception ex ){
+				response.put("mensaje", "Ocurrio un error ");
+				response.put("error", ex.getMessage());
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			for( Funcionarios funcionario : funcionariosList ){
@@ -182,6 +181,10 @@ public class SignosVitalesController {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			} catch( Exception ex ){
+				response.put("mensaje", "Ocurrio un error ");
+				response.put("error", ex.getMessage());
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
@@ -193,6 +196,10 @@ public class SignosVitalesController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta de los datos del signoVital");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 						
@@ -269,6 +276,10 @@ public class SignosVitalesController {
 			response.put("mensaje", "Error al actualizar el signoVital en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El signoVital ha sido actualizado con éxito!");
@@ -299,6 +310,10 @@ public class SignosVitalesController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el signoVital de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
