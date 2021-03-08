@@ -63,7 +63,11 @@
 	</parameter>
 	<parameter name="consulta_id" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select per.cedula,per.nombres, per.apellidos,c.consulta_id
+		<![CDATA[select per.cedula,per.nombres, per.apellidos,c.consulta_id,
+(select (per.nombres||' '||per.apellidos) as funcionario from funcionarios f
+join personas per 
+on f.persona_id=per.persona_id 
+where f.funcionario_id= c.funcionario_id)
 from consultas c
 join pacientes p
 on  c.paciente_id=p.paciente_id
@@ -87,6 +91,7 @@ where c.consulta_id=$P{consultaid}]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="personas"/>
 	</field>
 	<field name="consulta_id" class="java.lang.Integer"/>
+	<field name="funcionario" class="java.lang.String"/>
 	<group name="nombres">
 		<groupExpression><![CDATA[$F{nombres}]]></groupExpression>
 	</group>
@@ -129,14 +134,14 @@ where c.consulta_id=$P{consultaid}]]>
 				<text><![CDATA[Nº Reg. Prof.:12345]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="90" width="154" height="25" uuid="139ebe8d-25b0-411e-986c-270015400874">
+				<reportElement x="390" y="90" width="40" height="25" uuid="139ebe8d-25b0-411e-986c-270015400874">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Dr. Juan Perez]]></text>
+				<text><![CDATA[Dr.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="410" y="130" width="120" height="15" uuid="2d2f365d-7b12-4a8f-990d-ff528a2660bc"/>
@@ -198,6 +203,13 @@ where c.consulta_id=$P{consultaid}]]>
 				<reportElement x="460" y="0" width="95" height="80" uuid="9a57ac80-09d5-4c20-9302-43b68be37bd5"/>
 				<imageExpression><![CDATA["Logo_bienestar.jpg"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="430" y="90" width="100" height="25" uuid="d336cb85-46cf-422f-b58a-9ab12b1f4853"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funcionario}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<detail>
