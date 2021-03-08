@@ -65,6 +65,10 @@ public class PersonasController {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if( personasList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
@@ -96,6 +100,10 @@ public class PersonasController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -160,6 +168,10 @@ public class PersonasController {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "La persona ha sido creada con éxito!");
@@ -204,6 +216,10 @@ public class PersonasController {
 			response.put("mensaje", "Error al actualizar la persona en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "La persona ha sido actualizada con éxito!");
@@ -234,6 +250,10 @@ public class PersonasController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar la persona de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

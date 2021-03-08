@@ -77,6 +77,10 @@ public class ProcedimientosController {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if( procedimientosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
@@ -94,6 +98,10 @@ public class ProcedimientosController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -157,6 +165,10 @@ public class ProcedimientosController {
 				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			} catch( Exception ex ){
+				response.put("mensaje", "Ocurrio un error ");
+				response.put("error", ex.getMessage());
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
@@ -183,6 +195,10 @@ public class ProcedimientosController {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			} catch( Exception ex ){
+				response.put("mensaje", "Ocurrio un error ");
+				response.put("error", ex.getMessage());
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
@@ -195,6 +211,10 @@ public class ProcedimientosController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta de los datos del procedimiento");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 						
@@ -271,6 +291,10 @@ public class ProcedimientosController {
 			response.put("mensaje", "Error al actualizar el procedimiento en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El procedimiento ha sido actualizado con éxito!");
@@ -301,6 +325,10 @@ public class ProcedimientosController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el procedimiento de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

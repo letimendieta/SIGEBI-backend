@@ -71,6 +71,9 @@ public class TratamientosInsumosServiceImpl implements TratamientosInsumosServic
             if ( tratamientoInsumo.getTratamientoInsumoId() != null ) {
                 p = cb.and(p, cb.equal(root.get("tratamientoInsumoId"), tratamientoInsumo.getTratamientoInsumoId()) );
             }
+            if ( tratamientoInsumo.getTratamientos() != null && tratamientoInsumo.getTratamientos().getTratamientoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("tratamientos"), tratamientoInsumo.getTratamientos().getTratamientoId()) );
+            }
             if (!StringUtils.isEmpty(tratamientoInsumo.getCantidad())) {
             	p = cb.and(p, cb.equal(root.get("cantidad"), tratamientoInsumo.getCantidad()) );
             }

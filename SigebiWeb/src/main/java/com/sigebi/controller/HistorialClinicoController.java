@@ -69,6 +69,10 @@ public class HistorialClinicoController {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if( historialClinicosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
@@ -86,6 +90,10 @@ public class HistorialClinicoController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -124,6 +132,10 @@ public class HistorialClinicoController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta de los datos del historialClinico");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -175,12 +187,14 @@ public class HistorialClinicoController {
 				if(pacienteDb == null) {
 					return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
 				}
-				
-				//historialClinico.setPacienteId(pacienteDb.getPacienteId());				
-				
+								
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			} catch( Exception ex ){
+				response.put("mensaje", "Ocurrio un error ");
+				response.put("error", ex.getMessage());
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -191,21 +205,20 @@ public class HistorialClinicoController {
 			response.put("mensaje", "Error al realizar la consulta de los datos del historialClinico");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		for( HistorialClinico historialClin : historialClinicosList ){
 			
 				HistorialClinicoPaciente busquedaHp = new HistorialClinicoPaciente();
-				Pacientes pacienteExample = new Pacientes();
 				Pacientes pacienteVacio = new Pacientes();
 				List<Pacientes>  pacienteList = new ArrayList<Pacientes>();		
 				
 				busquedaHp.setHistorialClinico(historialClin);
 				
-				/*if(historialClin.getPacienteId() != null){
-					pacienteExample.setPacienteId(historialClin.getPacienteId());
-					pacienteList = pacientesService.buscarNoPaginable(null, null, pacienteExample, null);
-				}*/
 				if( !pacienteList.isEmpty() ) {
 					busquedaHp.setPaciente(pacienteList.get(0));
 				}else {
@@ -326,6 +339,10 @@ public class HistorialClinicoController {
 			response.put("mensaje", "Error al actualizar el historialClinico en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El historialClinico ha sido actualizado con éxito!");
@@ -356,6 +373,10 @@ public class HistorialClinicoController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el historialClinico de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

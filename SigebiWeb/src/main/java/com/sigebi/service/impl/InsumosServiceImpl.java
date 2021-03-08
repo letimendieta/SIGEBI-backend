@@ -65,13 +65,13 @@ public class InsumosServiceImpl implements InsumosService{
                 p = cb.and(p, cb.equal(root.get("insumoId"), insumo.getInsumoId()) );
             }
             if (!StringUtils.isEmpty(insumo.getCodigo())) {
-                p = cb.and(p, cb.like(root.get("codigo"), "%" + insumo.getCodigo() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("codigo")), "%" + insumo.getCodigo().toLowerCase() + "%"));
             }
             if (!StringUtils.isEmpty(insumo.getTipo())) {
                 p = cb.and(p, cb.like(root.get("tipo"), "%" + insumo.getTipo() + "%"));
             }
             if (!StringUtils.isEmpty(insumo.getDescripcion())) {
-                p = cb.and(p, cb.like(root.get("descripcion"), "%" + insumo.getDescripcion() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("descripcion")), "%" + insumo.getDescripcion().toLowerCase() + "%"));
             }
             if ( insumo.getFechaVencimiento() != null ) {
                 p = cb.and(p, cb.equal(root.get("fechaVencimiento"), insumo.getFechaVencimiento()) );
