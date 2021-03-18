@@ -266,7 +266,7 @@ public class HistorialClinicoController {
 		
 		if ( historialClinicoDb != null && !historialClinicoDb.isEmpty() ) {
 			response.put("mensaje", "Error: El paciente con id " + paciente.getPacienteId() 
-			+ " ya cuenta con historial clinico con id " + historialClinicoDb );
+			+ " ya cuenta con historial clinico con id " + historialClinicoDb.get(0).getHistorialClinicoId() );
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 				
