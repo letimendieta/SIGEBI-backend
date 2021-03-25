@@ -13,25 +13,51 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigebi.clases.FichaMedica;
+import com.sigebi.clases.Globales;
+import com.sigebi.clases.ProcesoPacienteFichaClinica;
+import com.sigebi.dao.IAlergiasDao;
+import com.sigebi.dao.IAntecedentesDao;
 import com.sigebi.dao.IPacientesDao;
 import com.sigebi.dao.IPersonasDao;
+import com.sigebi.dao.IVacunacionesDao;
+import com.sigebi.dao.IVacunasDao;
+import com.sigebi.entity.Alergenos;
+import com.sigebi.entity.Alergias;
+import com.sigebi.entity.Antecedentes;
 import com.sigebi.entity.Pacientes;
+import com.sigebi.entity.PatologiasProcedimientos;
 import com.sigebi.entity.Personas;
+import com.sigebi.entity.Vacunaciones;
+import com.sigebi.entity.Vacunas;
+import com.sigebi.service.AlergenosService;
 import com.sigebi.service.PacientesService;
+import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.PersonasService;
+import com.sigebi.service.VacunasService;
 
 
 @Service
 public class PacientesServiceImpl implements PacientesService{
 
 	@Autowired
-	private IPacientesDao pacientesDao;
-	
+	private IPacientesDao pacientesDao;	
 	@Autowired
-	private IPersonasDao personasDao;
-	
+	private IPersonasDao personasDao;	
 	@Autowired
-	private PersonasService personasService;
+	private PersonasService personasService;	
+	@Autowired
+	private AlergenosService alergenosService;
+	@Autowired
+	private IAlergiasDao alergiasDao;
+	@Autowired
+	private PatologiasProcedimientosService patologiasProcedimientosService;
+	@Autowired
+	private IAntecedentesDao antecedentesDao;
+	@Autowired
+	private VacunasService vacunasService;
+	@Autowired
+	private IVacunacionesDao vacunacionesDao;
 	
 	public PacientesServiceImpl(IPacientesDao pacientesDao) {
         this.pacientesDao = pacientesDao;
@@ -102,6 +128,70 @@ public class PacientesServiceImpl implements PacientesService{
 		}
 		
 		return pacientesDao.save(paciente);
+	}
+	
+	@Transactional
+	public Pacientes guardarPacienteFichaClinica(ProcesoPacienteFichaClinica pacienteFichaClinica) throws Exception {
+				
+		Pacientes paciente = guardar(pacienteFichaClinica.getPaciente());
+		
+		//Insertar la ficha clinica	
+		try {
+			for(Integer alergenoId : pacienteFichaClinica.getAlergenosIdList()) {
+				Alergias alergia = new Alergias();
+				
+				Alergenos alergeno = alergenosService.findById(alergenoId);
+				
+				alergia.setAlergenos(alergeno);
+				alergia.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				alergia.setPacienteId(paciente.getPacienteId());
+				
+				alergiasDao.save(alergia);				
+			}
+			
+			for(Integer patologiaProcedimientoId : pacienteFichaClinica.getPatologiasProcedimientosIdList()) {
+				Antecedentes antecedentes = new Antecedentes();
+				PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
+				
+				patologiaProcedimiento = patologiasProcedimientosService.findById(patologiaProcedimientoId);
+				
+				antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
+				antecedentes.setPacienteId(paciente.getPacienteId());
+				antecedentes.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				antecedentes.setTipo(Globales.TiposAntecedentes.PERSONAL);
+				antecedentesDao.save(antecedentes);				
+			}
+			
+			for(Integer patologiaFamiliarId : pacienteFichaClinica.getPatologiasFamiliaresIdList()) {
+				Antecedentes antecedentes = new Antecedentes();
+				PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
+				
+				patologiaProcedimiento = patologiasProcedimientosService.findById(patologiaFamiliarId);
+				
+				antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
+				antecedentes.setPacienteId(paciente.getPacienteId());
+				antecedentes.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				antecedentes.setTipo(Globales.TiposAntecedentes.FAMILIAR);
+				antecedentesDao.save(antecedentes);				
+			}
+			
+			for(Integer vacunaId : pacienteFichaClinica.getVacunasIdList()) {
+				Vacunaciones vacunaciones = new Vacunaciones();
+				Vacunas vacuna = new Vacunas();
+				
+				vacuna = vacunasService.findById(vacunaId);
+				
+				vacunaciones.setVacunas(vacuna);
+				vacunaciones.setPacienteId(paciente.getPacienteId());
+				vacunaciones.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				vacunacionesDao.save(vacunaciones);				
+			}
+			
+		} catch (Exception e) {
+			//throw new Exception("Error al insertar la ficha del paciente " + e.getMessage());
+		}
+		
+		return paciente;
 	}
 	
 	@Transactional

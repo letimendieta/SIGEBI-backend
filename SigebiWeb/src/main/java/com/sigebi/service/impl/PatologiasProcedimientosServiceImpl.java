@@ -80,6 +80,9 @@ public class PatologiasProcedimientosServiceImpl implements PatologiasProcedimie
             if (!StringUtils.isEmpty(patologiaProcedimiento.getEstado())) {
                 p = cb.and(p, cb.like(root.get("estado"), "%" + patologiaProcedimiento.getEstado() + "%"));
             }
+            if (!StringUtils.isEmpty(patologiaProcedimiento.getTipo())) {
+                p = cb.and(p, cb.like(root.get("tipo"), "%" + patologiaProcedimiento.getTipo() + "%"));
+            }
                         
             String orden = "patologiaProcedimientoId";
             if (!StringUtils.isEmpty(orderBy)) {

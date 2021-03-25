@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.clases.ProcesoPacienteFichaClinica;
 import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
@@ -220,6 +221,43 @@ public class PacientesController {
 		
 		try {
 			pacienteNew = pacientesService.guardar(paciente);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al guardar en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch( Exception ex ){
+			response.put("mensaje", "Ocurrio un error ");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+						
+		response.put("mensaje", "El paciente ha sido creado con éxito!");
+		response.put("paciente", pacienteNew);
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/paciente-ficha-clinica")
+	public ResponseEntity<?> insertarPacienteFichaClinica(@Valid @RequestBody ProcesoPacienteFichaClinica pacienteFichaClinica, BindingResult result) {
+		Map<String, Object> response = new HashMap<>();		
+		Pacientes pacienteNew = null;
+		if( result.hasErrors() ) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}		
+	
+		if ( pacienteFichaClinica.getPaciente().getPersonas() == null ) {
+			response.put("mensaje", "Error: Datos de la persona es requerido");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		try {
+			pacienteNew = pacientesService.guardarPacienteFichaClinica(pacienteFichaClinica);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

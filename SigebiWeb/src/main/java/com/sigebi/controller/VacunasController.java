@@ -31,32 +31,32 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.Vacunaciones;
+import com.sigebi.entity.Vacunas;
+import com.sigebi.service.VacunasService;
 import com.sigebi.service.UtilesService;
-import com.sigebi.service.VacunacionesService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/vacunaciones")
-public class VacunacionesController {
+@RequestMapping("/auth/vacunas")
+public class VacunasController {
 
 	@Autowired
-	private VacunacionesService vacunacionesService;
+	private VacunasService vacunasService;
 	@Autowired
 	private UtilesService utiles;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public VacunacionesController(VacunacionesService vacunacionesService) {
-        this.vacunacionesService = vacunacionesService;
+	public VacunasController(VacunasService vacunasService) {
+        this.vacunasService = vacunasService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<Vacunaciones> vacunacionesList = null;
+		List<Vacunas> vacunasList = null;
 		try {
-			vacunacionesList = vacunacionesService.findAll();
+			vacunasList = vacunasService.findAll();
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -66,19 +66,19 @@ public class VacunacionesController {
 			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if( vacunacionesList.isEmpty()) {
+		if( vacunasList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<Vacunaciones>>(vacunacionesList, HttpStatus.OK);
+		return new ResponseEntity<List<Vacunas>>(vacunasList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		Vacunaciones vacunaciones = null;
+		Vacunas vacuna = null;
 		try {
-			vacunaciones = vacunacionesService.findById(id);
+			vacuna = vacunasService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -89,16 +89,16 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if( vacunaciones == null ) {
-			response.put("mensaje", "El vacunaciones con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( vacuna == null ) {
+			response.put("mensaje", "El vacuna con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Vacunaciones>(vacunaciones, HttpStatus.OK);
+		return new ResponseEntity<Vacunas>(vacuna, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarVacunaciones(
+    public ResponseEntity<?> buscarVacunas(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -110,25 +110,25 @@ public class VacunacionesController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		Vacunaciones vacunaciones = null;
+		Vacunas vacuna = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			vacunaciones = objectMapper.readValue(filtros, Vacunaciones.class);
+			vacuna = objectMapper.readValue(filtros, Vacunas.class);
 		}				
 		
 		Map<String, Object> response = new HashMap<>();
-		List<Vacunaciones> vacunacionesList = new ArrayList<Vacunaciones>();
+		List<Vacunas> vacunasList = new ArrayList<Vacunas>();
 		
-		if ( vacunaciones == null ) {
-			vacunaciones = new Vacunaciones();
+		if ( vacuna == null ) {
+			vacuna = new Vacunas();
 		}
 		if ( "-1".equals(size) ) {
-			int total = vacunacionesService.count();
+			int total = vacunasService.count();
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
 		try {
-			vacunacionesList = vacunacionesService.buscar(fromDate, toDate, vacunaciones, orderBy, orderDir, pageable);
+			vacunasList = vacunasService.buscar(fromDate, toDate, vacuna, orderBy, orderDir, pageable);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -137,15 +137,15 @@ public class VacunacionesController {
 			response.put("mensaje", "Ocurrio un error ");
 			response.put("error", ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}	
+		}		
 		
-        return new ResponseEntity<List<Vacunaciones>>(vacunacionesList, HttpStatus.OK);
+        return new ResponseEntity<List<Vacunas>>(vacunasList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Vacunaciones vacunaciones, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Vacunas vacuna, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		Vacunaciones vacunacionesNew = null;
+		Vacunas vacunaNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -156,10 +156,10 @@ public class VacunacionesController {
 			
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}		
+		}
 		
 		try {
-			vacunacionesNew = vacunacionesService.save(vacunaciones);
+			vacunaNew = vacunasService.save(vacuna);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -170,22 +170,22 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "Vacunaciones ha sido creada con éxito!");
-		response.put("vacunaciones", vacunacionesNew);
+		response.put("mensaje", "El vacuna ha sido creada con éxito!");
+		response.put("vacuna", vacunaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Vacunaciones vacunaciones, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Vacunas vacuna, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( vacunaciones.getVacunacionId() == null ) {
-			response.put("mensaje", "Error: vacunaciones id es requerido");
+		if ( vacuna.getVacunaId() == null ) {
+			response.put("mensaje", "Error: vacuna id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Vacunaciones vacunacionesActual = vacunacionesService.findById(vacunaciones.getVacunacionId());
-		Vacunaciones vacunacionesUpdated = null;
+		Vacunas vacunaActual = vacunasService.findById(vacuna.getVacunaId());
+		Vacunas vacunaUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -198,18 +198,18 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( vacunacionesActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el vacunaciones ID: "
-					.concat(String.valueOf(vacunaciones.getVacunacionId()).concat(" no existe en la base de datos!")));
+		if ( vacunaActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el vacuna ID: "
+					.concat(String.valueOf(vacuna.getVacunaId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 
-			vacunacionesUpdated = vacunacionesService.save(vacunaciones);;
+			vacunaUpdated = vacunasService.save(vacuna);;
 
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar las vacunaciones en la base de datos");
+			response.put("mensaje", "Error al actualizar el vacuna en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch( Exception ex ){
@@ -218,8 +218,8 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "Vacunaciones ha sido actualizada con éxito!");
-		response.put("vacunaciones", vacunacionesUpdated);
+		response.put("mensaje", "El vacuna ha sido actualizada con éxito!");
+		response.put("vacuna", vacunaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -229,22 +229,22 @@ public class VacunacionesController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: vacunacion id es requerido");
+			response.put("mensaje", "Error: vacuna id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Vacunaciones vacunacionesActual = vacunacionesService.findById(id);
+		Vacunas vacunaActual = vacunasService.findById(id);
 		
-		if ( vacunacionesActual == null ) {
-			response.put("mensaje", "La vacunaciones ID: "
+		if ( vacunaActual == null ) {
+			response.put("mensaje", "La vacuna ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		try {
-			vacunacionesService.delete(id);
+			vacunasService.delete(id);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar la vacunacion de la base de datos");
+			response.put("mensaje", "Error al eliminar el vacuna de la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch( Exception ex ){
@@ -253,7 +253,7 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "Vacunacion eliminada con éxito!");
+		response.put("mensaje", "Vacuna eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

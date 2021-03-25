@@ -52,19 +52,13 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	@Autowired
 	private IConsultasDao consultaDao;
 	@Autowired
-	private IAlergenosDao alergenosDao;
-	@Autowired
 	private AlergenosService alergenosService;
 	@Autowired
 	private IAlergiasDao alergiasDao;
 	@Autowired
-	private IPatologiasProcedimientosDao patologiasProcedimientosDao;
-	@Autowired
 	private PatologiasProcedimientosService patologiasProcedimientosService;
 	@Autowired
 	private IAntecedentesDao antecedentesDao;
-	@Autowired
-	private IMotivosConsultaDao motivosConsultaDao;
 	@Autowired
 	private MotivosConsultaService motivosConsultaService;
 	
@@ -94,7 +88,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			throw new Exception("Error al guardar el diagnostico " + e.getMessage());
 		}
 		
-		//Actualizar la ficha medica	
+		//Actualizar la ficha clinica	
 		try {
 			for(FichaMedica fichaMedica : procesoDiagnosticoTratamiento.getFichaMedicaList()) {
 				if( Globales.TipoDatoFichaMedica.ALERGIAS.equals( fichaMedica.getTipo()) ) {

@@ -36,6 +36,10 @@ public class PatologiasProcedimientos {
 	@Size(max=1, message="maximo 1 caracteres")
 	private String estado;
 	
+	@Column(name = "tipo", length = 20)
+	@NotEmpty(message ="no puede estar vacio")
+	private String tipo;
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -90,6 +94,14 @@ public class PatologiasProcedimientos {
 		this.estado = estado;
 	}	
 
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
 	}
@@ -120,8 +132,7 @@ public class PatologiasProcedimientos {
 
 	public void setUsuarioModificacion(String usuarioModificacion) {
 		this.usuarioModificacion = usuarioModificacion;
-	}	
-	
+	}		
 	
 	
 }

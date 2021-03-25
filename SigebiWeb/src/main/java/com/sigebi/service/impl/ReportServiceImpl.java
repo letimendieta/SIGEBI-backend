@@ -25,7 +25,7 @@ public class ReportServiceImpl implements ReportService {
 
 
     public String exportReport(String reportFormat, Integer consultaid) throws FileNotFoundException, JRException, SQLException {
-        String path = "/home/leticia/JaspersoftWorkspace/MyReports";
+        String path = "/home/uso/JaspersoftWorkspace/MyReports";
         //List<Personas> personas = iPersonasDao.findByCedula("5432144");
         //load file and compile it
         File file = ResourceUtils.getFile("classpath:receta.jrxml");
