@@ -9,15 +9,17 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.clases.FichaMedica;
 import com.sigebi.clases.Globales;
-import com.sigebi.clases.ProcesoPacienteFichaClinica;
+import com.sigebi.clases.ProcesoPacienteHistorialClinico;
 import com.sigebi.dao.IAlergiasDao;
 import com.sigebi.dao.IAntecedentesDao;
+import com.sigebi.dao.IHistorialClinicoDao;
 import com.sigebi.dao.IPacientesDao;
 import com.sigebi.dao.IPersonasDao;
 import com.sigebi.dao.IVacunacionesDao;
@@ -25,6 +27,7 @@ import com.sigebi.dao.IVacunasDao;
 import com.sigebi.entity.Alergenos;
 import com.sigebi.entity.Alergias;
 import com.sigebi.entity.Antecedentes;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.PatologiasProcedimientos;
 import com.sigebi.entity.Personas;
@@ -58,6 +61,8 @@ public class PacientesServiceImpl implements PacientesService{
 	private VacunasService vacunasService;
 	@Autowired
 	private IVacunacionesDao vacunacionesDao;
+	@Autowired
+	private IHistorialClinicoDao historialClinicoDao;
 	
 	public PacientesServiceImpl(IPacientesDao pacientesDao) {
         this.pacientesDao = pacientesDao;
@@ -131,25 +136,28 @@ public class PacientesServiceImpl implements PacientesService{
 	}
 	
 	@Transactional
-	public Pacientes guardarPacienteFichaClinica(ProcesoPacienteFichaClinica pacienteFichaClinica) throws Exception {
+	public Pacientes guardarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws Exception {
 				
-		Pacientes paciente = guardar(pacienteFichaClinica.getPaciente());
+		Pacientes paciente = guardar(pacienteHistorialClinico.getPaciente());
 		
-		//Insertar la ficha clinica	
+		//Insertar el historial clinico
 		try {
-			for(Integer alergenoId : pacienteFichaClinica.getAlergenosIdList()) {
+			pacienteHistorialClinico.getHistorialClinico().setPacienteId(paciente.getPacienteId());			
+			historialClinicoDao.save(pacienteHistorialClinico.getHistorialClinico());
+			
+			for(Integer alergenoId : pacienteHistorialClinico.getAlergenosIdList()) {
 				Alergias alergia = new Alergias();
 				
 				Alergenos alergeno = alergenosService.findById(alergenoId);
 				
 				alergia.setAlergenos(alergeno);
-				alergia.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				alergia.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
 				alergia.setPacienteId(paciente.getPacienteId());
 				
 				alergiasDao.save(alergia);				
 			}
 			
-			for(Integer patologiaProcedimientoId : pacienteFichaClinica.getPatologiasProcedimientosIdList()) {
+			for(Integer patologiaProcedimientoId : pacienteHistorialClinico.getPatologiasProcedimientosIdList()) {
 				Antecedentes antecedentes = new Antecedentes();
 				PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
 				
@@ -157,12 +165,12 @@ public class PacientesServiceImpl implements PacientesService{
 				
 				antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
 				antecedentes.setPacienteId(paciente.getPacienteId());
-				antecedentes.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				antecedentes.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
 				antecedentes.setTipo(Globales.TiposAntecedentes.PERSONAL);
 				antecedentesDao.save(antecedentes);				
 			}
 			
-			for(Integer patologiaFamiliarId : pacienteFichaClinica.getPatologiasFamiliaresIdList()) {
+			for(Integer patologiaFamiliarId : pacienteHistorialClinico.getPatologiasFamiliaresIdList()) {
 				Antecedentes antecedentes = new Antecedentes();
 				PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
 				
@@ -170,12 +178,12 @@ public class PacientesServiceImpl implements PacientesService{
 				
 				antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
 				antecedentes.setPacienteId(paciente.getPacienteId());
-				antecedentes.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				antecedentes.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
 				antecedentes.setTipo(Globales.TiposAntecedentes.FAMILIAR);
 				antecedentesDao.save(antecedentes);				
 			}
 			
-			for(Integer vacunaId : pacienteFichaClinica.getVacunasIdList()) {
+			for(Integer vacunaId : pacienteHistorialClinico.getVacunasIdList()) {
 				Vacunaciones vacunaciones = new Vacunaciones();
 				Vacunas vacuna = new Vacunas();
 				
@@ -183,12 +191,223 @@ public class PacientesServiceImpl implements PacientesService{
 				
 				vacunaciones.setVacunas(vacuna);
 				vacunaciones.setPacienteId(paciente.getPacienteId());
-				vacunaciones.setUsuarioCreacion(pacienteFichaClinica.getPaciente().getUsuarioCreacion());
+				vacunaciones.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
 				vacunacionesDao.save(vacunaciones);				
 			}
 			
 		} catch (Exception e) {
-			//throw new Exception("Error al insertar la ficha del paciente " + e.getMessage());
+			//throw new Exception("Error al insertar el historial clinico " + e.getMessage());
+		}
+		
+		return paciente;
+	}
+	
+	@Transactional
+	public Pacientes actualizarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws Exception {
+				
+		Pacientes paciente = actualizar(pacienteHistorialClinico.getPaciente());
+		
+		//Actualizar el historial clinico
+		try {
+			//pacienteHistorialClinico.getHistorialClinico().setPacienteId(paciente.getPacienteId());			
+			historialClinicoDao.save(pacienteHistorialClinico.getHistorialClinico());			
+			
+			/*
+			 * Alergias
+			 * */
+			List<Alergias> alergiasListDb = alergiasDao.findByPacienteId(paciente.getPacienteId());
+			
+			boolean existeId = false;
+			for(Alergias alergiaDb : alergiasListDb) {
+				for(Integer alergenoId : pacienteHistorialClinico.getAlergenosIdList()) {
+					if(alergiaDb.getAlergenos().getAlergenoId().equals(alergenoId)) {
+						existeId = true;
+						break;
+					}
+				}
+				//Eliminar alergeno no chequeado de las alergias
+				if(!existeId) {
+					alergiasDao.deleteById(alergiaDb.getAlergiaId());
+				}
+				
+				existeId = false;
+			}
+			
+			existeId = false;
+			for(Integer alergenoId : pacienteHistorialClinico.getAlergenosIdList()) {
+				
+				for(Alergias alergiaDb : alergiasListDb) {
+					if(alergenoId.equals(alergiaDb.getAlergenos().getAlergenoId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Agregar nuevo alergeno como alergia
+				if(!existeId) {
+					Alergias alergia = new Alergias();
+					
+					Alergenos alergeno = alergenosService.findById(alergenoId);
+					
+					alergia.setAlergenos(alergeno);
+					alergia.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+					alergia.setPacienteId(paciente.getPacienteId());
+					
+					alergiasDao.save(alergia);	
+				}
+				existeId = false;
+			}
+			
+			/*
+			 * Antecedentes
+			 * */
+			List<Antecedentes> antecedentesPersonalesListDb = antecedentesDao.findByPacienteId(paciente.getPacienteId());
+			
+			List<Antecedentes> antecedentesListDb = new ArrayList<Antecedentes>();
+			for(Antecedentes antecedenteDb : antecedentesPersonalesListDb) {
+				if(Globales.TiposAntecedentes.PERSONAL.equals(antecedenteDb.getTipo())) {
+					antecedentesListDb.add(antecedenteDb);
+				}
+			}
+			
+			existeId = false;
+			for(Antecedentes antecedenteDb : antecedentesListDb) {
+				for(Integer patologiaProcedimientoId : pacienteHistorialClinico.getPatologiasProcedimientosIdList()) {
+					if(antecedenteDb.getPatologiasProcedimientos().getPatologiaProcedimientoId().equals(patologiaProcedimientoId)) {
+						existeId = true;
+						break;
+					}
+				}
+				//Eliminar alergeno no chequeado de las alergias
+				if(!existeId) {
+					antecedentesDao.deleteById(antecedenteDb.getAntecedenteId());
+				}
+				
+				existeId = false;
+			}
+			
+			existeId = false;
+			for(Integer patologiaProcedimientoId : pacienteHistorialClinico.getPatologiasProcedimientosIdList()) {
+				for(Antecedentes antecedenteDb : antecedentesListDb) {
+					if(patologiaProcedimientoId.equals(antecedenteDb.getPatologiasProcedimientos().getPatologiaProcedimientoId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Agregar nueva patologia/procedimiento como antecedente
+				if(!existeId) {
+					Antecedentes antecedentes = new Antecedentes();
+					PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
+					
+					patologiaProcedimiento = patologiasProcedimientosService.findById(patologiaProcedimientoId);
+					
+					antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
+					antecedentes.setPacienteId(paciente.getPacienteId());
+					antecedentes.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+					antecedentes.setTipo(Globales.TiposAntecedentes.PERSONAL);
+					antecedentesDao.save(antecedentes);				
+				}
+				existeId = false;
+			}
+			
+			/*
+			 * Antecedentes familiares
+			 * */
+			List<Antecedentes> antecedentesFamiliarListDb = antecedentesDao.findByPacienteId(paciente.getPacienteId());
+			
+			List<Antecedentes> antecedentesFamiliaresListDb = new ArrayList<Antecedentes>();
+			for(Antecedentes antecedenteDb : antecedentesFamiliarListDb) {
+				if(Globales.TiposAntecedentes.FAMILIAR.equals(antecedenteDb.getTipo())) {
+					antecedentesFamiliaresListDb.add(antecedenteDb);
+				}
+			}
+			
+			existeId = false;
+			for(Antecedentes antecedenteFamiliarDb : antecedentesFamiliaresListDb) {
+				for(Integer patologiaId : pacienteHistorialClinico.getPatologiasFamiliaresIdList()) {
+					if(antecedenteFamiliarDb.getPatologiasProcedimientos().getPatologiaProcedimientoId().equals(patologiaId)) {
+						existeId = true;
+						break;
+					}
+				}
+				//Eliminar patologia no chequeado de los antecedentes familiares
+				if(!existeId) {
+					antecedentesDao.deleteById(antecedenteFamiliarDb.getAntecedenteId());
+				}
+				
+				existeId = false;
+			}
+			
+			existeId = false;
+			for(Integer patologiaFamiliarId : pacienteHistorialClinico.getPatologiasFamiliaresIdList()) {
+				for(Antecedentes antecedenteFamiliarDb : antecedentesFamiliaresListDb) {
+					if(patologiaFamiliarId.equals(antecedenteFamiliarDb.getPatologiasProcedimientos().getPatologiaProcedimientoId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Agregar nueva patologia como antecedente familiar
+				if(!existeId) {
+					Antecedentes antecedentes = new Antecedentes();
+					PatologiasProcedimientos patologiaProcedimiento = new PatologiasProcedimientos();
+					
+					patologiaProcedimiento = patologiasProcedimientosService.findById(patologiaFamiliarId);
+					
+					antecedentes.setPatologiasProcedimientos(patologiaProcedimiento);
+					antecedentes.setPacienteId(paciente.getPacienteId());
+					antecedentes.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+					antecedentes.setTipo(Globales.TiposAntecedentes.FAMILIAR);
+					antecedentesDao.save(antecedentes);	
+				}
+				existeId = false;
+			}
+			
+			
+			/*
+			 * Vacunaciones
+			 * */
+			List<Vacunaciones> vacunacionesListDb = vacunacionesDao.findByPacienteId(paciente.getPacienteId());
+			
+			existeId = false;
+			for(Vacunaciones vacunacionesDb : vacunacionesListDb) {
+				for(Integer vacunaId : pacienteHistorialClinico.getVacunasIdList()) {
+					if(vacunacionesDb.getVacunas().getVacunaId().equals(vacunaId)) {
+						existeId = true;
+						break;
+					}
+				}
+				//Eliminar patologia no chequeado de los antecedentes familiares
+				if(!existeId) {
+					vacunacionesDao.deleteById(vacunacionesDb.getVacunacionId());
+				}
+				
+				existeId = false;
+			}
+			
+			existeId = false;
+			for(Integer vacunaId : pacienteHistorialClinico.getVacunasIdList()) {
+				for(Vacunaciones vacunacionesDb : vacunacionesListDb) {
+					if(vacunaId.equals(vacunacionesDb.getVacunas().getVacunaId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Agregar nueva vacuna en las vacunaciones
+				if(!existeId) {
+					Vacunaciones vacunaciones = new Vacunaciones();
+					Vacunas vacuna = new Vacunas();
+					
+					vacuna = vacunasService.findById(vacunaId);
+					
+					vacunaciones.setVacunas(vacuna);
+					vacunaciones.setPacienteId(paciente.getPacienteId());
+					vacunaciones.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+					vacunacionesDao.save(vacunaciones);	
+				}
+				existeId = false;
+			}
+			
+		} catch (Exception e) {
+			//throw new Exception("Error al insertar el historial clinico " + e.getMessage());
 		}
 		
 		return paciente;

@@ -3,11 +3,13 @@ package com.sigebi.clases;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 
-public class ProcesoPacienteFichaClinica {
+public class ProcesoPacienteHistorialClinico {
 
 	Pacientes paciente;
+	HistorialClinico historialClinico;
 	List<Integer> alergenosIdList = new ArrayList<Integer>();
 	List<Integer> patologiasProcedimientosIdList = new ArrayList<Integer>();
 	List<Integer> patologiasFamiliaresIdList = new ArrayList<Integer>();
@@ -18,6 +20,12 @@ public class ProcesoPacienteFichaClinica {
 	}
 	public void setPaciente(Pacientes paciente) {
 		this.paciente = paciente;
+	}	
+	public HistorialClinico getHistorialClinico() {
+		return historialClinico;
+	}
+	public void setHistorialClinico(HistorialClinico historialClinico) {
+		this.historialClinico = historialClinico;
 	}
 	public List<Integer> getAlergenosIdList() {
 		return alergenosIdList;

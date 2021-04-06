@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.sigebi.entity.Vacunaciones;
 
 public interface IVacunacionesDao extends JpaRepository<Vacunaciones, Integer>, JpaSpecificationExecutor<Vacunaciones>  {
-		
+	
+	List<Vacunaciones> findByPacienteId(Integer pacienteId);
 }

@@ -23,6 +23,17 @@ public class HistorialClinico {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_historial_clinico")
 	@SequenceGenerator(name="seq_historial_clinico",sequenceName="seq_historial_clinico",allocationSize=1)
 	private Integer historialClinicoId;
+	
+	@Column(name = "patologia_actual", length = 200)
+	@Size(max=200, message="maximo 200 caracteres")
+	private String patologiaActual;
+	
+	@Column(name = "tratamiento_actual", length = 200)
+	@Size(max=200, message="maximo 200 caracteres")
+	private String tratamientoActual;
+	
+	@Column(name = "paciente_id")
+	private Integer pacienteId;
 			
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -41,11 +52,7 @@ public class HistorialClinico {
 	@OneToOne
     @JoinColumn(name = "area_id", referencedColumnName = "areaId")
     private Areas areas;
-	
-	@OneToOne
-    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
-    private Pacientes pacientes;
-	
+			
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = LocalDateTime.now();
@@ -64,12 +71,28 @@ public class HistorialClinico {
 		this.historialClinicoId = historialClinicoId;
 	}
 	
-	public Pacientes getPacientes() {
-		return pacientes;
+	public String getPatologiaActual() {
+		return patologiaActual;
 	}
 
-	public void setPacientes(Pacientes pacientes) {
-		this.pacientes = pacientes;
+	public void setPatologiaActual(String patologiaActual) {
+		this.patologiaActual = patologiaActual;
+	}
+
+	public String getTratamientoActual() {
+		return tratamientoActual;
+	}
+
+	public void setTratamientoActual(String tratamientoActual) {
+		this.tratamientoActual = tratamientoActual;
+	}
+	
+	public Integer getPacienteId() {
+		return pacienteId;
+	}
+
+	public void setPacienteId(Integer pacienteId) {
+		this.pacienteId = pacienteId;
 	}
 
 	public Areas getAreas() {

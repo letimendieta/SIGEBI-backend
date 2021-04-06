@@ -72,10 +72,10 @@ public class VacunacionesServiceImpl implements VacunacionesService{
                 p = cb.and(p, cb.equal(root.get("vacunacionId"), vacunacion.getVacunacionId()) );
             }
             if (!StringUtils.isEmpty(vacunacion.getVacunas())) {
-                p = cb.and(p, cb.like(root.get("vacunaId"), "%" + vacunacion.getVacunas() + "%"));
+                p = cb.and(p, cb.equal(root.get("vacunaId"), vacunacion.getVacunas()));
             }
             if (!StringUtils.isEmpty(vacunacion.getPacienteId())) {
-                p = cb.and(p, cb.like(root.get("pacienteId"), "%" + vacunacion.getPacienteId() + "%"));
+                p = cb.and(p, cb.equal(root.get("pacienteId"), vacunacion.getPacienteId()));
             }            
                         
             String orden = "vacunacionId";

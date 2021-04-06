@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.sigebi.clases.ProcesoPacienteFichaClinica;
+import com.sigebi.clases.ProcesoPacienteHistorialClinico;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 
@@ -17,7 +17,9 @@ public interface PacientesService{
 		
 	public Pacientes guardar(Pacientes paciente) throws Exception;
 	
-	public Pacientes guardarPacienteFichaClinica(ProcesoPacienteFichaClinica paciente) throws Exception;
+	public Pacientes guardarPacienteHistorialClinico(ProcesoPacienteHistorialClinico paciente) throws Exception;
+	
+	public Pacientes actualizarPacienteHistorialClinico(ProcesoPacienteHistorialClinico paciente) throws Exception;
 	
 	public Pacientes actualizar(Pacientes paciente) throws Exception;
 	

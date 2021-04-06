@@ -139,12 +139,12 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		for( HistorialClinico historialClin : historialClinicosList ){
+		/*for( HistorialClinico historialClin : historialClinicosList ){
 			if( historialClin.getPacientes() == null) {
 				historialClin.setPacientes(new Pacientes());
 				historialClin.getPacientes().setPersonas(new Personas());
 			}
-		}
+		}*/
 					
         return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
     }
@@ -247,20 +247,20 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( historialClinico.getPacientes() == null || historialClinico.getPacientes().getPacienteId() == null ) {
+		if ( historialClinico.getPacienteId() == null || historialClinico.getPacienteId() == null ) {
 			response.put("mensaje", "Error: Datos del paciente es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
-		Pacientes paciente = pacientesService.findById(historialClinico.getPacientes().getPacienteId());
+		Pacientes paciente = pacientesService.findById(historialClinico.getPacienteId());
 		
 		if ( paciente == null ) {
-			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacientes().getPacienteId() );
+			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacienteId() );
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
 		HistorialClinico historialClinicoPaciente = new HistorialClinico();
-		historialClinicoPaciente.setPacientes(historialClinico.getPacientes());
+		//historialClinicoPaciente.setPacientes(historialClinico.getPacienteId());
 		
 		List<HistorialClinico> historialClinicoDb = historialesClinicosService.buscarNoPaginable(null, null, historialClinicoPaciente); 
 		
@@ -271,7 +271,7 @@ public class HistorialClinicoController {
 		}
 				
 		try {
-			historialClinico.setPacientes(paciente);
+			//historialClinico.setPacientes(paciente);
 			historialClinicoNew = historialesClinicosService.guardar(historialClinico);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al guardar en la base de datos");
@@ -317,19 +317,19 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		if ( historialClinico.getPacientes() == null || historialClinico.getPacientes().getPacienteId() == null ) {
+		if ( historialClinico.getPacienteId() == null || historialClinico.getPacienteId() == null ) {
 			response.put("mensaje", "Error: Datos del paciente es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
-		Pacientes paciente = pacientesService.findById(historialClinico.getPacientes().getPacienteId());
+		Pacientes paciente = pacientesService.findById(historialClinico.getPacienteId());
 		
 		if ( paciente == null ) {
-			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacientes().getPacienteId() );
+			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacienteId() );
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 				
-		historialClinico.setPacientes(paciente);
+		//historialClinico.setPacientes(paciente);
 
 		try {
 

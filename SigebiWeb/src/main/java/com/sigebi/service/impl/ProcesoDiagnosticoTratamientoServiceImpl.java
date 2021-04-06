@@ -9,15 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sigebi.clases.FichaMedica;
 import com.sigebi.clases.Globales;
 import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
-import com.sigebi.dao.IAlergenosDao;
 import com.sigebi.dao.IAlergiasDao;
 import com.sigebi.dao.IAnamnesisDao;
 import com.sigebi.dao.IAntecedentesDao;
 import com.sigebi.dao.IConsultasDao;
 import com.sigebi.dao.IDiagnosticosDao;
-import com.sigebi.dao.IMotivosConsultaDao;
-import com.sigebi.dao.IPatologiasProcedimientosDao;
-import com.sigebi.dao.IStockDao;
+import com.sigebi.dao.IHistorialClinicoDao;
 import com.sigebi.dao.ITratamientosDao;
 import com.sigebi.dao.ITratamientosInsumosDao;
 import com.sigebi.entity.Alergenos;
@@ -26,13 +23,13 @@ import com.sigebi.entity.Anamnesis;
 import com.sigebi.entity.Antecedentes;
 import com.sigebi.entity.Consultas;
 import com.sigebi.entity.Diagnosticos;
-import com.sigebi.entity.Insumos;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.PatologiasProcedimientos;
-import com.sigebi.entity.Stock;
 import com.sigebi.entity.Tratamientos;
 import com.sigebi.entity.TratamientosInsumos;
 import com.sigebi.service.AlergenosService;
+import com.sigebi.service.HistorialesClinicosService;
 import com.sigebi.service.MotivosConsultaService;
 import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.ProcesoDiagnosticoTratamientoService;
@@ -61,7 +58,10 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	private IAntecedentesDao antecedentesDao;
 	@Autowired
 	private MotivosConsultaService motivosConsultaService;
-	
+	@Autowired
+	private IHistorialClinicoDao historialClinicoDao;
+	@Autowired
+	private HistorialesClinicosService historialesClinicosService;
 	
 
 	@Override
@@ -114,6 +114,15 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 					antecedentesDao.save(antecedentes);
 				}				
 			}
+			
+			HistorialClinico historialClinico = historialesClinicosService.findById(procesoDiagnosticoTratamiento.getHistorialClinico().getHistorialClinicoId());
+			
+			historialClinico.setPatologiaActual(procesoDiagnosticoTratamiento.getHistorialClinico().getPatologiaActual());
+			historialClinico.setTratamientoActual(procesoDiagnosticoTratamiento.getHistorialClinico().getTratamientoActual());
+			historialClinico.setUsuarioModificacion(procesoDiagnosticoTratamiento.getHistorialClinico().getUsuarioModificacion());
+			
+			historialClinicoDao.save(historialClinico);
+			
 		} catch (Exception e) {
 			throw new Exception("Error al actualizar la ficha del paciente " + e.getMessage());
 		}

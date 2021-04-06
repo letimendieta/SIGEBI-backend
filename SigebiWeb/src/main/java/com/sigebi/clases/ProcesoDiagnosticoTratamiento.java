@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.sigebi.entity.Anamnesis;
 import com.sigebi.entity.Consultas;
 import com.sigebi.entity.Diagnosticos;
+import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Tratamientos;
 import com.sigebi.entity.TratamientosInsumos;
 
@@ -16,6 +17,7 @@ public class ProcesoDiagnosticoTratamiento {
 	ArrayList<TratamientosInsumos> tratamientoInsumoList;	
 	Consultas consulta;
 	ArrayList<FichaMedica> fichaMedicaList;
+	HistorialClinico historialClinico;
 	
 	public Anamnesis getAnamnesis() {
 		return anamnesis;
@@ -53,6 +55,11 @@ public class ProcesoDiagnosticoTratamiento {
 	}
 	public void setFichaMedicaList(ArrayList<FichaMedica> fichaMedicaList) {
 		this.fichaMedicaList = fichaMedicaList;
-	}		
-	
+	}
+	public HistorialClinico getHistorialClinico() {
+		return historialClinico;
+	}
+	public void setHistorialClinico(HistorialClinico historialClinico) {
+		this.historialClinico = historialClinico;
+	}
 }

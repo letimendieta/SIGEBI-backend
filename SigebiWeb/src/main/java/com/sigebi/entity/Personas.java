@@ -41,7 +41,6 @@ public class Personas {
 	@NotEmpty(message ="no puede estar vacio")
 	@Size(max=50, message="maximo 50 caracteres")
 	private String apellidos;
-
 	
 	@Column(name = "fecha_nacimiento")
 	private LocalDate fechaNacimiento;

@@ -66,9 +66,9 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 		List<HistorialClinico> HistorialClinicoList = historialClinicosDao.findAll((Specification<HistorialClinico>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
-			if( historialClinico.getPacientes() != null && historialClinico.getPacientes().getPacienteId() != null ){
-            	p = cb.and(p, cb.equal(root.get("pacientes"), historialClinico.getPacientes().getPacienteId()) );
-            } 
+			if( historialClinico.getPacienteId() != null && historialClinico.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), historialClinico.getPacienteId()) );
+            }
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
@@ -92,8 +92,8 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 		List<HistorialClinico> HistorialClinicoList = historialClinicosDao.findAll((Specification<HistorialClinico>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
-			if( historialClinico.getPacientes() != null && historialClinico.getPacientes().getPacienteId() != null ){
-            	p = cb.and(p, cb.equal(root.get("pacientes"), historialClinico.getPacientes().getPacienteId()) );
+			if( historialClinico.getPacienteId() != null && historialClinico.getPacienteId() != null ){
+            	p = cb.and(p, cb.equal(root.get("pacienteId"), historialClinico.getPacienteId()) );
             } 
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
