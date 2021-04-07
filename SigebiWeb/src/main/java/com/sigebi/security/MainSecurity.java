@@ -27,6 +27,17 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     JwtEntryPoint jwtEntryPoint;
+    
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs", 
+            "/swagger-resources/**", 
+            "/configuration/ui",
+            "/configuration/security", 
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/csrf"
+    };
 
     @Bean
     public JwtTokenFilter jwtTokenFilter(){
@@ -57,14 +68,15 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-              
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	        .authorizeRequests()
+	        .antMatchers("/auth/**").permitAll().and()
+	        .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().and()
+	        .authorizeRequests().antMatchers("/swagger").permitAll()
+	        .anyRequest().authenticated()
+	        .and()
+	        .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
+	        .and()
+	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
