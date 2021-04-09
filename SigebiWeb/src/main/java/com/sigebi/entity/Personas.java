@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -61,6 +62,10 @@ public class Personas {
 	@Column(name = "celular")
 	@Size(max=20, message="maximo 20 caracteres")
 	private String celular;
+	
+	@Column(name = "foto")
+	@Lob
+	private String foto;
 	
 	@OneToOne
     @JoinColumn(name = "estamento_id", referencedColumnName = "estamentoId")
@@ -285,6 +290,14 @@ public class Personas {
 
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 
 	public String getUsuarioCreacion() {

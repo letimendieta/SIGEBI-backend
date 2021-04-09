@@ -440,6 +440,7 @@ public class PacientesServiceImpl implements PacientesService{
 		persona.setTelefono(paciente.getPersonas().getTelefono());
 		persona.setObservacion(paciente.getPersonas().getObservacion());
 		persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
+		persona.setFoto(paciente.getPersonas().getFoto());
 		
 		paciente.setPersonas(persona);
 				
