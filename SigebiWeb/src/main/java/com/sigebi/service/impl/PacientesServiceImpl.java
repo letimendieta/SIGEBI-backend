@@ -22,6 +22,8 @@ import com.sigebi.dao.IAntecedentesDao;
 import com.sigebi.dao.IHistorialClinicoDao;
 import com.sigebi.dao.IPacientesDao;
 import com.sigebi.dao.IPersonasDao;
+import com.sigebi.dao.IPreguntasDao;
+import com.sigebi.dao.IPreguntasHistorialDao;
 import com.sigebi.dao.IVacunacionesDao;
 import com.sigebi.dao.IVacunasDao;
 import com.sigebi.entity.Alergenos;
@@ -31,12 +33,16 @@ import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.PatologiasProcedimientos;
 import com.sigebi.entity.Personas;
+import com.sigebi.entity.Preguntas;
+import com.sigebi.entity.PreguntasHistorial;
 import com.sigebi.entity.Vacunaciones;
 import com.sigebi.entity.Vacunas;
 import com.sigebi.service.AlergenosService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.PersonasService;
+import com.sigebi.service.PreguntasHistorialService;
+import com.sigebi.service.PreguntasService;
 import com.sigebi.service.VacunasService;
 
 
@@ -60,9 +66,17 @@ public class PacientesServiceImpl implements PacientesService{
 	@Autowired
 	private VacunasService vacunasService;
 	@Autowired
+	private PreguntasService preguntasService;
+	@Autowired
+	private PreguntasHistorialService preguntasHistorialService;
+	@Autowired
 	private IVacunacionesDao vacunacionesDao;
 	@Autowired
 	private IHistorialClinicoDao historialClinicoDao;
+	@Autowired
+	private IPreguntasHistorialDao preguntasHistorialDao;
+	@Autowired
+	private IPreguntasDao preguntasDao;
 	
 	public PacientesServiceImpl(IPacientesDao pacientesDao) {
         this.pacientesDao = pacientesDao;
@@ -195,6 +209,20 @@ public class PacientesServiceImpl implements PacientesService{
 				vacunacionesDao.save(vacunaciones);				
 			}
 			
+			for(Preguntas preguntaParam : pacienteHistorialClinico.getPreguntasList()) {
+				PreguntasHistorial preguntasHistorial = new PreguntasHistorial();
+				Preguntas pregunta = new Preguntas();
+				
+				pregunta = preguntasService.findById(preguntaParam.getPreguntaId());
+				
+				preguntasHistorial.setPreguntas(pregunta);
+				preguntasHistorial.setRespuesta(preguntaParam.getValor());
+				preguntasHistorial.setHistorialClinicoId(pacienteHistorialClinico.getHistorialClinico().getHistorialClinicoId());
+				preguntasHistorial.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+				
+				preguntasHistorialDao.save(preguntasHistorial);
+			}
+			
 		} catch (Exception e) {
 			//throw new Exception("Error al insertar el historial clinico " + e.getMessage());
 		}
@@ -210,7 +238,7 @@ public class PacientesServiceImpl implements PacientesService{
 		//Actualizar el historial clinico
 		try {
 			//pacienteHistorialClinico.getHistorialClinico().setPacienteId(paciente.getPacienteId());			
-			historialClinicoDao.save(pacienteHistorialClinico.getHistorialClinico());			
+			HistorialClinico historialClinico = historialClinicoDao.save(pacienteHistorialClinico.getHistorialClinico());			
 			
 			/*
 			 * Alergias
@@ -402,6 +430,51 @@ public class PacientesServiceImpl implements PacientesService{
 					vacunaciones.setPacienteId(paciente.getPacienteId());
 					vacunaciones.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
 					vacunacionesDao.save(vacunaciones);	
+				}
+				existeId = false;
+			}
+			
+			/*
+			 * Preguntas
+			 * */
+			List<PreguntasHistorial> preguntasHistorialListDb = preguntasHistorialDao.findByHistorialClinicoId(pacienteHistorialClinico.getHistorialClinico().getHistorialClinicoId());
+						
+			existeId = false;
+			for(PreguntasHistorial preguntasHistorialDb : preguntasHistorialListDb) {
+				for(Preguntas pregunta : pacienteHistorialClinico.getPreguntasList()) {
+					if(preguntasHistorialDb.getPreguntas().getPreguntaId().equals(pregunta.getPreguntaId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Eliminar pregunta no chequeado
+				if(!existeId) {
+					preguntasHistorialDao.deleteById(preguntasHistorialDb.getPreguntaHistorialId());
+				}
+				
+				existeId = false;
+			}
+			
+			existeId = false;
+			for(Preguntas pregunta : pacienteHistorialClinico.getPreguntasList()) {
+				for(PreguntasHistorial preguntaHistorialDb : preguntasHistorialListDb) {
+					if(pregunta.getPreguntaId().equals(preguntaHistorialDb.getPreguntas().getPreguntaId())) {
+						existeId = true;
+						break;
+					}
+				}
+				//Agregar nueva pregunta
+				if(!existeId) {
+					PreguntasHistorial preguntaHistorial = new PreguntasHistorial();
+					Preguntas preguntaDb = new Preguntas();
+					
+					preguntaDb = preguntasService.findById(pregunta.getPreguntaId());
+					
+					preguntaHistorial.setHistorialClinicoId(historialClinico.getHistorialClinicoId());
+					preguntaHistorial.setPreguntas(preguntaDb);
+					preguntaHistorial.setUsuarioCreacion(pacienteHistorialClinico.getPaciente().getUsuarioCreacion());
+					preguntaHistorial.setRespuesta(pregunta.getValor());
+					preguntasHistorialDao.save(preguntaHistorial);				
 				}
 				existeId = false;
 			}

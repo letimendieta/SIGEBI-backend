@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
+import com.sigebi.entity.Preguntas;
 
 public class ProcesoPacienteHistorialClinico {
 
@@ -14,6 +15,7 @@ public class ProcesoPacienteHistorialClinico {
 	List<Integer> patologiasProcedimientosIdList = new ArrayList<Integer>();
 	List<Integer> patologiasFamiliaresIdList = new ArrayList<Integer>();
 	List<Integer> vacunasIdList = new ArrayList<Integer>();
+	List<Preguntas> preguntasList = new ArrayList<Preguntas>();
 	
 	public Pacientes getPaciente() {
 		return paciente;
@@ -50,6 +52,12 @@ public class ProcesoPacienteHistorialClinico {
 	}
 	public void setVacunasIdList(List<Integer> vacunasIdList) {
 		this.vacunasIdList = vacunasIdList;
-	}	
+	}
+	public List<Preguntas> getPreguntasList() {
+		return preguntasList;
+	}
+	public void setPreguntasList(List<Preguntas> preguntasList) {
+		this.preguntasList = preguntasList;
+	}
 	
 }

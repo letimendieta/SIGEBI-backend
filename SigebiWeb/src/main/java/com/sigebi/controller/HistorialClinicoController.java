@@ -31,6 +31,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.clases.HistorialClinicoPaciente;
+import com.sigebi.entity.Areas;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
@@ -101,6 +102,9 @@ public class HistorialClinicoController {
 			response.put("mensaje", "El historialClinico con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
+		if(historialClinico.getAreas() == null) {
+			historialClinico.setAreas(new Areas());
+		}
 		
 		return new ResponseEntity<HistorialClinico>(historialClinico, HttpStatus.OK);
 	}
@@ -139,12 +143,11 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		/*for( HistorialClinico historialClin : historialClinicosList ){
-			if( historialClin.getPacientes() == null) {
-				historialClin.setPacientes(new Pacientes());
-				historialClin.getPacientes().setPersonas(new Personas());
+		for( HistorialClinico historialClin : historialClinicosList ){
+			if( historialClin.getAreas() == null) {
+				historialClin.setAreas(new Areas());
 			}
-		}*/
+		}
 					
         return new ResponseEntity<List<HistorialClinico>>(historialClinicosList, HttpStatus.OK);
     }

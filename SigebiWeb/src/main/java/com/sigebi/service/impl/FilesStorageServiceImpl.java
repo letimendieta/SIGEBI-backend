@@ -24,7 +24,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 	private UtilesService utiles;
 
   private final Path rootHistorialClinico = Paths.get("historial");
-  private final Path rootImages = Paths.get("imagenes");
 
   @Override
   public void init(String tipo) throws Exception {
@@ -129,11 +128,9 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   private Path obtenerPath(String tipo) {
 	 Path path = null;
 	 
-	 if("H".equals(tipo)) {
+	 if("HC".equals(tipo)) {
   		path = this.rootHistorialClinico;
-  	}else if("I".equals(tipo)) {
-  		path = this.rootImages;
-  	}
+  	 }
 	  
 	return path;	  
   }
