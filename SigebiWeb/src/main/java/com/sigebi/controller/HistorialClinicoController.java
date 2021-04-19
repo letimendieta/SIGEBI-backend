@@ -184,7 +184,7 @@ public class HistorialClinicoController {
 		if( paciente != null && paciente.getPacienteId() != null) {
 			try {
 				
-				pacienteDb = pacientesService.findById(paciente.getPacienteId());
+				pacienteDb = pacientesService.obtener(paciente.getPacienteId());
 				
 				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
 				if(pacienteDb == null) {
@@ -255,7 +255,7 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
-		Pacientes paciente = pacientesService.findById(historialClinico.getPacienteId());
+		Pacientes paciente = pacientesService.obtener(historialClinico.getPacienteId());
 		
 		if ( paciente == null ) {
 			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacienteId() );
@@ -325,7 +325,7 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
 		
-		Pacientes paciente = pacientesService.findById(historialClinico.getPacienteId());
+		Pacientes paciente = pacientesService.obtener(historialClinico.getPacienteId());
 		
 		if ( paciente == null ) {
 			response.put("mensaje", "Error: No se encontro paciente con id " + historialClinico.getPacienteId() );

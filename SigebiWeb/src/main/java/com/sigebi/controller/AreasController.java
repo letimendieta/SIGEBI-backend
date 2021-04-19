@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Areas;
 import com.sigebi.service.AreasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -52,53 +53,25 @@ public class AreasController {
     }
 
 	@GetMapping
-	public ResponseEntity<?> listar() {
-		Map<String, Object> response = new HashMap<>();
+	public ResponseEntity<?> listar() throws SigebiException {
 		List<Areas> areasList = null;
-		try {
-			areasList = areasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		if( areasList.isEmpty()) {
-			response.put("mensaje", "No se encontraron datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+		
+		areasList = areasService.listar();
+		
 		return new ResponseEntity<List<Areas>>(areasList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
-		Map<String, Object> response = new HashMap<>();
+	public ResponseEntity<?> obtener(@PathVariable("id") Integer id) throws SigebiException {
 		Areas area = null;
-		try {
-			area = areasService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 		
-		if( area == null ) {
-			response.put("mensaje", "El area con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
+		area = areasService.obtener(id);
+					
 		return new ResponseEntity<Areas>(area, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarAreas(
+    public ResponseEntity<?> buscar(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -106,7 +79,7 @@ public class AreasController {
             @RequestParam(required = false) String size,
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) String orderDir,
-            Pageable pageable) throws JsonMappingException, JsonProcessingException{
+            Pageable pageable) throws JsonMappingException, JsonProcessingException, DataAccessException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
@@ -115,7 +88,6 @@ public class AreasController {
 			area = objectMapper.readValue(filtros, Areas.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Areas> areasList = new ArrayList<Areas>();
 		
 		if ( area == null ) {
@@ -127,131 +99,60 @@ public class AreasController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			areasList = areasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		areasList = areasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Areas>>(areasList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Areas area, BindingResult result) {
+	public ResponseEntity<?> crear(@Valid @RequestBody Areas area, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();		
 		Areas areaNew = null;
 		
 		if( result.hasErrors() ) {
-
 			List<String> errors = result.getFieldErrors()
 					.stream()
 					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
-					.collect(Collectors.toList());
-			
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+					.collect(Collectors.toList());			
+			throw new SigebiException.BusinessException(errors.toString());
 		}
 		
-		try {
-			areaNew = areasService.save(area);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		areaNew = areasService.guardar(area);
 		
 		response.put("mensaje", "El area ha sido creada con éxito!");
 		response.put("area", areaNew);
+		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Areas area, BindingResult result) {
+	public ResponseEntity<?> actualizar(@Valid @RequestBody Areas area, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
-		
-		if ( area.getAreaId() == null ) {
-			response.put("mensaje", "Error: area id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Areas areaActual = areasService.findById(area.getAreaId());
+				
 		Areas areaUpdated = null;
 
 		if( result.hasErrors() ) {
-
 			List<String> errors = result.getFieldErrors()
 					.stream()
 					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
-					.collect(Collectors.toList());
-			
+					.collect(Collectors.toList());			
 			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			throw new SigebiException.BusinessException(errors.toString());
 		}
 		
-		if ( areaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el area ID: "
-					.concat(String.valueOf(area.getAreaId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+		areaUpdated = areasService.actualizar(area);;
 
-		try {
-
-			areaUpdated = areasService.save(area);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el area en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		response.put("mensaje", "El area ha sido actualizada con éxito!");
+		response.put("mensaje", "El área ha sido actualizada con éxito!");
 		response.put("area", areaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable int id) {
+	public ResponseEntity<?> borrar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
-		
-		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: area id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Areas areaActual = areasService.findById(id);
-		
-		if ( areaActual == null ) {
-			response.put("mensaje", "La area ID: "
-					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-					
-		try {
-			areasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el area de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+							
+		areasService.eliminar(id);
 		
 		response.put("mensaje", "Area eliminada con éxito!");
 		

@@ -67,7 +67,7 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 		
 		if( usuario.getPersonas().getPersonaId() != null ) {
 			//Busca a la persona y si existe actualizar sus datos
-			Personas persona = personasService.findById(usuario.getPersonas().getPersonaId());
+			Personas persona = personasService.obtener(usuario.getPersonas().getPersonaId());
 			
 			if(persona == null) {
 				throw new Exception("No se encontro persona con id: " + usuario.getPersonas().getPersonaId());

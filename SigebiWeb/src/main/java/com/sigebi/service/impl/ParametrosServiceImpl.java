@@ -65,16 +65,16 @@ public class ParametrosServiceImpl implements ParametrosService{
                 p = cb.and(p, cb.equal(root.get("parametroId"), parametro.getParametroId()) );
             }
             if (!StringUtils.isEmpty(parametro.getCodigoParametro())) {
-                p = cb.and(p, cb.like(root.get("codigoParametro"), "%" + parametro.getCodigoParametro() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("codigoParametro")), "%" + parametro.getCodigoParametro().toLowerCase() + "%"));
             }
             if (!StringUtils.isEmpty(parametro.getDescripcion())) {
-                p = cb.and(p, cb.like(root.get("descripcion"), "%" + parametro.getDescripcion() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("descripcion")), "%" + parametro.getDescripcion().toLowerCase() + "%"));
             }
             if (!StringUtils.isEmpty(parametro.getValor())) {
-                p = cb.and(p, cb.like(root.get("valor"), "%" + parametro.getValor() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("valor")), "%" + parametro.getValor().toLowerCase() + "%"));
             }
             if (!StringUtils.isEmpty(parametro.getDescripcionValor())) {
-                p = cb.and(p, cb.like(root.get("descripcionValor"), "%" + parametro.getDescripcionValor() + "%"));
+                p = cb.and(p, cb.like(cb.lower(root.get("descripcionValor")), "%" + parametro.getDescripcionValor().toLowerCase() + "%"));
             }
             if (!StringUtils.isEmpty(parametro.getEstado())) {
                 p = cb.and(p, cb.like(root.get("estado"), "%" + parametro.getEstado() + "%"));

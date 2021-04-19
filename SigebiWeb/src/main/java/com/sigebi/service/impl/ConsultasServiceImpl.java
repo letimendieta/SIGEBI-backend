@@ -1,5 +1,6 @@
 package com.sigebi.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -7,15 +8,24 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.sigebi.clases.ConsultasResult;
+import com.sigebi.clases.DiagnosticosResult;
 import com.sigebi.dao.IConsultasDao;
+import com.sigebi.entity.Anamnesis;
 import com.sigebi.entity.Consultas;
+import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.entity.Funcionarios;
+import com.sigebi.entity.MotivosConsulta;
+import com.sigebi.entity.Personas;
 import com.sigebi.service.ConsultasService;
+import com.sigebi.service.EnfermedadesCie10Service;
 
 
 @Service
@@ -23,6 +33,8 @@ public class ConsultasServiceImpl implements ConsultasService{
 
 	@Autowired
 	private IConsultasDao consultasDao;
+	@Autowired
+	private EnfermedadesCie10Service enfermedadesCie10Service;
 	
 	public ConsultasServiceImpl(IConsultasDao consultasDao) {
         this.consultasDao = consultasDao;
@@ -30,7 +42,7 @@ public class ConsultasServiceImpl implements ConsultasService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Consultas> findAll() {
+	public List<Consultas> listar() {
 		return (List<Consultas>) consultasDao.findAll();
 	}
 	
@@ -42,25 +54,32 @@ public class ConsultasServiceImpl implements ConsultasService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public Consultas findById(int id) {
+	public Consultas obtener(int id) {
 		return consultasDao.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
-	public Consultas save(Consultas cliente) {
+	public Consultas guardar(Consultas cliente) {
+		return consultasDao.save(cliente);
+	}
+	
+	@Override
+	@Transactional
+	public Consultas actualizar(Consultas cliente) {
 		return consultasDao.save(cliente);
 	}
 
 	@Override
 	@Transactional
-	public void delete(int id) {
+	public void eliminar(int id) {
 		consultasDao.deleteById(id);
 	}
 	
 	@Override
 	@Transactional
-	public List<Consultas> buscar(Date fromDate, Date toDate, Consultas consulta, String orderBy, String orderDir, Pageable pageable) {
+	public List<Consultas> buscar(Date fromDate, Date toDate, Consultas consulta, 
+			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
 		List<Consultas> consultasList;
 		
 		Specification<Consultas> consultasSpec = (Specification<Consultas>) (root, cq, cb) -> {
@@ -103,5 +122,82 @@ public class ConsultasServiceImpl implements ConsultasService{
         
         return consultasList;
     }
+	
+	@Override
+	@Transactional
+	public List<ConsultasResult> buscarConsultas(Date fromDate, Date toDate, Consultas consulta, String orderBy, String orderDir, Pageable pageable) {
+		List<Consultas> consultasList = new ArrayList<Consultas>();
+		ConsultasResult consultaResult = null;
+		List<ConsultasResult> consultasListResult = new ArrayList<ConsultasResult>();
+		
+		consultasList = buscar(fromDate, toDate, consulta, orderBy, orderDir, pageable);
+		
+		for(Consultas consultaBusqueda : consultasList) {
+			consultaResult = new ConsultasResult();
+			
+			consultaResult.setConsultaId(consultaBusqueda.getConsultaId());
+			consultaResult.setFecha(consultaBusqueda.getFecha());
+			consultaResult.setPacienteId(consultaBusqueda.getPacienteId());
+			consultaResult.setFechaCreacion(consultaBusqueda.getFechaCreacion());
+			consultaResult.setUsuarioCreacion(consultaBusqueda.getUsuarioCreacion());
+			consultaResult.setFechaModificacion(consultaBusqueda.getFechaModificacion());
+			consultaResult.setUsuarioModificacion(consultaBusqueda.getUsuarioModificacion());
+			consultaResult.setAreas(consultaBusqueda.getAreas());
+			consultaResult.setTratamientos(consultaBusqueda.getTratamientos());
+			consultaResult.setFuncionarios(consultaBusqueda.getFuncionarios());
+			consultaResult.setAnamnesis(consultaBusqueda.getAnamnesis());
+			
+			if ( consultaBusqueda.getDiagnosticos() != null ) {
+				DiagnosticosResult diagnosticoResult = new DiagnosticosResult();
+				
+				diagnosticoResult.setDiagnosticoId(consultaBusqueda.getDiagnosticos().getDiagnosticoId());	
+				diagnosticoResult.setDiagnosticoPrincipal(consultaBusqueda.getDiagnosticos().getDiagnosticoPrincipal());
+				diagnosticoResult.setDiagnosticoSecundario(consultaBusqueda.getDiagnosticos().getDiagnosticoSecundario());					
+				diagnosticoResult.setFechaCreacion(consultaBusqueda.getDiagnosticos().getFechaCreacion());
+				diagnosticoResult.setUsuarioCreacion(consultaBusqueda.getDiagnosticos().getUsuarioCreacion());
+				diagnosticoResult.setFechaModificacion(consultaBusqueda.getDiagnosticos().getFechaModificacion());
+				diagnosticoResult.setUsuarioModificacion(consultaBusqueda.getDiagnosticos().getUsuarioModificacion());
+				
+				consultaResult.setDiagnosticos(diagnosticoResult);
+			}				
+			
+			if( consultaBusqueda.getDiagnosticos() != null
+					&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId() == null ) {
+				consultaResult.getDiagnosticos().setEnfermedadCie10Primaria(new EnfermedadesCie10());
+			}else if( consultaBusqueda.getDiagnosticos() != null
+					&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId() != null ) {
+				EnfermedadesCie10 cie10 = enfermedadesCie10Service.findById(consultaBusqueda.getDiagnosticos().getEnfermedadCie10PrimariaId());
+				
+				consultaResult.getDiagnosticos().setEnfermedadCie10Primaria(cie10);
+			}
+			
+			if( consultaBusqueda.getDiagnosticos() != null
+					&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId() == null ) {
+				consultaResult.getDiagnosticos().setEnfermedadCie10Secundaria(new EnfermedadesCie10());
+			}else if( consultaBusqueda.getDiagnosticos() != null
+					&& consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId() != null ) {
+				EnfermedadesCie10 cie10 = enfermedadesCie10Service.findById(consultaBusqueda.getDiagnosticos().getEnfermedadCie10SecundariaId());
+				
+				consultaResult.getDiagnosticos().setEnfermedadCie10Secundaria(cie10);
+			}
+			
+			if( consultaResult.getAnamnesis() == null ) {
+				consultaResult.setAnamnesis(new Anamnesis());
+			}
+			if( consultaResult.getAnamnesis() != null
+					&& consultaResult.getAnamnesis().getMotivoConsulta() == null ) {
+				consultaResult.getAnamnesis().setMotivoConsulta(new MotivosConsulta());
+			}
+			
+			if( consultaResult.getFuncionarios() == null ) {
+				consultaResult.setFuncionarios(new Funcionarios());
+				consultaResult.getFuncionarios().setPersonas(new Personas());
+			}
+			
+			consultasListResult.add(consultaResult);
+		}
+		
+		return consultasListResult;
+	}
 
 }

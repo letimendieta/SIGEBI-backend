@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import org.springframework.util.StringUtils;
 import com.sigebi.dao.IAreasDao;
 import com.sigebi.entity.Areas;
 import com.sigebi.service.AreasService;
+import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -24,14 +27,24 @@ public class AreasServiceImpl implements AreasService{
 	@Autowired
 	private IAreasDao areasDao;
 	
+	@Autowired
+	private UtilesService utiles;
+	
 	public AreasServiceImpl(IAreasDao areasDao) {
         this.areasDao = areasDao;
     }
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Areas> findAll() {
-		return (List<Areas>) areasDao.findAll();
+	public List<Areas> listar() throws SigebiException {
+		
+		List<Areas> areas = areasDao.findAll();
+		
+		if( areas.isEmpty()) {
+			throw new SigebiException.DataNotFound("No se encontraron datos");
+		}
+		
+		return areas;
 	}
 	
 	@Override
@@ -42,25 +55,66 @@ public class AreasServiceImpl implements AreasService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public Areas findById(int id) {
-		return areasDao.findById(id).orElse(null);
+	public Areas obtener(int id) throws SigebiException {
+		
+		Areas area = areasDao.findById(id).orElse(null);
+				
+		if ( area == null ) {
+			String mensaje = "Error: no se pudo editar, el área ID: "
+					.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
+		return area;
 	}
 
 	@Override
 	@Transactional
-	public Areas save(Areas cliente) {
-		return areasDao.save(cliente);
+	public Areas guardar(Areas area) {
+		return areasDao.save(area);
+	}
+	
+	@Override
+	@Transactional
+	public Areas actualizar(Areas area) throws SigebiException {
+		
+		if ( area.getAreaId() == null ) {
+			throw new SigebiException.BusinessException("Área id es requerido ");
+		}
+		
+		Areas areaActual = areasDao.findById(area.getAreaId()).orElse(null);
+		
+		if ( areaActual == null ) {
+			String mensaje = "Error: no se pudo editar, el area ID: "
+					.concat(String.valueOf(area.getAreaId()).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
+		return areasDao.save(area);
 	}
 
 	@Override
 	@Transactional
-	public void delete(int id) {
+	public void eliminar(int id) throws SigebiException {
+		
+		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
+			throw new SigebiException.BusinessException("Área id es requerido");			
+		}
+		
+		Areas areaActual = areasDao.findById(id).orElse(null);
+		
+		if ( areaActual == null ) {
+			String mensaje = "El área ID: "
+							.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
 		areasDao.deleteById(id);
 	}
 	
 	@Override
 	@Transactional
-	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, String orderBy, String orderDir, Pageable pageable) {
+	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, 
+			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
 		List<Areas> areasList;
 		
 		Specification<Areas> areasSpec = (Specification<Areas>) (root, cq, cb) -> {

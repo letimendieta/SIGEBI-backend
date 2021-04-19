@@ -2,15 +2,20 @@ package com.sigebi.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +34,10 @@ import com.sigebi.dao.IVacunasDao;
 import com.sigebi.entity.Alergenos;
 import com.sigebi.entity.Alergias;
 import com.sigebi.entity.Antecedentes;
+import com.sigebi.entity.Carreras;
+import com.sigebi.entity.Departamentos;
+import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.PatologiasProcedimientos;
@@ -43,7 +52,9 @@ import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.PreguntasHistorialService;
 import com.sigebi.service.PreguntasService;
+import com.sigebi.service.UtilesService;
 import com.sigebi.service.VacunasService;
+import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -68,15 +79,13 @@ public class PacientesServiceImpl implements PacientesService{
 	@Autowired
 	private PreguntasService preguntasService;
 	@Autowired
-	private PreguntasHistorialService preguntasHistorialService;
-	@Autowired
 	private IVacunacionesDao vacunacionesDao;
 	@Autowired
 	private IHistorialClinicoDao historialClinicoDao;
 	@Autowired
 	private IPreguntasHistorialDao preguntasHistorialDao;
 	@Autowired
-	private IPreguntasDao preguntasDao;
+	private UtilesService utiles;
 	
 	public PacientesServiceImpl(IPacientesDao pacientesDao) {
         this.pacientesDao = pacientesDao;
@@ -84,19 +93,54 @@ public class PacientesServiceImpl implements PacientesService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Pacientes> findAll() {
-		return (List<Pacientes>) pacientesDao.findAll();
+	public List<Pacientes> listar() throws SigebiException{ 
+		
+		List<Pacientes> pacientes = pacientesDao.findAll();
+		
+		if( pacientes.isEmpty()) {
+			throw new SigebiException.DataNotFound("No se encontraron datos");
+		}
+		
+		return pacientes;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Pacientes findById(int id) {
-		return pacientesDao.findById(id).orElse(null);
+	public Pacientes obtener(int id) throws SigebiException{
+		Pacientes paciente = pacientesDao.findById(id).orElse(null);
+		
+		if( paciente != null) {				
+			
+			if( paciente.getPersonas().getDepartamentos() == null ) {
+				paciente.getPersonas().setDepartamentos(new Departamentos());
+			}
+			if( paciente.getPersonas().getDependencias() == null ) {
+				paciente.getPersonas().setDependencias(new Dependencias());
+			}
+			if( paciente.getPersonas().getCarreras() == null ) {
+				paciente.getPersonas().setCarreras(new Carreras());
+			}
+			if( paciente.getPersonas().getEstamentos() == null ) {
+				paciente.getPersonas().setEstamentos(new Estamentos());
+			}
+		}
+		
+		if( paciente == null ) {
+			String mensaje = "Error: no se pudo editar, el área ID: "
+					.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
+		return paciente;
 	}
 
 	@Transactional
-	public Pacientes guardar(Pacientes paciente) throws Exception {
-				
+	public Pacientes guardar(Pacientes paciente) throws SigebiException {
+		
+		if ( paciente.getPersonas() == null ) {
+			throw new SigebiException.BusinessException("Datos de la persona es requerido ");
+		}
+		
 		if( paciente.getPersonas() != null ) {
 			//Buscar si la persona ya es paciente
 			
@@ -108,15 +152,16 @@ public class PacientesServiceImpl implements PacientesService{
 				List<Pacientes> pacienteDb = buscarNoPaginable(null, null, new Pacientes(), pacienteIds);
 				
 				if( !pacienteDb.isEmpty() ) {
-					throw new Exception("La persona ya existe como paciente");
+					throw new SigebiException.DataAlreadyExist("La persona ya existe como paciente");
 				}
 			}
+			
 			if( paciente.getPersonas().getPersonaId() != null ) {
 				//Busca a la persona y si existe actualizar sus datos
-				Personas persona = personasService.findById(paciente.getPersonas().getPersonaId());
+				Personas persona = personasService.obtener(paciente.getPersonas().getPersonaId());
 				
 				if(persona == null) {
-					throw new Exception("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
+					throw new SigebiException.DataNotFound("No se encontró persona con id: " + paciente.getPersonas().getPersonaId());
 				}
 								
 				persona.setNombres(paciente.getPersonas().getNombres());
@@ -138,7 +183,7 @@ public class PacientesServiceImpl implements PacientesService{
 				persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
 				
 				paciente.setPersonas(persona);
-				personasService.save(persona);
+				personasService.guardar(persona);
 			}else {
 				//Crear nueva persona
 				Personas personaNew = personasDao.save(paciente.getPersonas());
@@ -150,8 +195,12 @@ public class PacientesServiceImpl implements PacientesService{
 	}
 	
 	@Transactional
-	public Pacientes guardarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws Exception {
-				
+	public Pacientes guardarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws SigebiException {
+		
+		if ( pacienteHistorialClinico.getPaciente().getPersonas() == null ) {
+			throw new SigebiException.BusinessException("Datos de la persona es requerido ");
+		}
+		
 		Pacientes paciente = guardar(pacienteHistorialClinico.getPaciente());
 		
 		//Insertar el historial clinico
@@ -231,13 +280,24 @@ public class PacientesServiceImpl implements PacientesService{
 	}
 	
 	@Transactional
-	public Pacientes actualizarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws Exception {
+	public Pacientes actualizarPacienteHistorialClinico(ProcesoPacienteHistorialClinico pacienteHistorialClinico) throws SigebiException {
 				
+		if ( pacienteHistorialClinico.getPaciente().getPacienteId() == null ) {
+			throw new SigebiException.BusinessException("Paciente id es requerido ");
+		}
+		
+		Pacientes pacienteActual = obtener(pacienteHistorialClinico.getPaciente().getPacienteId());
+		
+		if ( pacienteActual == null ) {						
+			String mensaje = "Error: no se pudo editar, el paciente ID: "
+					.concat(String.valueOf(pacienteHistorialClinico.getPaciente().getPacienteId()).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
 		Pacientes paciente = actualizar(pacienteHistorialClinico.getPaciente());
 		
 		//Actualizar el historial clinico
 		try {
-			//pacienteHistorialClinico.getHistorialClinico().setPacienteId(paciente.getPacienteId());			
 			HistorialClinico historialClinico = historialClinicoDao.save(pacienteHistorialClinico.getHistorialClinico());			
 			
 			/*
@@ -388,8 +448,7 @@ public class PacientesServiceImpl implements PacientesService{
 				}
 				existeId = false;
 			}
-			
-			
+						
 			/*
 			 * Vacunaciones
 			 * */
@@ -487,13 +546,25 @@ public class PacientesServiceImpl implements PacientesService{
 	}
 	
 	@Transactional
-	public Pacientes actualizar(Pacientes paciente) throws Exception {
-				
+	public Pacientes actualizar(Pacientes paciente) throws SigebiException {
+		
+		if ( paciente.getPacienteId() == null ) {
+			throw new SigebiException.BusinessException("Paciente id es requerido ");
+		}
+		
+		Pacientes pacienteActual = obtener(paciente.getPacienteId());
+		
+		if ( pacienteActual == null ) {
+			String mensaje = "Error: no se pudo editar, el paciente ID: "
+					.concat(String.valueOf(paciente.getPacienteId()).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
 		//Busca a la persona y actualizar sus datos
-		Personas persona = personasService.findById(paciente.getPersonas().getPersonaId());
+		Personas persona = personasService.obtener(paciente.getPersonas().getPersonaId());
 		
 		if(persona == null) {
-			throw new Exception("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
+			throw new SigebiException.DataNotFound("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
 		}
 				
 		persona.setNombres(paciente.getPersonas().getNombres());
@@ -522,13 +593,25 @@ public class PacientesServiceImpl implements PacientesService{
 
 	@Override
 	@Transactional
-	public void delete(int id) {
+	public void eliminar(int id) throws SigebiException {
+		
+		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
+			throw new SigebiException.BusinessException("Paciente id es requerido ");
+		}
+		
+		Pacientes pacienteActual = obtener(id);
+		
+		if ( pacienteActual == null ) {
+			String mensaje = "Error: no se pudo editar, el paciente ID: "
+					.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
+			throw new SigebiException.DataNotFound(mensaje);
+		}
 		pacientesDao.deleteById(id);
 	}
 	
 	@Override
-	@Transactional
-	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable) {
+	@Transactional(readOnly = true)
+	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable) throws DataAccessException {
 		List<Pacientes> pacientesList = pacientesDao.findAll((Specification<Pacientes>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();
@@ -551,8 +634,8 @@ public class PacientesServiceImpl implements PacientesService{
     }
 	
 	@Override
-	@Transactional
-	public List<Pacientes> buscarNoPaginable(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId) {
+	@Transactional(readOnly = true)
+	public List<Pacientes> buscarNoPaginable(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId) throws DataAccessException {
 		List<Pacientes> pacientesList = pacientesDao.findAll((Specification<Pacientes>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();
@@ -571,5 +654,49 @@ public class PacientesServiceImpl implements PacientesService{
         });
         return pacientesList;
     }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Pacientes> buscarPacientes(Date fromDate, Date toDate, Pacientes paciente, Pageable pageable) throws DataAccessException {
+		
+		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
+		
+		if ( paciente == null ) {
+			paciente = new Pacientes();
+		}
+		List<Personas> personasList = new ArrayList<Personas>();
+		List<Integer> personasIds = new ArrayList<Integer>();
+		
+		if( paciente.getPersonas() != null) {
+			personasList = personasService.buscar(fromDate, toDate, paciente.getPersonas(), pageable);
+				
+			for( Personas persona : personasList ){
+				personasIds.add(persona.getPersonaId());
+			}
+			if( personasList.isEmpty()) {
+				return pacientesList;
+			}
+		}
+					
+		pacientesList = buscar(fromDate, toDate, paciente, personasIds, pageable);
+		
+		for( Pacientes pacienteFor : pacientesList) {
+			
+			if( pacienteFor.getPersonas().getDepartamentos() == null ) {
+				pacienteFor.getPersonas().setDepartamentos(new Departamentos());
+			}
+			if( pacienteFor.getPersonas().getDependencias() == null ) {
+				pacienteFor.getPersonas().setDependencias(new Dependencias());
+			}
+			if( pacienteFor.getPersonas().getCarreras() == null ) {
+				pacienteFor.getPersonas().setCarreras(new Carreras());
+			}
+			if( pacienteFor.getPersonas().getEstamentos() == null ) {
+				pacienteFor.getPersonas().setEstamentos(new Estamentos());
+			}
+		}
+		
+		return pacientesList;
+	}
 	
 }

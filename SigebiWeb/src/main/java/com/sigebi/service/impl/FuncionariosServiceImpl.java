@@ -56,7 +56,7 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 			
 			if( funcionario.getPersonas().getPersonaId() != null ) {
 				//Busca a la persona y si existe actualizar sus datos
-				Personas persona = personasService.findById(funcionario.getPersonas().getPersonaId());
+				Personas persona = personasService.obtener(funcionario.getPersonas().getPersonaId());
 				
 				if(persona == null) {
 					throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());
@@ -73,7 +73,7 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	public Funcionarios actualizar(Funcionarios funcionario) throws Exception {
 						
 		//Busca a la persona y actualizar sus datos
-		Personas persona = personasService.findById(funcionario.getPersonas().getPersonaId());
+		Personas persona = personasService.obtener(funcionario.getPersonas().getPersonaId());
 		
 		if(persona == null) {
 			throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());

@@ -25,6 +25,9 @@ public class TratamientosInsumos {
 	
 	@Column(name = "cantidad")
 	private Integer cantidad;	
+	
+	@Column(name = "medida", length = 15)
+	private String medida;
 		
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -70,6 +73,14 @@ public class TratamientosInsumos {
 
 	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
+	}
+
+	public String getMedida() {
+		return medida;
+	}
+
+	public void setMedida(String medida) {
+		this.medida = medida;
 	}
 
 	public Tratamientos getTratamientos() {

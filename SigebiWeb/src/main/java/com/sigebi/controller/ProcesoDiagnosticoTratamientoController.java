@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
 import com.sigebi.entity.Consultas;
 import com.sigebi.service.ProcesoDiagnosticoTratamientoService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -35,8 +36,8 @@ public class ProcesoDiagnosticoTratamientoController {
     }
 	
 	@PostMapping
-	public ResponseEntity<Map<String, Object>> insertar(@Valid @RequestBody ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento,
-			BindingResult result) throws Exception {
+	public ResponseEntity<Map<String, Object>> crear(@Valid @RequestBody ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento,
+			BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();		
 		
 		if( result.hasErrors() ) {
@@ -50,18 +51,8 @@ public class ProcesoDiagnosticoTratamientoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		Consultas consulta;
-		try {
-			consulta = procesoDiagnosticoTratamientoService.save(procesoDiagnosticoTratamiento);			
-			
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		consulta = procesoDiagnosticoTratamientoService.guardar(procesoDiagnosticoTratamiento);	
 		
 		response.put("mensaje", "La consulta ha sido creada con éxito!");
 		response.put("consulta", consulta);

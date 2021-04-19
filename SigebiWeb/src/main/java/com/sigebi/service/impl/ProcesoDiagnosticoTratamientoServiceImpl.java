@@ -33,6 +33,7 @@ import com.sigebi.service.HistorialesClinicosService;
 import com.sigebi.service.MotivosConsultaService;
 import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.ProcesoDiagnosticoTratamientoService;
+import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -61,12 +62,11 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	@Autowired
 	private IHistorialClinicoDao historialClinicoDao;
 	@Autowired
-	private HistorialesClinicosService historialesClinicosService;
-	
+	private HistorialesClinicosService historialesClinicosService;	
 
 	@Override
 	@Transactional
-	public Consultas save(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws Exception {
+	public Consultas guardar(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws SigebiException {
 		
 		//Guardar el Anamnesis
 		Anamnesis anamnesis = null;
@@ -77,7 +77,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			procesoDiagnosticoTratamiento.getAnamnesis().setMotivoConsulta(motivoConsulta);
 			anamnesis = anamnesisDao.save(procesoDiagnosticoTratamiento.getAnamnesis());
 		} catch (Exception e) {
-			throw new Exception("Error al guardar el anamnesis " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al guardar el anamnesis " + e.getMessage());
 		}
 		
 		//Guardar diagnostico	
@@ -85,7 +85,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		try {
 			diagnostico = diagnosticoDao.save(procesoDiagnosticoTratamiento.getDiagnostico());
 		} catch (Exception e) {
-			throw new Exception("Error al guardar el diagnostico " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al guardar el diagnostico " + e.getMessage());
 		}
 		
 		//Actualizar la ficha clinica	
@@ -124,7 +124,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			historialClinicoDao.save(historialClinico);
 			
 		} catch (Exception e) {
-			throw new Exception("Error al actualizar la ficha del paciente " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al actualizar la ficha del paciente " + e.getMessage());
 		}
 		
 		//Guardar el tratamiento
@@ -132,7 +132,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		try {
 			tratamiento = tratamientoDao.save(procesoDiagnosticoTratamiento.getTratamiento());
 		} catch (Exception e) {
-			throw new Exception("Error al guardar el tratamiento " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al guardar el tratamiento " + e.getMessage());
 		}
 		
 		//Guardar el tratamiento insumo
@@ -142,7 +142,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 				tratamientoInsumoDao.save(tratamientoInsumo);				
 			}			
 		} catch (Exception e) {
-			throw new Exception("Error al guardar los medicamentos del tratamiento " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al guardar los medicamentos del tratamiento " + e.getMessage());
 		}
 		
 		//Guardar la consulta
@@ -155,7 +155,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			
 			consulta = consultaDao.save(procesoDiagnosticoTratamiento.getConsulta());
 		} catch (Exception e) {
-			throw new Exception("Error al guardar la consulta " + e.getMessage());
+			throw new SigebiException.InternalServerError("Error al guardar la consulta " + e.getMessage());
 		}
 		
 		return consulta;

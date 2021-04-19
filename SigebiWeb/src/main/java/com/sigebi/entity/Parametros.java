@@ -21,8 +21,9 @@ public class Parametros {
 	@SequenceGenerator(name="seq_parametros",sequenceName="seq_parametros",allocationSize=1)
 	private Integer parametroId;
 	
-	@Column(name = "codigo_parametro", length = 20)
+	@Column(name = "codigo_parametro", length = 30)
 	@NotEmpty(message ="no puede estar vacio")
+	@Size(max=30, message="maximo 30 caracteres")
 	private String codigoParametro;
 	
 	@Column(name = "descripcion", length = 100)

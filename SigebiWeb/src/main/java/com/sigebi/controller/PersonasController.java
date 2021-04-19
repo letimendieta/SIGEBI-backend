@@ -38,6 +38,7 @@ import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin
@@ -56,62 +57,20 @@ public class PersonasController {
     }
 	
 	@GetMapping
-	public ResponseEntity<?> listar() {
-		Map<String, Object> response = new HashMap<>();
+	public ResponseEntity<?> listar() throws SigebiException {
 		List<Personas> personasList = null;
-		try {
-			personasList = personasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		if( personasList.isEmpty()) {
-			response.put("mensaje", "No se encontraron datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+		
+		personasList = personasService.listar();
+		
 		return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
-		Map<String, Object> response = new HashMap<>();
+	public ResponseEntity<?> obtener(@PathVariable("id") Integer id) throws SigebiException {
 		Personas persona = null;
-		try {
-			persona = personasService.findById(id);
-			if ( persona != null ) {
-				if( persona.getDepartamentos() == null ) {
-					persona.setDepartamentos(new Departamentos());
-				}
-				if( persona.getDependencias() == null ) {
-					persona.setDependencias(new Dependencias());
-				}
-				if( persona.getCarreras() == null ) {
-					persona.setCarreras(new Carreras());
-				}
-				if( persona.getEstamentos() == null ) {
-					persona.setEstamentos(new Estamentos());
-				}
-			}
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 		
-		if( persona == null ) {
-			response.put("mensaje", "La persona con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
+		persona = personasService.obtener(id);
+
 		return new ResponseEntity<Personas>(persona, HttpStatus.OK);
 	}
 	
@@ -120,7 +79,7 @@ public class PersonasController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
-            Pageable pageable) throws JsonMappingException, JsonProcessingException{
+            Pageable pageable) throws JsonMappingException, JsonProcessingException, DataAccessException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
@@ -129,134 +88,68 @@ public class PersonasController {
 			persona = objectMapper.readValue(filtros, Personas.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Personas> personasList = new ArrayList<Personas>();
 		
 		if ( persona == null ) {
 			persona = new Personas();
 		}
-		try {
-			personasList = personasService.buscar(fromDate, toDate, persona, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		
+		personasList = personasService.buscar(fromDate, toDate, persona, pageable);
 		
         return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
     }
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Personas persona, BindingResult result) throws Exception {
+	public ResponseEntity<?> crear(@Valid @RequestBody Personas persona, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();		
 		Personas personaNew = null;
 		
 		if( result.hasErrors() ) {
-
 			List<String> errors = result.getFieldErrors()
 					.stream()
 					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
 					.collect(Collectors.toList());
-			
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			throw new SigebiException.BusinessException(errors.toString());
 		}
 		
-		try {
-			personaNew = personasService.save(persona);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		personaNew = personasService.guardar(persona);
 		
 		response.put("mensaje", "La persona ha sido creada con éxito!");
 		response.put("persona", personaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Personas persona, BindingResult result) throws Exception {
+	public ResponseEntity<?> actualizar(@Valid @RequestBody Personas persona, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( persona.getPersonaId() == null ) {
-			response.put("mensaje", "Error: persona id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Personas personaActual = personasService.findById(persona.getPersonaId());
-		Personas personaUpdated = null;
-
 		if( result.hasErrors() ) {
-
 			List<String> errors = result.getFieldErrors()
 					.stream()
 					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
 					.collect(Collectors.toList());
-			
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			throw new SigebiException.BusinessException(errors.toString());
 		}
 		
-		if ( personaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, la persona ID: "
-					.concat(String.valueOf(persona.getPersonaId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+		Personas personaUpdated = null;
 
-		try {
-
-			personaUpdated = personasService.save(persona);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar la persona en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		personaUpdated = personasService.actualizar(persona);;
 
 		response.put("mensaje", "La persona ha sido actualizada con éxito!");
 		response.put("persona", personaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable int id) {
+	public ResponseEntity<?> eliminar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
-		
-		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: persona id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Personas personaActual = personasService.findById(id);
-		
-		if ( personaActual == null ) {
-			response.put("mensaje", "La persona ID: "
-					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-					
-		try {
-			personasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar la persona de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
+									
+		personasService.eliminar(id);
+
 		response.put("mensaje", "Persona eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);

@@ -14,7 +14,7 @@ public class ProcesoDiagnosticoTratamiento {
 	Anamnesis anamnesis;
 	Diagnosticos diagnostico;
 	Tratamientos tratamiento;
-	ArrayList<TratamientosInsumos> tratamientoInsumoList;	
+	ArrayList<TratamientosInsumos> tratamientoInsumoList;
 	Consultas consulta;
 	ArrayList<FichaMedica> fichaMedicaList;
 	HistorialClinico historialClinico;
