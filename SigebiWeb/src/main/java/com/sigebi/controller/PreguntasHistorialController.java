@@ -55,17 +55,9 @@ public class PreguntasHistorialController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<PreguntasHistorial> preguntasList = null;
-		try {
-			preguntasList = preguntasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		preguntasList = preguntasService.findAll();
+
 		if( preguntasList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class PreguntasHistorialController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		PreguntasHistorial area = null;
-		try {
-			area = preguntasService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		area = preguntasService.findById(id);
 		
 		if( area == null ) {
 			response.put("mensaje", "El area con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -126,18 +109,8 @@ public class PreguntasHistorialController {
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}			
-		
-		try {
-			preguntasList = preguntasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+
+		preguntasList = preguntasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<PreguntasHistorial>>(preguntasList, HttpStatus.OK);
     }
@@ -158,17 +131,7 @@ public class PreguntasHistorialController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			areaNew = preguntasService.save(area);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		areaNew = preguntasService.save(area);
 		
 		response.put("mensaje", "El area ha sido creada con éxito!");
 		response.put("area", areaNew);
@@ -199,19 +162,7 @@ public class PreguntasHistorialController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			areaUpdated = preguntasService.save(area);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el area en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		areaUpdated = preguntasService.save(area);;
 
 		response.put("mensaje", "El area ha sido actualizada con éxito!");
 		response.put("area", areaUpdated);
@@ -236,17 +187,7 @@ public class PreguntasHistorialController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			preguntasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el area de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		preguntasService.delete(id);
 		
 		response.put("mensaje", "PreguntaHistorial eliminada con éxito!");
 		

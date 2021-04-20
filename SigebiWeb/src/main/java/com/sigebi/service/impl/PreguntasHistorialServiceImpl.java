@@ -59,7 +59,7 @@ public class PreguntasHistorialServiceImpl implements PreguntasHistorialService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<PreguntasHistorial> buscar(Date fromDate, Date toDate, PreguntasHistorial preguntaHistorial, String orderBy, String orderDir, Pageable pageable) {
 		List<PreguntasHistorial> preguntasList;
 		

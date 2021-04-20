@@ -58,6 +58,7 @@ public class AlergiasServiceImpl implements AlergiasService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Alergias> buscar(Date fromDate, Date toDate, Alergias alergias, 
 										Pageable pageable) {
 		List<Alergias> AlergiasList = alergiasDao.findAll((Specification<Alergias>) (root, cq, cb) -> {

@@ -52,7 +52,7 @@ public class StockServiceImpl implements StockService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Stock> buscar(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, Pageable pageable) {
 		
         List<Stock> stockList = stockDao.findAll((Specification<Stock>) (root, cq, cb) -> {

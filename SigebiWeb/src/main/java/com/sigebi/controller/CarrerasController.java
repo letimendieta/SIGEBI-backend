@@ -54,17 +54,9 @@ public class CarrerasController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Carreras> carrerasList = null;
-		try {
-			carrerasList = carrerasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		carrerasList = carrerasService.findAll();
+
 		if( carrerasList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -76,17 +68,8 @@ public class CarrerasController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Carreras carrera = null;
-		try {
-			carrera = carrerasService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		carrera = carrerasService.findById(id);
 		
 		if( carrera == null ) {
 			response.put("mensaje", "El carrera con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -118,17 +101,8 @@ public class CarrerasController {
 		if ( carrera == null ) {
 			carrera = new Carreras();
 		}
-		try {
-			carrerasList = carrerasService.buscar(fromDate, toDate, carrera, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		
+		carrerasList = carrerasService.buscar(fromDate, toDate, carrera, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Carreras>>(carrerasList, HttpStatus.OK);
     }
@@ -149,17 +123,7 @@ public class CarrerasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			carreraNew = carrerasService.save(carrera);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		carreraNew = carrerasService.save(carrera);
 		
 		response.put("mensaje", "El carrera ha sido creada con éxito!");
 		response.put("carrera", carreraNew);
@@ -195,19 +159,7 @@ public class CarrerasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			carreraUpdated = carrerasService.save(carrera);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el carrera en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		carreraUpdated = carrerasService.save(carrera);;
 
 		response.put("mensaje", "El carrera ha sido actualizada con éxito!");
 		response.put("carrera", carreraUpdated);
@@ -231,18 +183,8 @@ public class CarrerasController {
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-					
-		try {
-			carrerasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el carrera de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		carrerasService.delete(id);
 		
 		response.put("mensaje", "Carrera eliminada con éxito!");
 		

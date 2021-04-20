@@ -53,7 +53,7 @@ public class EstamentosServiceImpl implements EstamentosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Estamentos> buscar(Date fromDate, Date toDate, Estamentos estamento, String orderBy, String orderDir, Pageable pageable) {
 		
         List<Estamentos> estamentosList = estamentosDao.findAll((Specification<Estamentos>) (root, cq, cb) -> {

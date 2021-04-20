@@ -60,6 +60,7 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<HistorialClinico> buscar(Date fromDate, Date toDate, 
 										HistorialClinico historialClinico, 
 										Pageable pageable) {
@@ -86,6 +87,7 @@ public class HistorialesClinicosServiceImpl implements HistorialesClinicosServic
     }
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<HistorialClinico> buscarNoPaginable(Date fromDate, Date toDate, 
 										HistorialClinico historialClinico) {
 		

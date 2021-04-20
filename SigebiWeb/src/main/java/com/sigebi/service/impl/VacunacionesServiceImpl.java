@@ -59,7 +59,7 @@ public class VacunacionesServiceImpl implements VacunacionesService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Vacunaciones> buscar(Date fromDate, Date toDate, Vacunaciones vacunacion, String orderBy, String orderDir, Pageable pageable) {
 		List<Vacunaciones> vacunacioncionesList;
 		

@@ -55,17 +55,9 @@ public class MotivosConsultaController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<MotivosConsulta> motivosConsultaList = null;
-		try {
-			motivosConsultaList = motivosConsultaService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		motivosConsultaList = motivosConsultaService.findAll();
+
 		if( motivosConsultaList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class MotivosConsultaController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		MotivosConsulta motivoConsulta = null;
-		try {
-			motivoConsulta = motivosConsultaService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		motivoConsulta = motivosConsultaService.findById(id);
 		
 		if( motivoConsulta == null ) {
 			response.put("mensaje", "El motivoConsulta con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class MotivosConsultaController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			motivosConsultaList = motivosConsultaService.buscar(fromDate, toDate, motivoConsulta, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		motivosConsultaList = motivosConsultaService.buscar(fromDate, toDate, motivoConsulta, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<MotivosConsulta>>(motivosConsultaList, HttpStatus.OK);
     }
@@ -158,17 +131,7 @@ public class MotivosConsultaController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			motivoConsultaNew = motivosConsultaService.save(motivoConsulta);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		motivoConsultaNew = motivosConsultaService.save(motivoConsulta);
 		
 		response.put("mensaje", "El motivo ha sido creado con éxito!");
 		response.put("motivoConsulta", motivoConsultaNew);
@@ -204,19 +167,7 @@ public class MotivosConsultaController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			motivoConsultaUpdated = motivosConsultaService.save(motivoConsulta);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el motivo en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		motivoConsultaUpdated = motivosConsultaService.save(motivoConsulta);;
 
 		response.put("mensaje", "El motivo ha sido actualizado con éxito!");
 		response.put("motivoConsulta", motivoConsultaUpdated);
@@ -241,17 +192,7 @@ public class MotivosConsultaController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			motivosConsultaService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el motivo consulta de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		motivosConsultaService.delete(id);
 		
 		response.put("mensaje", "Motivo eliminado con éxito!");
 		

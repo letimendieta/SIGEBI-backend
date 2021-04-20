@@ -58,17 +58,9 @@ public class FuncionariosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Funcionarios> funcionariosList = null;
-		try {
-			funcionariosList = funcionariosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		funcionariosList = funcionariosService.findAll();
+
 		if( funcionariosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -80,17 +72,8 @@ public class FuncionariosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Funcionarios funcionario = null;
-		try {
-			funcionario = funcionariosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		funcionario = funcionariosService.findById(id);
 		
 		if( funcionario == null ) {
 			response.put("mensaje", "El funcionario con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -124,17 +107,9 @@ public class FuncionariosController {
 		List<Personas> personasList = new ArrayList<Personas>();
 		List<Integer> personasIds = new ArrayList<Integer>();
 		if( funcionario.getPersonas() != null) {
-			try {
-				personasList = personasService.buscar(fromDate, toDate, funcionario.getPersonas(), pageable);
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta en la base de datos");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+			
+			personasList = personasService.buscar(fromDate, toDate, funcionario.getPersonas(), pageable);
+
 			for( Personas persona : personasList ){
 				personasIds.add(persona.getPersonaId());
 			}
@@ -143,23 +118,13 @@ public class FuncionariosController {
 			}
 		}
 		
-		try {
-			funcionariosList = funcionariosService.buscar(fromDate, toDate, funcionario, personasIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		funcionariosList = funcionariosService.buscar(fromDate, toDate, funcionario, personasIds, pageable);
 		
         return new ResponseEntity<List<Funcionarios>>(funcionariosList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Funcionarios funcionario, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Funcionarios funcionario, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Funcionarios funcionarioNew = null;
 		
@@ -179,17 +144,7 @@ public class FuncionariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		try {
-			funcionarioNew = funcionariosService.guardar(funcionario);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		funcionarioNew = funcionariosService.guardar(funcionario);
 		
 		response.put("mensaje", "El funcionario ha sido creada con éxito!");
 		response.put("funcionario", funcionarioNew);
@@ -225,19 +180,7 @@ public class FuncionariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			funcionarioUpdated = funcionariosService.actualizar(funcionario);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el funcionario en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		funcionarioUpdated = funcionariosService.actualizar(funcionario);;
 
 		response.put("mensaje", "El funcionario ha sido actualizado con éxito!");
 		response.put("funcionario", funcionarioUpdated);
@@ -262,17 +205,7 @@ public class FuncionariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			funcionariosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el funcionario de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		funcionariosService.delete(id);
 		
 		response.put("mensaje", "Funcionario eliminado con éxito!");
 		

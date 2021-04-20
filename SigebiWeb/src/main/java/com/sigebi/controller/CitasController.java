@@ -70,17 +70,9 @@ public class CitasController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Citas> citasList = null;
-		try {
-			citasList = citasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		citasList = citasService.findAll();
+		
 		if( citasList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -92,17 +84,8 @@ public class CitasController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Citas cita = null;
-		try {
-			cita = citasService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		cita = citasService.findById(id);
 		
 		if( cita == null ) {
 			response.put("mensaje", "El cita con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -152,7 +135,7 @@ public class CitasController {
 		List<Funcionarios> funcionariosList = new ArrayList<Funcionarios>();		
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( cita.getFuncionarios() != null) {
-			try {
+			
 				if(cita.getFuncionarios().getPersonas() != null) {
 					personasList = personasService.buscar(null, null, cita.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
 					
@@ -170,15 +153,7 @@ public class CitasController {
 				if(funcionariosList.isEmpty()) {
 					return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
 				}
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
 			}
@@ -187,7 +162,6 @@ public class CitasController {
 		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		List<Integer> pacientesIds = new ArrayList<Integer>();
 		if( cita.getPacientes() != null) {
-			try {
 				personasId = new ArrayList<Integer>();
 				personasList = new ArrayList<Personas>();
 				
@@ -208,39 +182,18 @@ public class CitasController {
 				if(pacientesList.isEmpty()) {
 					return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
 				}
-									
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
 			}
 		}
 		
-		try {
-			citasList = citasService.buscar(fromDate, toDate, cita, 
-																funcionariosIds, pacientesIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del la cita");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-						
+		citasList = citasService.buscar(fromDate, toDate, cita, funcionariosIds, pacientesIds, pageable);
+		
         return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Citas cita, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Citas cita, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Citas citaNew = null;
 		
@@ -255,18 +208,8 @@ public class CitasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 				
-		try {
-			citaNew = citasService.guardar(cita);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
+		citaNew = citasService.guardar(cita);
+
 		response.put("mensaje", "El cita ha sido creado con éxito!");
 		response.put("cita", citaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -301,19 +244,7 @@ public class CitasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			citaUpdated = citasService.actualizar(cita);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el cita en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		citaUpdated = citasService.actualizar(cita);;
 
 		response.put("mensaje", "El cita ha sido actualizado con éxito!");
 		response.put("cita", citaUpdated);
@@ -336,20 +267,10 @@ public class CitasController {
 			response.put("mensaje", "El cita ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-					
-		try {
-			citasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el cita de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		}		
 		
+		citasService.delete(id);
+
 		response.put("mensaje", "Paciente eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);

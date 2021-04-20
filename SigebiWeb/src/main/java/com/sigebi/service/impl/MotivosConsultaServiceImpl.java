@@ -59,7 +59,7 @@ public class MotivosConsultaServiceImpl implements MotivosConsultaService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<MotivosConsulta> buscar(Date fromDate, Date toDate, MotivosConsulta motivoConsulta, String orderBy, String orderDir, Pageable pageable) {
 		List<MotivosConsulta> motivosConsultaList;
 		

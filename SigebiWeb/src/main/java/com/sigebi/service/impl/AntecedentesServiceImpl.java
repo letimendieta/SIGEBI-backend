@@ -58,6 +58,7 @@ public class AntecedentesServiceImpl implements AntecedentesService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Antecedentes> buscar(Date fromDate, Date toDate, Antecedentes antecedentes, 
 										Pageable pageable) {
 		List<Antecedentes> AntecedentesList = antecedentesDao.findAll((Specification<Antecedentes>) (root, cq, cb) -> {

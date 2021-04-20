@@ -59,7 +59,7 @@ public class AlergenosServiceImpl implements AlergenosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Alergenos> buscar(Date fromDate, Date toDate, Alergenos alergeno, String orderBy, String orderDir, Pageable pageable) {
 		List<Alergenos> alergenosList;
 		

@@ -59,7 +59,7 @@ public class EnfermedadesCie10ServiceImpl implements EnfermedadesCie10Service{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<EnfermedadesCie10> buscar(Date fromDate, Date toDate, EnfermedadesCie10 enfermedadCie10, String orderBy, String orderDir, Pageable pageable) {
 		List<EnfermedadesCie10> enfermedadesCie10List;
 		

@@ -54,17 +54,9 @@ public class EstamentosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Estamentos> estamentosList = null;
-		try {
-			estamentosList = estamentosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		estamentosList = estamentosService.findAll();
+
 		if( estamentosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -76,17 +68,8 @@ public class EstamentosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Estamentos estamento = null;
-		try {
-			estamento = estamentosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		estamento = estamentosService.findById(id);
 		
 		if( estamento == null ) {
 			response.put("mensaje", "El estamento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -118,17 +101,8 @@ public class EstamentosController {
 		if ( estamento == null ) {
 			estamento = new Estamentos();
 		}
-		try {
-			estamentosList = estamentosService.buscar(fromDate, toDate, estamento, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		
+		estamentosList = estamentosService.buscar(fromDate, toDate, estamento, orderBy, orderDir, pageable);		
 		
         return new ResponseEntity<List<Estamentos>>(estamentosList, HttpStatus.OK);
     }
@@ -149,17 +123,7 @@ public class EstamentosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			estamentoNew = estamentosService.save(estamento);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		estamentoNew = estamentosService.save(estamento);
 		
 		response.put("mensaje", "El estamento ha sido creada con éxito!");
 		response.put("estamento", estamentoNew);
@@ -195,19 +159,7 @@ public class EstamentosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			estamentoUpdated = estamentosService.save(estamento);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el estamento en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		estamentoUpdated = estamentosService.save(estamento);;
 
 		response.put("mensaje", "El estamento ha sido actualizada con éxito!");
 		response.put("estamento", estamentoUpdated);
@@ -232,17 +184,7 @@ public class EstamentosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			estamentosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el estamento de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		estamentosService.delete(id);
 		
 		response.put("mensaje", "Estamento eliminada con éxito!");
 		

@@ -58,17 +58,9 @@ public class StockController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Stock> stockList = null;
-		try {
-			stockList = stockService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		stockList = stockService.findAll();
+
 		if( stockList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -80,17 +72,8 @@ public class StockController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Stock stock = null;
-		try {
-			stock = stockService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		stock = stockService.findById(id);
 		
 		if( stock == null ) {
 			response.put("mensaje", "El stock con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -124,17 +107,8 @@ public class StockController {
 		List<Insumos> insumosList = new ArrayList<Insumos>();
 		List<Integer> insumosIds = new ArrayList<Integer>();
 		if( stock.getInsumos() != null) {
-			try {
-				insumosList = insumosService.buscar(fromDate, toDate, stock.getInsumos(), pageable);
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta en la base de datos");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+			insumosList = insumosService.buscar(fromDate, toDate, stock.getInsumos(), pageable);
+
 			for( Insumos insumo : insumosList ){
 				insumosIds.add(insumo.getInsumoId());
 			}
@@ -143,17 +117,7 @@ public class StockController {
 			}
 		}
 		
-		try {
-			stockList = stockService.buscar(fromDate, toDate, stock, insumosIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		stockList = stockService.buscar(fromDate, toDate, stock, insumosIds, pageable);
 		
         return new ResponseEntity<List<Stock>>(stockList, HttpStatus.OK);
     }
@@ -174,17 +138,7 @@ public class StockController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			stockNew = stockService.save(stock);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		stockNew = stockService.save(stock);
 		
 		response.put("mensaje", "El stock ha sido creada con éxito!");
 		response.put("stock", stockNew);
@@ -220,19 +174,7 @@ public class StockController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			stockUpdated = stockService.save(stock);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el stock en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		stockUpdated = stockService.save(stock);;
 
 		response.put("mensaje", "El stock ha sido actualizada con éxito!");
 		response.put("stock", stockUpdated);
@@ -255,19 +197,9 @@ public class StockController {
 			response.put("mensaje", "La stock ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-					
-		try {
-			stockService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el stock de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		}		
+
+		stockService.delete(id);
 		
 		response.put("mensaje", "Stock eliminado con éxito!");
 		

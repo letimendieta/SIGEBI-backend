@@ -59,7 +59,7 @@ public class TratamientosInsumosServiceImpl implements TratamientosInsumosServic
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<TratamientosInsumos> buscar(Date fromDate, Date toDate, TratamientosInsumos tratamientoInsumo, String orderBy, String orderDir, Pageable pageable) {
 		List<TratamientosInsumos> tratamientosInsumosList;
 		

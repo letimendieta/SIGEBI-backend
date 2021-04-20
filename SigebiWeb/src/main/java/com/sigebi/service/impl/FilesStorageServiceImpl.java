@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sigebi.service.FilesStorageService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
@@ -40,20 +41,20 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   @Override
-  public void save(MultipartFile file, String tipo) {
-    try {
-    	if(utiles.isNullOrBlank(tipo)) {
-    		throw new Exception("Se requiere tipo para guardar el archivo");
-    	}
-    	Path path = obtenerPath(tipo);
-    	
-    	if(path == null) {
-    		throw new Exception("No se ha encontrado el path de la carpeta para guardar el archivo");
-    	}
-    	
+  public void save(MultipartFile file, String tipo) throws SigebiException {
+    
+	if(utiles.isNullOrBlank(tipo)) {
+		throw new SigebiException.BusinessException("Se requiere tipo para guardar el archivo");
+	}
+	Path path = obtenerPath(tipo);
+	
+	if(path == null) {
+		throw new SigebiException.BusinessException("No se ha encontrado el path de la carpeta para guardar el archivo");
+	}
+    try {	
       Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
     } catch (Exception e) {
-        throw new RuntimeException("El archivo ya existe. Error: " + e.getMessage());
+        throw new SigebiException.InternalServerError("No se pudo subir el archivo: El archivo ya existe. Error: " + e.getMessage());
     }
   }
 

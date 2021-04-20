@@ -53,7 +53,7 @@ public class DependenciasServiceImpl implements DependenciasService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Dependencias> buscar(Date fromDate, Date toDate, Dependencias dependencia, String orderBy, String orderDir, Pageable pageable) {
 		
         List<Dependencias> dependenciasList = dependenciasDao.findAll((Specification<Dependencias>) (root, cq, cb) -> {

@@ -55,17 +55,9 @@ public class ProcedimientosInsumosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<ProcedimientosInsumos> procedimientosInsumosList = null;
-		try {
-			procedimientosInsumosList = procedimientosInsumosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimientosInsumosList = procedimientosInsumosService.findAll();
+
 		if( procedimientosInsumosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,13 +69,8 @@ public class ProcedimientosInsumosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		ProcedimientosInsumos procedimientoInsumo = null;
-		try {
-			procedimientoInsumo = procedimientosInsumosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimientoInsumo = procedimientosInsumosService.findById(id);
 		
 		if( procedimientoInsumo == null ) {
 			response.put("mensaje", "El procedimiento insumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -122,18 +109,8 @@ public class ProcedimientosInsumosController {
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}			
-		
-		try {
-			procedimientosInsumosList = procedimientosInsumosService.buscar(fromDate, toDate, procedimientoInsumo, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+
+		procedimientosInsumosList = procedimientosInsumosService.buscar(fromDate, toDate, procedimientoInsumo, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<ProcedimientosInsumos>>(procedimientosInsumosList, HttpStatus.OK);
     }
@@ -154,17 +131,7 @@ public class ProcedimientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			procedimientoInsumoNew = procedimientosInsumosService.save(procedimientoInsumo);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		procedimientoInsumoNew = procedimientosInsumosService.save(procedimientoInsumo);
 		
 		response.put("mensaje", "El procedimiento insumo ha sido creada con éxito!");
 		response.put("procedimientoInsumo", procedimientoInsumoNew);
@@ -200,19 +167,7 @@ public class ProcedimientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			procedimientoInsumoUpdated = procedimientosInsumosService.save(procedimientoInsumo);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el procedimiento insumo en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		procedimientoInsumoUpdated = procedimientosInsumosService.save(procedimientoInsumo);;
 
 		response.put("mensaje", "El procedimiento insumo ha sido actualizada con éxito!");
 		response.put("procedimientoInsumo", procedimientoInsumoUpdated);
@@ -236,18 +191,8 @@ public class ProcedimientosInsumosController {
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-					
-		try {
-			procedimientosInsumosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el procedimiento insumo de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimientosInsumosService.delete(id);
 		
 		response.put("mensaje", "procedimiento insumo eliminado con éxito!");
 		

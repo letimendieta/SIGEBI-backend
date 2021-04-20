@@ -55,17 +55,9 @@ public class TerminoEstandarController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<TerminoEstandar> terminoEstandarList = null;
-		try {
-			terminoEstandarList = terminoEstandarService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		terminoEstandarList = terminoEstandarService.findAll();
+
 		if( terminoEstandarList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class TerminoEstandarController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		TerminoEstandar terminoEstandar = null;
-		try {
-			terminoEstandar = terminoEstandarService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		terminoEstandar = terminoEstandarService.findById(id);
 		
 		if( terminoEstandar == null ) {
 			response.put("mensaje", "El terminoEstandar con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class TerminoEstandarController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			terminoEstandarList = terminoEstandarService.buscar(fromDate, toDate, terminoEstandar, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		terminoEstandarList = terminoEstandarService.buscar(fromDate, toDate, terminoEstandar, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<TerminoEstandar>>(terminoEstandarList, HttpStatus.OK);
     }
@@ -157,18 +130,8 @@ public class TerminoEstandarController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		try {
-			terminoEstandarNew = terminoEstandarService.save(terminoEstandar);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		terminoEstandarNew = terminoEstandarService.save(terminoEstandar);
 		
 		response.put("mensaje", "El terminoEstandar ha sido creada con éxito!");
 		response.put("terminoEstandar", terminoEstandarNew);
@@ -204,19 +167,7 @@ public class TerminoEstandarController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			terminoEstandarUpdated = terminoEstandarService.save(terminoEstandar);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el terminoEstandar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		terminoEstandarUpdated = terminoEstandarService.save(terminoEstandar);;
 
 		response.put("mensaje", "El terminoEstandar ha sido actualizada con éxito!");
 		response.put("terminoEstandar", terminoEstandarUpdated);
@@ -241,17 +192,7 @@ public class TerminoEstandarController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			terminoEstandarService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el terminoEstandar de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		terminoEstandarService.delete(id);
 		
 		response.put("mensaje", "TerminoEstandar eliminada con éxito!");
 		

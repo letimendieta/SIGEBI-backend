@@ -55,17 +55,9 @@ public class PatologiasProcedimientosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<PatologiasProcedimientos> patologiasProcedimientosList = null;
-		try {
-			patologiasProcedimientosList = patologiasProcedimientosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		patologiasProcedimientosList = patologiasProcedimientosService.findAll();
+
 		if( patologiasProcedimientosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class PatologiasProcedimientosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		PatologiasProcedimientos patologiaProcedimiento = null;
-		try {
-			patologiaProcedimiento = patologiasProcedimientosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		patologiaProcedimiento = patologiasProcedimientosService.findById(id);
 		
 		if( patologiaProcedimiento == null ) {
 			response.put("mensaje", "El patologiaProcedimiento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class PatologiasProcedimientosController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			patologiasProcedimientosList = patologiasProcedimientosService.buscar(fromDate, toDate, patologiaProcedimiento, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		patologiasProcedimientosList = patologiasProcedimientosService.buscar(fromDate, toDate, patologiaProcedimiento, orderBy, orderDir, pageable);	
 		
         return new ResponseEntity<List<PatologiasProcedimientos>>(patologiasProcedimientosList, HttpStatus.OK);
     }
@@ -158,17 +131,7 @@ public class PatologiasProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			patologiaProcedimientoNew = patologiasProcedimientosService.save(patologiaProcedimiento);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		patologiaProcedimientoNew = patologiasProcedimientosService.save(patologiaProcedimiento);
 		
 		response.put("mensaje", "El patologiaProcedimiento ha sido creada con éxito!");
 		response.put("patologiaProcedimiento", patologiaProcedimientoNew);
@@ -204,19 +167,7 @@ public class PatologiasProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			patologiaProcedimientoUpdated = patologiasProcedimientosService.save(patologiaProcedimiento);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el patologiaProcedimiento en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		patologiaProcedimientoUpdated = patologiasProcedimientosService.save(patologiaProcedimiento);;
 
 		response.put("mensaje", "El patologiaProcedimiento ha sido actualizada con éxito!");
 		response.put("patologiaProcedimiento", patologiaProcedimientoUpdated);
@@ -241,17 +192,7 @@ public class PatologiasProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			patologiasProcedimientosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el patologiaProcedimiento de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		patologiasProcedimientosService.delete(id);
 		
 		response.put("mensaje", "PatologiaProcedimiento eliminada con éxito!");
 		

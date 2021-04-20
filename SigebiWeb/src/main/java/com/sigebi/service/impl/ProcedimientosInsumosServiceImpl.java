@@ -60,7 +60,7 @@ public class ProcedimientosInsumosServiceImpl implements ProcedimientosInsumosSe
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ProcedimientosInsumos> buscar(Date fromDate, Date toDate, ProcedimientosInsumos procedimientoInsumo, String orderBy, String orderDir, Pageable pageable) {
 		List<ProcedimientosInsumos> ProcedimientosInsumosList;
 		
@@ -97,7 +97,7 @@ public class ProcedimientosInsumosServiceImpl implements ProcedimientosInsumosSe
     }
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ProcedimientosInsumos> buscarNoPaginable(Date fromDate, Date toDate, ProcedimientosInsumos procedimientoInsumo) {
 		List<ProcedimientosInsumos> ProcedimientosInsumosList = ProcedimientosInsumosDao.findAll((Specification<ProcedimientosInsumos>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();

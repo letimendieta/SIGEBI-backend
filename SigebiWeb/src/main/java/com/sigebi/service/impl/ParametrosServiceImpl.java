@@ -53,7 +53,7 @@ public class ParametrosServiceImpl implements ParametrosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Parametros> buscar(Date fromDate, Date toDate, Parametros parametro, String orderBy, String orderDir, Pageable pageable) {
 						
         List<Parametros> parametrosList = parametrosDao.findAll((Specification<Parametros>) (root, cq, cb) -> {

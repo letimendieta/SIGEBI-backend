@@ -58,6 +58,7 @@ public class CitasServiceImpl implements CitasService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Citas> buscar(Date fromDate, Date toDate, 
 										Citas cita, 
 										List<Integer> funcionariosId,

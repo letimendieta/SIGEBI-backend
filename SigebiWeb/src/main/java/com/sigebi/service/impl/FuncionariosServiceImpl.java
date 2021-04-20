@@ -89,6 +89,7 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> personasId, Pageable pageable) {
 		List<Funcionarios> funcionariosList = funcionariosDao.findAll((Specification<Funcionarios>) (root, cq, cb) -> {
             

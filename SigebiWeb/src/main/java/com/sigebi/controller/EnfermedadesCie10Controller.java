@@ -55,17 +55,9 @@ public class EnfermedadesCie10Controller {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<EnfermedadesCie10> enfermedadesCie10List = null;
-		try {
-			enfermedadesCie10List = enfermedadesCie10Service.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		enfermedadesCie10List = enfermedadesCie10Service.findAll();
+
 		if( enfermedadesCie10List.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class EnfermedadesCie10Controller {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		EnfermedadesCie10 enfermedadCie10 = null;
-		try {
-			enfermedadCie10 = enfermedadesCie10Service.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		enfermedadCie10 = enfermedadesCie10Service.findById(id);
 		
 		if( enfermedadCie10 == null ) {
 			response.put("mensaje", "El enfermedadCie10 con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class EnfermedadesCie10Controller {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			enfermedadesCie10List = enfermedadesCie10Service.buscar(fromDate, toDate, enfermedadCie10, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		enfermedadesCie10List = enfermedadesCie10Service.buscar(fromDate, toDate, enfermedadCie10, orderBy, orderDir, pageable);	
 		
         return new ResponseEntity<List<EnfermedadesCie10>>(enfermedadesCie10List, HttpStatus.OK);
     }
@@ -158,17 +131,7 @@ public class EnfermedadesCie10Controller {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			enfermedadCie10New = enfermedadesCie10Service.save(enfermedadCie10);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		enfermedadCie10New = enfermedadesCie10Service.save(enfermedadCie10);
 		
 		response.put("mensaje", "El enfermedadCie10 ha sido creada con éxito!");
 		response.put("enfermedadCie10", enfermedadCie10New);
@@ -204,19 +167,7 @@ public class EnfermedadesCie10Controller {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			enfermedadCie10Updated = enfermedadesCie10Service.save(enfermedadCie10);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el enfermedadCie10 en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		enfermedadCie10Updated = enfermedadesCie10Service.save(enfermedadCie10);;
 
 		response.put("mensaje", "El enfermedadCie10 ha sido actualizada con éxito!");
 		response.put("enfermedadCie10", enfermedadCie10Updated);
@@ -241,17 +192,7 @@ public class EnfermedadesCie10Controller {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			enfermedadesCie10Service.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el enfermedadCie10 de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		enfermedadesCie10Service.delete(id);
 		
 		response.put("mensaje", "EnfermedadCie10 eliminada con éxito!");
 		

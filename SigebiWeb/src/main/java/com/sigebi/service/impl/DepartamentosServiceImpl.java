@@ -53,7 +53,7 @@ public class DepartamentosServiceImpl implements DepartamentosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Departamentos> buscar(Date fromDate, Date toDate, Departamentos departamento, String orderBy, String orderDir, Pageable pageable) {
 		
         List<Departamentos> departamentosList = departamentosDao.findAll((Specification<Departamentos>) (root, cq, cb) -> {

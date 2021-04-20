@@ -59,7 +59,7 @@ public class DiagnosticosServiceImpl implements DiagnosticosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Diagnosticos> buscar(Date fromDate, Date toDate, Diagnosticos diagnostico, String orderBy, String orderDir, Pageable pageable) {
 		List<Diagnosticos> diagnosticosList;
 		

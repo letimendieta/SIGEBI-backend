@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import com.sigebi.clases.FileInfo;
 import com.sigebi.clases.ResponseMessage;
 import com.sigebi.service.FilesStorageService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -33,22 +34,18 @@ public class FilesController {
 
   @PostMapping("/upload")
   public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file, 
-		  @RequestParam("tipo") String tipo) {
-	String message = "";
-	if (file.isEmpty()) {
-        message = "Seleccionar un archivo";
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-    }
-    try {
-      storageService.save(file, tipo);
+		  @RequestParam("tipo") String tipo) throws SigebiException {
+		String message = "";
+		if (file.isEmpty()) {
+		    message = "Seleccionar un archivo";
+		    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+		}
+		
+		storageService.save(file, tipo);
+		
+		message = "Archivo subido exitosamente: " + file.getOriginalFilename();
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 
-      message = "Archivo subido exitosamente: " + file.getOriginalFilename();
-      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-      
-    } catch (Exception e) {
-      message = "No se pudo subir el archivo: " + file.getOriginalFilename() + "!";
-      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));      
-    }
   }
 
   @GetMapping("/filesFolder/{tipo}")

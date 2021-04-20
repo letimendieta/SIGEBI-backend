@@ -53,7 +53,7 @@ public class InsumosServiceImpl implements InsumosService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Insumos> buscar(Date fromDate, Date toDate, Insumos insumo, Pageable pageable) {
 		
         List<Insumos> insumosList = insumosDao.findAll((Specification<Insumos>) (root, cq, cb) -> {

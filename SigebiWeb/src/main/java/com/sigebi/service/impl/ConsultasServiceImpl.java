@@ -77,7 +77,7 @@ public class ConsultasServiceImpl implements ConsultasService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Consultas> buscar(Date fromDate, Date toDate, Consultas consulta, 
 			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
 		List<Consultas> consultasList;
@@ -124,7 +124,7 @@ public class ConsultasServiceImpl implements ConsultasService{
     }
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ConsultasResult> buscarConsultas(Date fromDate, Date toDate, Consultas consulta, String orderBy, String orderDir, Pageable pageable) {
 		List<Consultas> consultasList = new ArrayList<Consultas>();
 		ConsultasResult consultaResult = null;

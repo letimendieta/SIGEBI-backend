@@ -57,17 +57,9 @@ public class UsuariosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Usuarios> usuariosList = null;
-		try {
-			usuariosList = usuariosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		usuariosList = usuariosService.findAll();
+
 		if( usuariosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -79,17 +71,8 @@ public class UsuariosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Usuarios usuario = null;
-		try {
-			usuario = usuariosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		usuario = usuariosService.findById(id);
 		
 		if( usuario == null ) {
 			response.put("mensaje", "El usuario con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -122,17 +105,8 @@ public class UsuariosController {
 		List<Personas> personasList = new ArrayList<Personas>();
 		List<Integer> personasIds = new ArrayList<Integer>();
 		if( usuario.getPersonas() != null) {
-			try {
-				personasList = personasService.buscar(fromDate, toDate, usuario.getPersonas(), pageable);
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta en la base de datos");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+			personasList = personasService.buscar(fromDate, toDate, usuario.getPersonas(), pageable);
+
 			for( Personas persona : personasList ){
 				personasIds.add(persona.getPersonaId());
 			}
@@ -141,23 +115,13 @@ public class UsuariosController {
 			}
 		}
 		
-		try {
-			usuariosList = usuariosService.buscar(fromDate, toDate, usuario, personasIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, personasIds, pageable);
 						
         return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Usuarios usuario, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Usuarios usuario, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Usuarios usuarioNew = null;
 		
@@ -177,17 +141,7 @@ public class UsuariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		try {
-			usuarioNew = usuariosService.guardar(usuario);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		usuarioNew = usuariosService.guardar(usuario);
 		
 		response.put("mensaje", "El usuario ha sido creado con éxito!");
 		response.put("usuario", usuarioNew);
@@ -223,19 +177,7 @@ public class UsuariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			usuarioUpdated = usuariosService.actualizar(usuario);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el usuario en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		usuarioUpdated = usuariosService.actualizar(usuario);;
 
 		response.put("mensaje", "El usuario ha sido actualizado con éxito!");
 		response.put("usuario", usuarioUpdated);
@@ -259,18 +201,8 @@ public class UsuariosController {
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-					
-		try {
-			usuariosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el usuario de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		usuariosService.delete(id);
 		
 		response.put("mensaje", "usuario eliminado con éxito!");
 		

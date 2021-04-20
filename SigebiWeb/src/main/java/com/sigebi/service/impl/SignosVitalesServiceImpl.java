@@ -53,7 +53,7 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<SignosVitales> buscar(Date fromDate, Date toDate, SignosVitales signoVital, String orderBy, String orderDir, Pageable pageable) {
 		List<SignosVitales> signoVitalsList;
 		

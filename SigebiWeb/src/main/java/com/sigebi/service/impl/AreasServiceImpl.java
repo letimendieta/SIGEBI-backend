@@ -112,7 +112,7 @@ public class AreasServiceImpl implements AreasService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, 
 			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
 		List<Areas> areasList;

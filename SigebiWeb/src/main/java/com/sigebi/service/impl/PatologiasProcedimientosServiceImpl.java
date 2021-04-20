@@ -59,7 +59,7 @@ public class PatologiasProcedimientosServiceImpl implements PatologiasProcedimie
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<PatologiasProcedimientos> buscar(Date fromDate, Date toDate, PatologiasProcedimientos patologiaProcedimiento, String orderBy, String orderDir, Pageable pageable) {
 		List<PatologiasProcedimientos> patologiasProcedimientosList;
 		

@@ -59,7 +59,7 @@ public class AnamnesisServiceImpl implements AnamnesisService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Anamnesis> buscar(Date fromDate, Date toDate, Anamnesis anamnesis, String orderBy, String orderDir, Pageable pageable) {
 		List<Anamnesis> anamnesisList;
 		

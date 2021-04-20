@@ -55,17 +55,9 @@ public class VacunacionesController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Vacunaciones> vacunacionesList = null;
-		try {
-			vacunacionesList = vacunacionesService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		vacunacionesList = vacunacionesService.findAll();
+
 		if( vacunacionesList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class VacunacionesController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Vacunaciones vacunaciones = null;
-		try {
-			vacunaciones = vacunacionesService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		vacunaciones = vacunacionesService.findById(id);
 		
 		if( vacunaciones == null ) {
 			response.put("mensaje", "El vacunaciones con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class VacunacionesController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			vacunacionesList = vacunacionesService.buscar(fromDate, toDate, vacunaciones, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}	
+		vacunacionesList = vacunacionesService.buscar(fromDate, toDate, vacunaciones, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Vacunaciones>>(vacunacionesList, HttpStatus.OK);
     }
@@ -157,18 +130,8 @@ public class VacunacionesController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}		
-		
-		try {
-			vacunacionesNew = vacunacionesService.save(vacunaciones);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		vacunacionesNew = vacunacionesService.save(vacunaciones);
 		
 		response.put("mensaje", "Vacunaciones ha sido creada con éxito!");
 		response.put("vacunaciones", vacunacionesNew);
@@ -204,19 +167,7 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			vacunacionesUpdated = vacunacionesService.save(vacunaciones);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar las vacunaciones en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		vacunacionesUpdated = vacunacionesService.save(vacunaciones);;
 
 		response.put("mensaje", "Vacunaciones ha sido actualizada con éxito!");
 		response.put("vacunaciones", vacunacionesUpdated);
@@ -241,17 +192,7 @@ public class VacunacionesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			vacunacionesService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar la vacunacion de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		vacunacionesService.delete(id);
 		
 		response.put("mensaje", "Vacunacion eliminada con éxito!");
 		

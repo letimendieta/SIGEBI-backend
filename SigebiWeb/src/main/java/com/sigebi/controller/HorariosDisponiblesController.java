@@ -66,17 +66,9 @@ public class HorariosDisponiblesController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<HorariosDisponibles> horariosDisponiblesList = null;
-		try {
-			horariosDisponiblesList = horariosDisponiblesService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		horariosDisponiblesList = horariosDisponiblesService.findAll();
+
 		if( horariosDisponiblesList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -88,17 +80,8 @@ public class HorariosDisponiblesController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		HorariosDisponibles horariosDisponible = null;
-		try {
-			horariosDisponible = horariosDisponiblesService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		horariosDisponible = horariosDisponiblesService.findById(id);
 		
 		if( horariosDisponible == null ) {
 			response.put("mensaje", "El horariosDisponible con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -148,23 +131,15 @@ public class HorariosDisponiblesController {
 		List<Funcionarios> funcionariosList = new ArrayList<Funcionarios>();		
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( horariosDisponible.getFuncionarios() != null) {
-			try {
-				if(horariosDisponible.getFuncionarios().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, horariosDisponible.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
-				}				
-				funcionariosList = funcionariosService.buscar(null, null, horariosDisponible.getFuncionarios(), personasId, PageRequest.of(0, 20));
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+
+			if(horariosDisponible.getFuncionarios().getPersonas() != null) {
+				personasList = personasService.buscar(null, null, horariosDisponible.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				for( Personas persona : personasList ){
+					personasId.add(persona.getPersonaId());
+				}
+			}				
+			funcionariosList = funcionariosService.buscar(null, null, horariosDisponible.getFuncionarios(), personasId, PageRequest.of(0, 20));
+
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
 			}
@@ -173,24 +148,14 @@ public class HorariosDisponiblesController {
 			}
 		}		
 		
-		try {
-			horariosDisponiblesList = horariosDisponiblesService.buscar(fromDate, toDate, horariosDisponible, 
+		horariosDisponiblesList = horariosDisponiblesService.buscar(fromDate, toDate, horariosDisponible, 
 																funcionariosIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del horariosDisponible");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-						
+			
         return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody HorariosDisponibles horariosDisponible, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody HorariosDisponibles horariosDisponible, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		HorariosDisponibles horariosDisponibleNew = null;
 		
@@ -205,17 +170,7 @@ public class HorariosDisponiblesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 				
-		try {
-			horariosDisponibleNew = horariosDisponiblesService.guardar(horariosDisponible);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		horariosDisponibleNew = horariosDisponiblesService.guardar(horariosDisponible);
 		
 		response.put("mensaje", "El horario  ha sido creado con éxito!");
 		response.put("horariosDisponible", horariosDisponibleNew);
@@ -251,19 +206,7 @@ public class HorariosDisponiblesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			horariosDisponibleUpdated = horariosDisponiblesService.actualizar(horariosDisponible);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el horario en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		horariosDisponibleUpdated = horariosDisponiblesService.actualizar(horariosDisponible);;
 
 		response.put("mensaje", "El horario ha sido actualizado con éxito!");
 		response.put("horariosDisponible", horariosDisponibleUpdated);
@@ -288,17 +231,7 @@ public class HorariosDisponiblesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			horariosDisponiblesService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el horario de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		horariosDisponiblesService.delete(id);
 		
 		response.put("mensaje", "Horario eliminado con éxito!");
 		

@@ -57,17 +57,9 @@ public class AlergiasController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Alergias> alergiaList = null;
-		try {
-			alergiaList = alergiasService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		alergiaList = alergiasService.findAll();
+		
 		if( alergiaList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -79,13 +71,8 @@ public class AlergiasController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Alergias alergia = null;
-		try {
-			alergia = alergiasService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		alergia = alergiasService.findById(id);
 		
 		if( alergia == null ) {
 			response.put("mensaje", "El alergia con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -115,21 +102,11 @@ public class AlergiasController {
 		if ( alergia == null ) {
 			alergia = new Alergias();
 		}
-
-		try {
-			alergiaList = alergiasService.buscar(fromDate, toDate, alergia, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos de la alergia");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		alergiaList = alergiasService.buscar(fromDate, toDate, alergia, pageable);
 							
-	        return new ResponseEntity<List<Alergias>>(alergiaList, HttpStatus.OK);
-	    }
+	    return new ResponseEntity<List<Alergias>>(alergiaList, HttpStatus.OK);
+	}
 
 	@PostMapping
 	public ResponseEntity<?> insertar(@Valid @RequestBody Alergias alergia, BindingResult result) throws Exception {
@@ -146,17 +123,7 @@ public class AlergiasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 				
-		try {
-			alergiaNew = alergiasService.guardar(alergia);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		alergiaNew = alergiasService.guardar(alergia);
 		
 		response.put("mensaje", "La alergia ha sido creado con éxito!");
 		response.put("alergia", alergiaNew);
@@ -192,19 +159,7 @@ public class AlergiasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			alergiaUpdated = alergiasService.actualizar(alergia);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar la alergia en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		alergiaUpdated = alergiasService.actualizar(alergia);;
 
 		response.put("mensaje", "La alergia ha sido actualizada con éxito!");
 		response.put("alergia", alergiaUpdated);
@@ -229,17 +184,7 @@ public class AlergiasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			alergiasService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar la alergia de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		alergiasService.delete(id);
 		
 		response.put("mensaje", "Alergias eliminado con éxito!");
 		

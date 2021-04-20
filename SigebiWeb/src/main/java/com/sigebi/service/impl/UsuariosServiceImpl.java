@@ -102,6 +102,7 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable) {
 		List<Usuarios> UsuariosList = usuariosDao.findAll((Specification<Usuarios>) (root, cq, cb) -> {
             

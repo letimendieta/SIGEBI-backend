@@ -115,6 +115,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Procedimientos> buscar(Date fromDate, Date toDate, 
 										Procedimientos procedimiento, 
 										List<Integer> funcionariosId,

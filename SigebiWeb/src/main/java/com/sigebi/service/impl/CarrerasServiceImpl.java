@@ -53,7 +53,7 @@ public class CarrerasServiceImpl implements CarrerasService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Carreras> buscar(Date fromDate, Date toDate, Carreras carrera, String orderBy, String orderDir, Pageable pageable) {
 		
         List<Carreras> carrerasList = carrerasDao.findAll((Specification<Carreras>) (root, cq, cb) -> {

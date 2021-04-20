@@ -1,7 +1,5 @@
 package com.sigebi.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -70,17 +67,9 @@ public class SignosVitalesController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<SignosVitales> signosVitalesList = null;
-		try {
-			signosVitalesList = signosVitalesService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		signosVitalesList = signosVitalesService.findAll();
+
 		if( signosVitalesList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -92,17 +81,8 @@ public class SignosVitalesController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		SignosVitales signoVital = null;
-		try {
-			signoVital = signosVitalesService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		signoVital = signosVitalesService.findById(id);
 		
 		if( signoVital == null ) {
 			response.put("mensaje", "El signoVital con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -139,23 +119,14 @@ public class SignosVitalesController {
 		List<Funcionarios> funcionariosList = new ArrayList<Funcionarios>();		
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( signoVital.getFuncionarios() != null) {
-			try {
-				if(signoVital.getFuncionarios().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, signoVital.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
-				}				
-				funcionariosList = funcionariosService.buscar(null, null, signoVital.getFuncionarios(), personasId, PageRequest.of(0, 20));
-			} catch (DataAccessException  e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}  catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+			if(signoVital.getFuncionarios().getPersonas() != null) {
+				personasList = personasService.buscar(null, null, signoVital.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				for( Personas persona : personasList ){
+					personasId.add(persona.getPersonaId());
+				}
+			}				
+			funcionariosList = funcionariosService.buscar(null, null, signoVital.getFuncionarios(), personasId, PageRequest.of(0, 20));
+
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
 			}
@@ -164,50 +135,30 @@ public class SignosVitalesController {
 		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		List<Integer> pacientesIds = new ArrayList<Integer>();
 		if( signoVital.getPacientes() != null) {
-			try {
-				personasId = new ArrayList<Integer>();
-				personasList = new ArrayList<Personas>();
+			personasId = new ArrayList<Integer>();
+			personasList = new ArrayList<Personas>();
+			
+			if(signoVital.getPacientes().getPersonas() != null) {
+				personasList = personasService.buscar(null, null, signoVital.getPacientes().getPersonas(), PageRequest.of(0, 20));
 				
-				if(signoVital.getPacientes().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, signoVital.getPacientes().getPersonas(), PageRequest.of(0, 20));
-					
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
+				for( Personas persona : personasList ){
+					personasId.add(persona.getPersonaId());
 				}
-				pacientesList = pacientesService.buscar(null, null, signoVital.getPacientes(), personasId, PageRequest.of(0, 20));
-									
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+			pacientesList = pacientesService.buscar(null, null, signoVital.getPacientes(), personasId, PageRequest.of(0, 20));				
+
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
 			}
 		}
 		
-		try {
-			signosVitalesList = signosVitalesService.buscar(fromDate, toDate, signoVital, null, null, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del signoVital");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		signosVitalesList = signosVitalesService.buscar(fromDate, toDate, signoVital, null, null, pageable);
 						
         return new ResponseEntity<List<SignosVitales>>(signosVitalesList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody SignosVitales procesoSignoVital, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody SignosVitales procesoSignoVital, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		SignosVitales signoVitalNew = null;
 		
@@ -222,17 +173,7 @@ public class SignosVitalesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 						
-		try {
-			signoVitalNew = signosVitalesService.save(procesoSignoVital);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		signoVitalNew = signosVitalesService.save(procesoSignoVital);
 		
 		response.put("mensaje", "El signoVital ha sido creado con éxito!");
 		response.put("signoVital", signoVitalNew);
@@ -268,19 +209,7 @@ public class SignosVitalesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			signoVitalUpdated = signosVitalesService.save(signoVital);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el signoVital en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		signoVitalUpdated = signosVitalesService.save(signoVital);;
 
 		response.put("mensaje", "El signoVital ha sido actualizado con éxito!");
 		response.put("signoVital", signoVitalUpdated);
@@ -304,18 +233,8 @@ public class SignosVitalesController {
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-					
-		try {
-			signosVitalesService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el signoVital de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		signosVitalesService.delete(id);
 		
 		response.put("mensaje", "SignoVital eliminado con éxito!");
 		

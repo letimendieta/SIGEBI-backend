@@ -58,7 +58,7 @@ public class TerminoEstandarServiceImpl implements TerminoEstandarService{
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<TerminoEstandar> buscar(Date fromDate, Date toDate, TerminoEstandar terminoEstandar, String orderBy, String orderDir, Pageable pageable) {
 		List<TerminoEstandar> terminoEstandarList;
 		

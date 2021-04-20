@@ -71,17 +71,9 @@ public class ProcedimientosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Procedimientos> procedimientosList = null;
-		try {
-			procedimientosList = procedimientosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimientosList = procedimientosService.findAll();
+
 		if( procedimientosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -93,17 +85,8 @@ public class ProcedimientosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Procedimientos procedimiento = null;
-		try {
-			procedimiento = procedimientosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimiento = procedimientosService.findById(id);
 		
 		if( procedimiento == null ) {
 			response.put("mensaje", "El procedimiento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -153,23 +136,14 @@ public class ProcedimientosController {
 		List<Funcionarios> funcionariosList = new ArrayList<Funcionarios>();		
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( procedimiento.getFuncionarios() != null) {
-			try {
-				if(procedimiento.getFuncionarios().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, procedimiento.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
-				}				
-				funcionariosList = funcionariosService.buscar(null, null, procedimiento.getFuncionarios(), personasId, PageRequest.of(0, 20));
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del funcionario");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+			if(procedimiento.getFuncionarios().getPersonas() != null) {
+				personasList = personasService.buscar(null, null, procedimiento.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				for( Personas persona : personasList ){
+					personasId.add(persona.getPersonaId());
+				}
+			}				
+			funcionariosList = funcionariosService.buscar(null, null, procedimiento.getFuncionarios(), personasId, PageRequest.of(0, 20));
+
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
 			}
@@ -178,51 +152,31 @@ public class ProcedimientosController {
 		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		List<Integer> pacientesIds = new ArrayList<Integer>();
 		if( procedimiento.getPacientes() != null) {
-			try {
-				personasId = new ArrayList<Integer>();
-				personasList = new ArrayList<Personas>();
+			personasId = new ArrayList<Integer>();
+			personasList = new ArrayList<Personas>();
+			
+			if(procedimiento.getPacientes().getPersonas() != null) {
+				personasList = personasService.buscar(null, null, procedimiento.getPacientes().getPersonas(), PageRequest.of(0, 20));
 				
-				if(procedimiento.getPacientes().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, procedimiento.getPacientes().getPersonas(), PageRequest.of(0, 20));
-					
-					for( Personas persona : personasList ){
-						personasId.add(persona.getPersonaId());
-					}
+				for( Personas persona : personasList ){
+					personasId.add(persona.getPersonaId());
 				}
-				pacientesList = pacientesService.buscar(null, null, procedimiento.getPacientes(), personasId, PageRequest.of(0, 20));
-									
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al realizar la consulta de los datos del paciente");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch( Exception ex ){
-				response.put("mensaje", "Ocurrio un error ");
-				response.put("error", ex.getMessage());
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+			pacientesList = pacientesService.buscar(null, null, procedimiento.getPacientes(), personasId, PageRequest.of(0, 20));					
+
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
 			}
 		}
 		
-		try {
-			procedimientosList = procedimientosService.buscar(fromDate, toDate, procedimiento, 
+		procedimientosList = procedimientosService.buscar(fromDate, toDate, procedimiento, 
 																funcionariosIds, pacientesIds, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del procedimiento");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 						
         return new ResponseEntity<List<Procedimientos>>(procedimientosList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody ProcesoProcedimientos procesoProcedimiento, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody ProcesoProcedimientos procesoProcedimiento, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Procedimientos procedimientoNew = null;
 		
@@ -237,17 +191,7 @@ public class ProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 						
-		try {
-			procedimientoNew = procedimientosService.guardar(procesoProcedimiento);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		procedimientoNew = procedimientosService.guardar(procesoProcedimiento);
 		
 		response.put("mensaje", "El procedimiento ha sido creado con éxito!");
 		response.put("procedimiento", procedimientoNew);
@@ -283,19 +227,7 @@ public class ProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			procedimientoUpdated = procedimientosService.actualizar(procesoProcedimiento);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el procedimiento en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		procedimientoUpdated = procedimientosService.actualizar(procesoProcedimiento);;
 
 		response.put("mensaje", "El procedimiento ha sido actualizado con éxito!");
 		response.put("procedimiento", procedimientoUpdated);
@@ -319,18 +251,8 @@ public class ProcedimientosController {
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-					
-		try {
-			procedimientosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el procedimiento de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		procedimientosService.delete(id);
 		
 		response.put("mensaje", "Procedimiento eliminado con éxito!");
 		

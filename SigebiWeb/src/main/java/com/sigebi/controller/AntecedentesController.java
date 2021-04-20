@@ -57,17 +57,9 @@ public class AntecedentesController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Antecedentes> antecedenteList = null;
-		try {
-			antecedenteList = antecedentesService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		antecedenteList = antecedentesService.findAll();
+
 		if( antecedenteList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -79,17 +71,8 @@ public class AntecedentesController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Antecedentes antecedente = null;
-		try {
-			antecedente = antecedentesService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
+		antecedente = antecedentesService.findById(id);
 		
 		if( antecedente == null ) {
 			response.put("mensaje", "El antecedente con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -120,20 +103,10 @@ public class AntecedentesController {
 			antecedente = new Antecedentes();
 		}
 
-		try {
-			antecedenteList = antecedentesService.buscar(fromDate, toDate, antecedente, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta de los datos del antecedente");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		antecedenteList = antecedentesService.buscar(fromDate, toDate, antecedente, pageable);
 							
-	        return new ResponseEntity<List<Antecedentes>>(antecedenteList, HttpStatus.OK);
-	    }
+	    return new ResponseEntity<List<Antecedentes>>(antecedenteList, HttpStatus.OK);
+	}
 
 	@PostMapping
 	public ResponseEntity<?> insertar(@Valid @RequestBody Antecedentes antecedente, BindingResult result) throws Exception {
@@ -150,17 +123,7 @@ public class AntecedentesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 				
-		try {
-			antecedenteNew = antecedentesService.guardar(antecedente);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		antecedenteNew = antecedentesService.guardar(antecedente);
 		
 		response.put("mensaje", "El antecedente ha sido creado con éxito!");
 		response.put("antecedente", antecedenteNew);
@@ -196,19 +159,7 @@ public class AntecedentesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			antecedenteUpdated = antecedentesService.actualizar(antecedente);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el antecedente en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		antecedenteUpdated = antecedentesService.actualizar(antecedente);;
 
 		response.put("mensaje", "El antecedente ha sido actualizado con éxito!");
 		response.put("antecedente", antecedenteUpdated);
@@ -233,17 +184,7 @@ public class AntecedentesController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		try {
-			antecedentesService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el antecedente de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		antecedentesService.delete(id);
 		
 		response.put("mensaje", "Antecedentes eliminado con éxito!");
 		

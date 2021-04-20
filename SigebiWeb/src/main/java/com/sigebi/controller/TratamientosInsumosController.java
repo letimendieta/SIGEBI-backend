@@ -55,17 +55,9 @@ public class TratamientosInsumosController {
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<TratamientosInsumos> tratamientosInsumosList = null;
-		try {
-			tratamientosInsumosList = tratamientosInsumosService.findAll();
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		tratamientosInsumosList = tratamientosInsumosService.findAll();
+
 		if( tratamientosInsumosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -77,17 +69,8 @@ public class TratamientosInsumosController {
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		TratamientosInsumos tratamientoInsumo = null;
-		try {
-			tratamientoInsumo = tratamientosInsumosService.findById(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		tratamientoInsumo = tratamientosInsumosService.findById(id);
 		
 		if( tratamientoInsumo == null ) {
 			response.put("mensaje", "El tratamientoInsumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -127,17 +110,7 @@ public class TratamientosInsumosController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		try {
-			tratamientosInsumosList = tratamientosInsumosService.buscar(fromDate, toDate, tratamientoInsumo, orderBy, orderDir, pageable);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}		
+		tratamientosInsumosList = tratamientosInsumosService.buscar(fromDate, toDate, tratamientoInsumo, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<TratamientosInsumos>>(tratamientosInsumosList, HttpStatus.OK);
     }
@@ -158,17 +131,7 @@ public class TratamientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			tratamientoInsumoNew = tratamientosInsumosService.save(tratamientoInsumo);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al guardar en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		tratamientoInsumoNew = tratamientosInsumosService.save(tratamientoInsumo);
 		
 		response.put("mensaje", "El tratamientoInsumo ha sido creada con éxito!");
 		response.put("tratamientoInsumo", tratamientoInsumoNew);
@@ -204,19 +167,7 @@ public class TratamientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		try {
-
-			tratamientoInsumoUpdated = tratamientosInsumosService.save(tratamientoInsumo);;
-
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el tratamientoInsumo en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		tratamientoInsumoUpdated = tratamientosInsumosService.save(tratamientoInsumo);;
 
 		response.put("mensaje", "El tratamientoInsumo ha sido actualizada con éxito!");
 		response.put("tratamientoInsumo", tratamientoInsumoUpdated);
@@ -239,19 +190,9 @@ public class TratamientosInsumosController {
 			response.put("mensaje", "El tratamientoInsumo ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-					
-		try {
-			tratamientosInsumosService.delete(id);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el tratamientoInsumo de la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch( Exception ex ){
-			response.put("mensaje", "Ocurrio un error ");
-			response.put("error", ex.getMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		}			
+
+		tratamientosInsumosService.delete(id);
 		
 		response.put("mensaje", "TratamientoInsumo eliminada con éxito!");
 		

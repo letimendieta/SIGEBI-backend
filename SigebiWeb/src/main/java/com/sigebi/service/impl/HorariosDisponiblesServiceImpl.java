@@ -58,6 +58,7 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<HorariosDisponibles> buscar(Date fromDate, Date toDate, 
 										HorariosDisponibles horariosDisponible, 
 										List<Integer> funcionariosId,
