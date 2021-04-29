@@ -5,15 +5,18 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
 
 public interface ProcedimientosInsumosService {
 	
-	public List<ProcedimientosInsumos> findAll();
+	public List<ProcedimientosInsumos> listar();
 	
 	public int count();
 	
-	public ProcedimientosInsumos findById(int id);
+	public ProcedimientosInsumos obtener(int id);
+	
+	public List<ProcedimientosInsumos> obtenerProcedimientoInsumoPaciente(int pacienteId);
 	
 	public ProcedimientosInsumos save(ProcedimientosInsumos procedimientoInsumo);
 	
@@ -21,6 +24,6 @@ public interface ProcedimientosInsumosService {
 	
 	public List<ProcedimientosInsumos> buscar(Date fromDate, Date toDate, ProcedimientosInsumos procedimientoInsumo, String orderBy, String orderDir, Pageable pageable);
 	
-	public List<ProcedimientosInsumos> buscarNoPaginable(Date fromDate, Date toDate, ProcedimientosInsumos procedimientoInsumo);
+	public List<ProcedimientosInsumos> buscarNoPaginable(Date fromDate, Date toDate, ProcedimientosInsumos procedimientoInsumo, List<Integer> procedimientosId);
 	
 }

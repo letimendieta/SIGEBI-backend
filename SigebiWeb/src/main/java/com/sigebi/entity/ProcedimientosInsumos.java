@@ -27,6 +27,9 @@ public class ProcedimientosInsumos {
 	@Column(name = "cantidad")
 	private Integer cantidad;
 	
+	@Column(name = "medida", length = 15)
+	private String medida;
+	
 	@Column(name = "estado", length = 10)
 	@Size(max=10, message="maximo 10 caracteres")
 	private String estado;
@@ -75,6 +78,14 @@ public class ProcedimientosInsumos {
 
 	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
+	}
+
+	public String getMedida() {
+		return medida;
+	}
+
+	public void setMedida(String medida) {
+		this.medida = medida;
 	}
 
 	public String getEstado() {

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.clases.FichaMedica;
-import com.sigebi.clases.Globales;
 import com.sigebi.clases.ProcesoPacienteHistorialClinico;
 import com.sigebi.dao.IAlergiasDao;
 import com.sigebi.dao.IAntecedentesDao;
@@ -54,6 +53,7 @@ import com.sigebi.service.PreguntasHistorialService;
 import com.sigebi.service.PreguntasService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.service.VacunasService;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 

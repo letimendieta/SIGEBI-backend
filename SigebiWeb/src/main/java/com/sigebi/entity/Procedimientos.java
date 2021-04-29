@@ -29,8 +29,19 @@ public class Procedimientos {
 	@Column(name = "cantidad_insumo")
 	private Integer cantidadInsumo;
 	
+	@Column(name = "estado", length = 10)
+	@Size(max=10, message="maximo 10 caracteres")
+	private String estado;
+	
+	@OneToOne
+    @JoinColumn(name = "area_id", referencedColumnName = "areaId")
+    private Areas areas;
+	
 	@Column(name = "fecha")
 	private LocalDateTime fecha;
+	
+	@Column(name = "consulta_id")
+	private Integer consultaId;
 		
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -53,6 +64,10 @@ public class Procedimientos {
 	@OneToOne
     @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
     private Pacientes pacientes;
+	
+	@OneToOne
+    @JoinColumn(name = "motivo_consulta_id", referencedColumnName = "motivoConsultaId", updatable = true)
+    private MotivosConsulta motivoConsulta;
 	
 	@PrePersist
 	private void create() {
@@ -80,6 +95,14 @@ public class Procedimientos {
 		this.funcionarios = funcionarios;
 	}
 
+	public Areas getAreas() {
+		return areas;
+	}
+
+	public void setAreas(Areas areas) {
+		this.areas = areas;
+	}
+
 	public String getNotas() {
 		return notas;
 	}
@@ -104,12 +127,36 @@ public class Procedimientos {
 		this.cantidadInsumo = cantidadInsumo;
 	}
 
+	public MotivosConsulta getMotivoConsulta() {
+		return motivoConsulta;
+	}
+
+	public void setMotivoConsulta(MotivosConsulta motivoConsulta) {
+		this.motivoConsulta = motivoConsulta;
+	}
+
 	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
 	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public Integer getConsultaId() {
+		return consultaId;
+	}
+
+	public void setConsultaId(Integer consultaId) {
+		this.consultaId = consultaId;
 	}
 
 	public LocalDateTime getFechaCreacion() {

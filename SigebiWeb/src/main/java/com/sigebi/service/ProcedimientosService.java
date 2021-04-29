@@ -7,12 +7,15 @@ import org.springframework.data.domain.Pageable;
 
 import com.sigebi.clases.ProcesoProcedimientos;
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcedimientosInsumos;
 
 public interface ProcedimientosService{
 
 	public List<Procedimientos> findAll();
 	
-	public Procedimientos findById(int id);	
+	public Procedimientos findById(int id);
+	
+	public List<Procedimientos> obtenerProcedimientoPaciente(int pacienteId);
 	
 	public Procedimientos guardar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
@@ -25,5 +28,10 @@ public interface ProcedimientosService{
 										List<Integer> funcionariosId,
 										List<Integer> pacientesId,
 										Pageable pageable);
+	
+	public List<Procedimientos> buscarNoPaginable(Date fromDate, Date toDate, 
+			Procedimientos procedimiento, 
+			List<Integer> funcionariosId,
+			List<Integer> pacientesId);
 	
 }

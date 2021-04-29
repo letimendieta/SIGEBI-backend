@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -56,7 +55,7 @@ public class ProcedimientosInsumosController {
 		Map<String, Object> response = new HashMap<>();
 		List<ProcedimientosInsumos> procedimientosInsumosList = null;
 
-		procedimientosInsumosList = procedimientosInsumosService.findAll();
+		procedimientosInsumosList = procedimientosInsumosService.listar();
 
 		if( procedimientosInsumosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
@@ -70,7 +69,7 @@ public class ProcedimientosInsumosController {
 		Map<String, Object> response = new HashMap<>();
 		ProcedimientosInsumos procedimientoInsumo = null;
 
-		procedimientoInsumo = procedimientosInsumosService.findById(id);
+		procedimientoInsumo = procedimientosInsumosService.obtener(id);
 		
 		if( procedimientoInsumo == null ) {
 			response.put("mensaje", "El procedimiento insumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
@@ -78,6 +77,20 @@ public class ProcedimientosInsumosController {
 		}
 		
 		return new ResponseEntity<ProcedimientosInsumos>(procedimientoInsumo, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/paciente/{id}")
+	public ResponseEntity<?> obtenerProcedimientoInsumoPaciente(@PathVariable("id") Integer pacienteId){
+		Map<String, Object> response = new HashMap<>();
+
+		List<ProcedimientosInsumos> procedimientoInsumo = procedimientosInsumosService.obtenerProcedimientoInsumoPaciente(pacienteId);
+		
+		if( procedimientoInsumo == null ) {
+			response.put("mensaje", "El procedimiento insumo con paciente id: ".concat(pacienteId.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<List<ProcedimientosInsumos>>(procedimientoInsumo, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
@@ -147,7 +160,7 @@ public class ProcedimientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.findById(procedimientoInsumo.getProcedimientoInsumoId());
+		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.obtener(procedimientoInsumo.getProcedimientoInsumoId());
 		ProcedimientosInsumos procedimientoInsumoUpdated = null;
 
 		if( result.hasErrors() ) {
@@ -184,7 +197,7 @@ public class ProcedimientosInsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.findById(id);
+		ProcedimientosInsumos procedimientoInsumoActual = procedimientosInsumosService.obtener(id);
 		
 		if ( procedimientoInsumoActual == null ) {
 			response.put("mensaje", "El procedimiento insumo ID: "

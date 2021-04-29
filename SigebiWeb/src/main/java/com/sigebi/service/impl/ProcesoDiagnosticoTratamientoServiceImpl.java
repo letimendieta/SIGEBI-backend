@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.clases.FichaMedica;
-import com.sigebi.clases.Globales;
 import com.sigebi.clases.ProcesoDiagnosticoTratamiento;
 import com.sigebi.dao.IAlergiasDao;
 import com.sigebi.dao.IAnamnesisDao;
@@ -15,6 +14,9 @@ import com.sigebi.dao.IAntecedentesDao;
 import com.sigebi.dao.IConsultasDao;
 import com.sigebi.dao.IDiagnosticosDao;
 import com.sigebi.dao.IHistorialClinicoDao;
+import com.sigebi.dao.IPacientesDao;
+import com.sigebi.dao.IProcedimientosDao;
+import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.dao.ITratamientosDao;
 import com.sigebi.dao.ITratamientosInsumosDao;
 import com.sigebi.entity.Alergenos;
@@ -25,7 +27,10 @@ import com.sigebi.entity.Consultas;
 import com.sigebi.entity.Diagnosticos;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.MotivosConsulta;
+import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.PatologiasProcedimientos;
+import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.entity.Tratamientos;
 import com.sigebi.entity.TratamientosInsumos;
 import com.sigebi.service.AlergenosService;
@@ -33,6 +38,7 @@ import com.sigebi.service.HistorialesClinicosService;
 import com.sigebi.service.MotivosConsultaService;
 import com.sigebi.service.PatologiasProcedimientosService;
 import com.sigebi.service.ProcesoDiagnosticoTratamientoService;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 
@@ -54,6 +60,8 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	@Autowired
 	private IAlergiasDao alergiasDao;
 	@Autowired
+	private IPacientesDao pacientesDao;
+	@Autowired
 	private PatologiasProcedimientosService patologiasProcedimientosService;
 	@Autowired
 	private IAntecedentesDao antecedentesDao;
@@ -62,16 +70,20 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 	@Autowired
 	private IHistorialClinicoDao historialClinicoDao;
 	@Autowired
+	private IProcedimientosDao procedimientosDao;
+	@Autowired
+	private IProcedimientosInsumosDao procedimientoInsumoDao;
+	@Autowired
 	private HistorialesClinicosService historialesClinicosService;	
 
 	@Override
 	@Transactional
 	public Consultas guardar(ProcesoDiagnosticoTratamiento procesoDiagnosticoTratamiento) throws SigebiException {
-		
+		MotivosConsulta motivoConsulta = null;
 		//Guardar el Anamnesis
 		Anamnesis anamnesis = null;
 		try {
-			MotivosConsulta motivoConsulta = 
+			motivoConsulta = 
 					motivosConsultaService.findById(procesoDiagnosticoTratamiento.getAnamnesis().getMotivoConsulta().getMotivoConsultaId());
 			
 			procesoDiagnosticoTratamiento.getAnamnesis().setMotivoConsulta(motivoConsulta);
@@ -156,6 +168,46 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 			consulta = consultaDao.save(procesoDiagnosticoTratamiento.getConsulta());
 		} catch (Exception e) {
 			throw new SigebiException.InternalServerError("Error al guardar la consulta " + e.getMessage());
+		}
+		
+		//Guardar procedimiento y procedimiento insumo
+		try {			
+			
+			Pacientes paciente = pacientesDao.findByPacienteId(procesoDiagnosticoTratamiento.getConsulta().getPacienteId());
+			
+			Procedimientos procedimientoEntity = new Procedimientos();
+			procedimientoEntity.setFuncionarios(procesoDiagnosticoTratamiento.getConsulta().getFuncionarios());			
+			procedimientoEntity.setPacientes(paciente);
+			procedimientoEntity.setUsuarioCreacion(procesoDiagnosticoTratamiento.getDiagnostico().getUsuarioCreacion());
+			procedimientoEntity.setConsultaId(consulta.getConsultaId());
+			procedimientoEntity.setFecha(LocalDateTime.now());
+			procedimientoEntity.setAreas(procesoDiagnosticoTratamiento.getConsulta().getAreas());
+			procedimientoEntity.setMotivoConsulta(motivoConsulta);
+			
+			if( procesoDiagnosticoTratamiento.getTratamientoInsumoList().size() > 0) {
+				procedimientoEntity.setEstado(Globales.Estados.PENDIENTE);
+			}else {
+				procedimientoEntity.setEstado(Globales.Estados.FINALIZADO);
+			}
+			
+			Procedimientos procedimiento = procedimientosDao.save(procedimientoEntity);
+			
+			
+			for(TratamientosInsumos tratamientoInsumo : procesoDiagnosticoTratamiento.getTratamientoInsumoList()) {
+				ProcedimientosInsumos procedimientoInsumoEntity = new ProcedimientosInsumos();
+				
+				procedimientoInsumoEntity.setEstado(Globales.EstadosEntregaInsumos.PENDIENTE);
+				procedimientoInsumoEntity.setInsumos(tratamientoInsumo.getInsumos());
+				procedimientoInsumoEntity.setUsuarioCreacion(procesoDiagnosticoTratamiento.getDiagnostico().getUsuarioCreacion());
+				procedimientoInsumoEntity.setProcedimientos(procedimiento);
+				procedimientoInsumoEntity.setMedida(tratamientoInsumo.getMedida());
+				procedimientoInsumoEntity.setCantidad(tratamientoInsumo.getCantidad());
+				
+				procedimientoInsumoDao.save(procedimientoInsumoEntity);
+			}			
+			
+		} catch (Exception e) {
+			throw new SigebiException.InternalServerError("Error al guardar el procedimiento " + e.getMessage());
 		}
 		
 		return consulta;

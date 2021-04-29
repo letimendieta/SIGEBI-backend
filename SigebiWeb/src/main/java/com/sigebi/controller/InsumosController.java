@@ -92,16 +92,16 @@ public class InsumosController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		JSONObject jo = new JSONObject(filtros);
-		String fechaString = jo.length()>0 && !jo.get("fechaVencimiento").equals(null) ? (String) jo.get("fechaVencimiento") : "";
+		//String fechaString = jo.length()>0 && !jo.get("fechaVencimiento").equals(null) ? (String) jo.get("fechaVencimiento") : "";
 		LocalDate fecha = null;
 		
 		//se quita fecha de filtros por que da error al mapear
-		if(!fechaString.equals(null) && !fechaString.equals("")) {
+		/*if(!fechaString.equals(null) && !fechaString.equals("")) {
 			String fechaAquitar = '"' + (String) jo.get("fechaVencimiento") + '"';
 			filtros = filtros.replace(fechaAquitar, "null");			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			fecha = LocalDate.parse(fechaString, format);					
-		}
+		}*/
 		
 		Insumos insumo = null;
 		if(!utiles.isNullOrBlank(filtros)) {

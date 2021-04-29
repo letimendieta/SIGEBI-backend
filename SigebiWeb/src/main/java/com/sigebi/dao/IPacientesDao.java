@@ -12,5 +12,5 @@ import com.sigebi.entity.Personas;
 public interface IPacientesDao extends JpaRepository<Pacientes, Integer>, JpaSpecificationExecutor<Pacientes> {
 	
 	List<Pacientes> findByPersonas(Personas personas);	
-	
+	Pacientes findByPacienteId(Integer pacienteId);
 }

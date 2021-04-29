@@ -3,7 +3,7 @@ package com.sigebi.util.exceptions;
 import org.springframework.http.HttpStatus;
 
 /**
-* Excepciones personalizadas para Senac
+* Excepciones personalizadas para Sigebi
 */
 public class SigebiException extends Exception{
 

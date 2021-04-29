@@ -13,6 +13,7 @@ public class ErrorHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorInfo> exception(HttpServletRequest request, Exception e) {
+		String mensaje = "Error interno del servidor. Consulte con soporte";
 		ErrorInfo errorInfo = new ErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e.getMessage(), request.getRequestURI());
 		e.printStackTrace();
 		return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);

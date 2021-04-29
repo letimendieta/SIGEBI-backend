@@ -39,6 +39,7 @@ import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PersonasService;
@@ -94,6 +95,20 @@ public class ProcedimientosController {
 		}
 		
 		return new ResponseEntity<Procedimientos>(procedimiento, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/paciente/{id}")
+	public ResponseEntity<?> obtenerProcedimientoPaciente(@PathVariable("id") Integer pacienteId){
+		Map<String, Object> response = new HashMap<>();
+
+		List<Procedimientos> procedimiento = procedimientosService.obtenerProcedimientoPaciente(pacienteId);
+		
+		if( procedimiento == null ) {
+			response.put("mensaje", "El procedimiento con paciente id: ".concat(pacienteId.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<List<Procedimientos>>(procedimiento, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")

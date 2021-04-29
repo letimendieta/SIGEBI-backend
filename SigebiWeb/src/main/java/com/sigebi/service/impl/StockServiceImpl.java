@@ -12,9 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigebi.dao.IMovimientoInsumoDao;
 import com.sigebi.dao.IStockDao;
+import com.sigebi.entity.MovimientosInsumos;
 import com.sigebi.entity.Stock;
 import com.sigebi.service.StockService;
+import com.sigebi.util.Globales;
 
 
 @Service
@@ -22,6 +25,8 @@ public class StockServiceImpl implements StockService{
 
 	@Autowired
 	private IStockDao stockDao;
+	@Autowired
+	private IMovimientoInsumoDao movimientoInsumoDao;
 	
 	public StockServiceImpl(IStockDao stockDao) {
         this.stockDao = stockDao;
@@ -41,8 +46,20 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	@Transactional
-	public Stock save(Stock cliente) {
-		return stockDao.save(cliente);
+	public Stock save(Stock stock) {
+		
+		//guardar el movimiento de insumos
+		
+		MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
+		
+		movimientoInsumo.setCantidadEntrada(stock.getCantidad());
+		movimientoInsumo.setCodProceso(Globales.Procesos.ALTA_STOCK);
+		movimientoInsumo.setInsumos(stock.getInsumos());
+		movimientoInsumo.setUsuarioCreacion(stock.getUsuarioCreacion());
+		
+		movimientoInsumoDao.save(movimientoInsumo);
+		
+		return stockDao.save(stock);
 	}
 
 	@Override
