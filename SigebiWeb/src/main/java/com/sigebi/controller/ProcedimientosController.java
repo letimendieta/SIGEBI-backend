@@ -1,5 +1,6 @@
 package com.sigebi.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -124,12 +125,16 @@ public class ProcedimientosController {
 		String fechaString = jo.length()>0 && !jo.get("fecha").equals(null) ? (String) jo.get("fecha") : "";
 		LocalDateTime fecha = null;
 		
+		
+		
 		//se quita fecha de filtros por que da error al mapear
 		if(!fechaString.equals(null) && !fechaString.equals("")) {
 			String fechaAquitar = '"' + (String) jo.get("fecha") + '"';
-			filtros = filtros.replace(fechaAquitar, "null");			
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-			fecha = LocalDateTime.parse(fechaString, format);					
+			filtros = filtros.replace(fechaAquitar, "null");
+			LocalDate date = LocalDate.parse(fechaString);
+			LocalDateTime localDateTime = date.atStartOfDay();
+			//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+			fecha = localDateTime;//LocalDateTime.parse(fechaString, format);					
 		}
 		
 		Procedimientos procedimiento = null;

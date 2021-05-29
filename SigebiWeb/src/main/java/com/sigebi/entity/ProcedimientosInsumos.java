@@ -26,10 +26,7 @@ public class ProcedimientosInsumos {
 	
 	@Column(name = "cantidad")
 	private Integer cantidad;
-	
-	@Column(name = "medida", length = 15)
-	private String medida;
-	
+		
 	@Column(name = "estado", length = 10)
 	@Size(max=10, message="maximo 10 caracteres")
 	private String estado;
@@ -51,8 +48,12 @@ public class ProcedimientosInsumos {
     private Procedimientos procedimientos;
 	
 	@OneToOne
-    @JoinColumn(name = "insumo_id", referencedColumnName = "insumoId")
-    private Insumos insumos;	
+    @JoinColumn(name = "insumo_medico_id", referencedColumnName = "insumoMedicoId")
+    private InsumosMedicos insumosMedicos;
+	
+	@OneToOne
+    @JoinColumn(name = "medicamento_id", referencedColumnName = "medicamentoId")
+    private Medicamentos medicamentos;	
 	
 	@PrePersist
 	private void create() {
@@ -80,12 +81,20 @@ public class ProcedimientosInsumos {
 		this.cantidad = cantidad;
 	}
 
-	public String getMedida() {
-		return medida;
+	public InsumosMedicos getInsumosMedicos() {
+		return insumosMedicos;
 	}
 
-	public void setMedida(String medida) {
-		this.medida = medida;
+	public void setInsumosMedicos(InsumosMedicos insumosMedicos) {
+		this.insumosMedicos = insumosMedicos;
+	}
+
+	public Medicamentos getMedicamentos() {
+		return medicamentos;
+	}
+
+	public void setMedicamentos(Medicamentos medicamentos) {
+		this.medicamentos = medicamentos;
 	}
 
 	public String getEstado() {
@@ -102,14 +111,6 @@ public class ProcedimientosInsumos {
 
 	public void setProcedimientos(Procedimientos procedimientos) {
 		this.procedimientos = procedimientos;
-	}
-
-	public Insumos getInsumos() {
-		return insumos;
-	}
-
-	public void setInsumos(Insumos insumos) {
-		this.insumos = insumos;
 	}
 
 	public LocalDateTime getFechaCreacion() {

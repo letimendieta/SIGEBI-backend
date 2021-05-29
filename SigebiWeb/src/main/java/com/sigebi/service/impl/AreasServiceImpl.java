@@ -60,7 +60,7 @@ public class AreasServiceImpl implements AreasService{
 		Areas area = areasDao.findById(id).orElse(null);
 				
 		if ( area == null ) {
-			String mensaje = "Error: no se pudo editar, el área ID: "
+			String mensaje = "El área con ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
 			throw new SigebiException.DataNotFound(mensaje);
 		}

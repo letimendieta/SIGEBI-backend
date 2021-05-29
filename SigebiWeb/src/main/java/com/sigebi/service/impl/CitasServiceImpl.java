@@ -1,5 +1,6 @@
 package com.sigebi.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -13,8 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.ICitasDao;
+import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.entity.Citas;
+import com.sigebi.entity.Procedimientos;
 import com.sigebi.service.CitasService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -22,6 +27,8 @@ public class CitasServiceImpl implements CitasService{
 
 	@Autowired
 	private ICitasDao citasDao;
+	@Autowired
+	private IProcedimientosDao procedimientosDao;
 	
 	public CitasServiceImpl(ICitasDao citasDao) {
         this.citasDao = citasDao;
@@ -41,8 +48,29 @@ public class CitasServiceImpl implements CitasService{
 
 	@Transactional
 	public Citas guardar(Citas cita) throws Exception {
+		Citas citaSave = citasDao.save(cita);
+		
+		//Guardar procedimiento
+		/*try {			
 						
-		return citasDao.save(cita);
+			Procedimientos procedimientoEntity = new Procedimientos();
+			procedimientoEntity.setFuncionarios(citaSave.getFuncionarios());			
+			procedimientoEntity.setPacientes(citaSave.getPacientes());
+			procedimientoEntity.setUsuarioCreacion(citaSave.getUsuarioCreacion());
+			procedimientoEntity.setCita(citaSave);
+			//procedimientoEntity.setFecha(LocalDateTime.now());
+			procedimientoEntity.setAreas(citaSave.getAreas());
+			procedimientoEntity.setMotivoConsulta(citaSave.getMotivoConsulta());
+			
+			procedimientoEntity.setEstado(Globales.Estados.PENDIENTE);
+			
+			Procedimientos procedimiento = procedimientosDao.save(procedimientoEntity);
+			
+		} catch (Exception e) {
+			throw new SigebiException.InternalServerError("Error al guardar el procedimiento " + e.getMessage());
+		}*/
+		
+		return citaSave;
 	}
 	
 	@Transactional

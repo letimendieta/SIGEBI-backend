@@ -197,10 +197,9 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 				ProcedimientosInsumos procedimientoInsumoEntity = new ProcedimientosInsumos();
 				
 				procedimientoInsumoEntity.setEstado(Globales.EstadosEntregaInsumos.PENDIENTE);
-				procedimientoInsumoEntity.setInsumos(tratamientoInsumo.getInsumos());
+				procedimientoInsumoEntity.setInsumosMedicos(tratamientoInsumo.getInsumosMedicos());
 				procedimientoInsumoEntity.setUsuarioCreacion(procesoDiagnosticoTratamiento.getDiagnostico().getUsuarioCreacion());
 				procedimientoInsumoEntity.setProcedimientos(procedimiento);
-				procedimientoInsumoEntity.setMedida(tratamientoInsumo.getMedida());
 				procedimientoInsumoEntity.setCantidad(tratamientoInsumo.getCantidad());
 				
 				procedimientoInsumoDao.save(procedimientoInsumoEntity);

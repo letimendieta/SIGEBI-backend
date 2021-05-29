@@ -25,10 +25,6 @@ public class Stock {
 	@Column(name = "cantidad")
 	private Integer cantidad;
 	
-	@Column(name = "unidad_medida", length = 10)
-	@Size(max=10, message="maximo 10 caracteres")
-	private String unidadMedida;
-	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -44,8 +40,12 @@ public class Stock {
 	private String usuarioModificacion;
 	
 	@OneToOne
-    @JoinColumn(name = "insumo_id", referencedColumnName = "insumoId")
-    private Insumos insumos;
+    @JoinColumn(name = "insumo_medico_id", referencedColumnName = "insumoMedicoId")
+    private InsumosMedicos insumosMedicos;
+	
+	@OneToOne
+    @JoinColumn(name = "medicamento_id", referencedColumnName = "medicamentoId")
+    private Medicamentos medicamentos;
 	
 	@PrePersist
 	private void create() {
@@ -73,20 +73,20 @@ public class Stock {
 		this.cantidad = cantidad;
 	}	
 
-	public Insumos getInsumos() {
-		return insumos;
+	public InsumosMedicos getInsumosMedicos() {
+		return insumosMedicos;
 	}
 
-	public void setInsumos(Insumos insumos) {
-		this.insumos = insumos;
+	public void setInsumosMedicos(InsumosMedicos insumosMedicos) {
+		this.insumosMedicos = insumosMedicos;
 	}
 
-	public String getUnidadMedida() {
-		return unidadMedida;
+	public Medicamentos getMedicamentos() {
+		return medicamentos;
 	}
 
-	public void setUnidadMedida(String unidadMedida) {
-		this.unidadMedida = unidadMedida;
+	public void setMedicamentos(Medicamentos medicamentos) {
+		this.medicamentos = medicamentos;
 	}
 
 	public String getUsuarioCreacion() {

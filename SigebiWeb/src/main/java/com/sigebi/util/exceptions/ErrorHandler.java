@@ -21,8 +21,8 @@ public class ErrorHandler {
 	
 	@ExceptionHandler(DataAccessException.class)
 	public ResponseEntity<ErrorInfo> exception(HttpServletRequest request, DataAccessException e) {
-		String mensaje = "Ocurrió un error al consultar en la base de datos. ";
-		ErrorInfo errorInfo = new ErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), mensaje + e.getMessage(), request.getRequestURI());
+		String mensaje = "Ocurrió un error al consultar en la base de datos. " + (e.getCause() != null && e.getCause().getCause() != null ? e.getCause().getCause() : e.getMessage());
+		ErrorInfo errorInfo = new ErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), mensaje, request.getRequestURI());
 		e.printStackTrace();
 		return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

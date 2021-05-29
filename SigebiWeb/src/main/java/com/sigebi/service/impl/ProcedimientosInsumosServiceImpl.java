@@ -16,9 +16,12 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
+import com.sigebi.entity.InsumosMedicos;
+import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
+import com.sigebi.entity.Stock;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
 import com.sigebi.util.Globales;
@@ -121,6 +124,15 @@ public class ProcedimientosInsumosServiceImpl implements ProcedimientosInsumosSe
 		}else {
 			ProcedimientosInsumosList = ProcedimientosInsumosDao.findAll(ProcedimientosInsumosSpec);
 		}
+		
+		for(ProcedimientosInsumos procedInsumo : ProcedimientosInsumosList) {
+        	if(procedInsumo.getInsumosMedicos() == null) {
+        		procedInsumo.setInsumosMedicos(new InsumosMedicos());
+        	}
+        	if(procedInsumo.getMedicamentos() == null ) {
+        		procedInsumo.setMedicamentos(new Medicamentos());
+        	}
+        }
         
         return ProcedimientosInsumosList;
     }
@@ -152,7 +164,16 @@ public class ProcedimientosInsumosServiceImpl implements ProcedimientosInsumosSe
             cq.orderBy(cb.desc(root.get("procedimientoInsumoId")));            
             return p;
 		});
-        
+		
+		for(ProcedimientosInsumos procedInsumo : ProcedimientosInsumosList) {
+        	if(procedInsumo.getInsumosMedicos() == null) {
+        		procedInsumo.setInsumosMedicos(new InsumosMedicos());
+        	}
+        	if(procedInsumo.getMedicamentos() == null ) {
+        		procedInsumo.setMedicamentos(new Medicamentos());
+        	}
+        }
+		
         return ProcedimientosInsumosList;
     }
 }

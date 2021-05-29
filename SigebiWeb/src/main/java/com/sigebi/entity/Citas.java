@@ -30,9 +30,13 @@ public class Citas {
 	@Column(name = "hora")
 	private LocalTime hora;
 		
-	@Column(name = "estado", length = 1)
-	@Size(max=1, message="maximo 1 caracteres")
+	@Column(name = "estado", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
 	private String estado;
+	
+	@Column(name = "notas", length = 500)
+	@Size(max=500, message="maximo 500 caracteres")
+	private String notas;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -59,6 +63,10 @@ public class Citas {
 	@OneToOne
     @JoinColumn(name = "area_id", referencedColumnName = "areaId", unique = true)
     private Areas areas;
+	
+	@OneToOne
+    @JoinColumn(name = "motivo_consulta_id", referencedColumnName = "motivoConsultaId", updatable = true)
+    private MotivosConsulta motivoConsulta;
 	
 	@PrePersist
 	private void create() {
@@ -124,6 +132,22 @@ public class Citas {
 
 	public void setPacientes(Pacientes pacientes) {
 		this.pacientes = pacientes;
+	}
+
+	public String getNotas() {
+		return notas;
+	}
+
+	public void setNotas(String notas) {
+		this.notas = notas;
+	}
+
+	public MotivosConsulta getMotivoConsulta() {
+		return motivoConsulta;
+	}
+
+	public void setMotivoConsulta(MotivosConsulta motivoConsulta) {
+		this.motivoConsulta = motivoConsulta;
 	}
 
 	public String getUsuarioCreacion() {

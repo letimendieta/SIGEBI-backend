@@ -13,7 +13,6 @@ import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -88,7 +87,7 @@ public class CitasController {
 		cita = citasService.findById(id);
 		
 		if( cita == null ) {
-			response.put("mensaje", "El cita con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "La cita con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -210,7 +209,7 @@ public class CitasController {
 				
 		citaNew = citasService.guardar(cita);
 
-		response.put("mensaje", "El cita ha sido creado con éxito!");
+		response.put("mensaje", "La cita ha sido creado con éxito!");
 		response.put("cita", citaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -239,14 +238,14 @@ public class CitasController {
 		}
 		
 		if ( citaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el cita ID: "
+			response.put("mensaje", "Error: no se pudo editar, la cita ID: "
 					.concat(String.valueOf(cita.getCitaId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		citaUpdated = citasService.actualizar(cita);;
 
-		response.put("mensaje", "El cita ha sido actualizado con éxito!");
+		response.put("mensaje", "La cita ha sido actualizada con éxito!");
 		response.put("cita", citaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -264,7 +263,7 @@ public class CitasController {
 		Citas citaActual = citasService.findById(id);
 		
 		if ( citaActual == null ) {
-			response.put("mensaje", "El cita ID: "
+			response.put("mensaje", "La cita ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}		

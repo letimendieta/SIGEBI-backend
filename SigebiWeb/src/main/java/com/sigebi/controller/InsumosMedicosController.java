@@ -1,7 +1,5 @@
 package com.sigebi.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -33,98 +29,85 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.Insumos;
-import com.sigebi.service.InsumosService;
+import com.sigebi.entity.InsumosMedicos;
+import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/insumos")
-public class InsumosController {
+@RequestMapping("/auth/insumos-medicos")
+public class InsumosMedicosController {
 
 	@Autowired
-	private InsumosService insumosService;
+	private InsumosMedicosService insumosService;
 	@Autowired
 	private UtilesService utiles;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public InsumosController(InsumosService insumosService) {
+	public InsumosMedicosController(InsumosMedicosService insumosService) {
         this.insumosService = insumosService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<Insumos> insumosList = null;
+		List<InsumosMedicos> insumosList = null;
 
-		insumosList = insumosService.findAll();
+		insumosList = insumosService.listar();
 
 		if( insumosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<Insumos>>(insumosList, HttpStatus.OK);
+		return new ResponseEntity<List<InsumosMedicos>>(insumosList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		Insumos insumo = null;
+		InsumosMedicos insumo = null;
 
-		insumo = insumosService.findById(id);
+		insumo = insumosService.obtener(id);
 		
 		if( insumo == null ) {
 			response.put("mensaje", "El insumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Insumos>(insumo, HttpStatus.OK);
+		return new ResponseEntity<InsumosMedicos>(insumo, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarInsumos(
+    public ResponseEntity<?> buscarInsumoMedico(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		
-		JSONObject jo = new JSONObject(filtros);
-		//String fechaString = jo.length()>0 && !jo.get("fechaVencimiento").equals(null) ? (String) jo.get("fechaVencimiento") : "";
-		LocalDate fecha = null;
-		
-		//se quita fecha de filtros por que da error al mapear
-		/*if(!fechaString.equals(null) && !fechaString.equals("")) {
-			String fechaAquitar = '"' + (String) jo.get("fechaVencimiento") + '"';
-			filtros = filtros.replace(fechaAquitar, "null");			
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			fecha = LocalDate.parse(fechaString, format);					
-		}*/
-		
-		Insumos insumo = null;
+				
+		InsumosMedicos insumo = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			insumo = objectMapper.readValue(filtros, Insumos.class);
-			insumo.setFechaVencimiento(fecha);
+			insumo = objectMapper.readValue(filtros, InsumosMedicos.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
-		List<Insumos> insumosList = new ArrayList<Insumos>();
+		List<InsumosMedicos> insumosList = new ArrayList<InsumosMedicos>();
 		
 		if ( insumo == null ) {
-			insumo = new Insumos();
+			insumo = new InsumosMedicos();
 		}
 
 		insumosList = insumosService.buscar(fromDate, toDate, insumo, pageable);
 	
-        return new ResponseEntity<List<Insumos>>(insumosList, HttpStatus.OK);
+        return new ResponseEntity<List<InsumosMedicos>>(insumosList, HttpStatus.OK);
     }
-
+	
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Insumos insumo, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody InsumosMedicos insumoMedico, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		Insumos insumoNew = null;
+		InsumosMedicos insumosMedicoNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -137,24 +120,18 @@ public class InsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		insumoNew = insumosService.save(insumo);
+		insumosMedicoNew = insumosService.guardar(insumoMedico);
 		
-		response.put("mensaje", "El insumo ha sido creado con éxito!");
-		response.put("insumo", insumoNew);
+		response.put("mensaje", "El insumo medico ha sido creado con éxito!");
+		response.put("insumoMedico", insumosMedicoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-
+	
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Insumos insumo, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody InsumosMedicos insumoMedico, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( insumo.getInsumoId() == null ) {
-			response.put("mensaje", "Error: insumo id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Insumos insumoActual = insumosService.findById(insumo.getInsumoId());
-		Insumos insumoUpdated = null;
+		InsumosMedicos insumoMedicoUpdated = null;		
 
 		if( result.hasErrors() ) {
 
@@ -166,17 +143,11 @@ public class InsumosController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		if ( insumoActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el insumo ID: "
-					.concat(String.valueOf(insumo.getInsumoId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+				
+		insumoMedicoUpdated = insumosService.actualizar(insumoMedico);
 
-		insumoUpdated = insumosService.save(insumo);;
-
-		response.put("mensaje", "El insumo ha sido actualizada con éxito!");
-		response.put("insumo", insumoUpdated);
+		response.put("mensaje", "El insumo medico ha sido actualizado con éxito!");
+		response.put("insumo", insumoMedicoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -190,15 +161,15 @@ public class InsumosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Insumos insumoActual = insumosService.findById(id);
+		InsumosMedicos insumoActual = insumosService.obtener(id);
 		
 		if ( insumoActual == null ) {
-			response.put("mensaje", "La insumo ID: "
+			response.put("mensaje", "El insumo ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
-		insumosService.delete(id);
+		insumosService.eliminar(id);
 		
 		response.put("mensaje", "Insumo eliminada con éxito!");
 		

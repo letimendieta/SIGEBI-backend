@@ -29,24 +29,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
-import com.sigebi.entity.Stock;
-import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.service.MedicamentosService;
-import com.sigebi.service.StockService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth/stock")
-public class StockController {
+@RequestMapping("/auth/medicamentos")
+public class MedicamentosController {
 
-	@Autowired
-	private StockService stockService;
-	@Autowired
-	private InsumosMedicosService insumosMedicosService;
 	@Autowired
 	private MedicamentosService medicamentosService;
 	@Autowired
@@ -54,90 +46,69 @@ public class StockController {
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
-	public StockController(StockService stockService) {
-        this.stockService = stockService;
+	public MedicamentosController(MedicamentosService medicamentosService) {
+        this.medicamentosService = medicamentosService;
     }
 
 	@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
-		List<Stock> stockList = null;
+		List<Medicamentos> medicamentosList = null;
 
-		stockList = stockService.findAll();
+		medicamentosList = medicamentosService.listar();
 
-		if( stockList.isEmpty()) {
+		if( medicamentosList.isEmpty()) {
 			response.put("mensaje", "No se encontraron datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<Stock>>(stockList, HttpStatus.OK);
+		return new ResponseEntity<List<Medicamentos>>(medicamentosList, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> obtener(@PathVariable("id") Integer id) throws SigebiException{
-		Stock stock = null;
+	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
+		Map<String, Object> response = new HashMap<>();
+		Medicamentos medicamento = null;
 
-		stock = stockService.obtener(id);
+		medicamento = medicamentosService.obtener(id);
 		
-		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
+		if( medicamento == null ) {
+			response.put("mensaje", "El medicamento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<Medicamentos>(medicamento, HttpStatus.OK);
 	}
 	
+		
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarStock(
+    public ResponseEntity<?> buscar(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		
-		Stock stock = null;
+				
+		Medicamentos medicamento = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			stock = objectMapper.readValue(filtros, Stock.class);
+			medicamento = objectMapper.readValue(filtros, Medicamentos.class);
 		}				
 		
-		List<Stock> stockList = new ArrayList<Stock>();
+		List<Medicamentos> insumosList = new ArrayList<Medicamentos>();
 		
-		if ( stock == null ) {
-			stock = new Stock();
+		if ( medicamento == null ) {
+			medicamento = new Medicamentos();
 		}
-		
-		List<Integer> insumosIds = new ArrayList<Integer>();
-		if( stock.getInsumosMedicos() != null) {
-			List<InsumosMedicos> insumosList = new ArrayList<InsumosMedicos>();			
-			
-			insumosList = insumosMedicosService.buscar(fromDate, toDate, stock.getInsumosMedicos(), pageable);
 
-			for( InsumosMedicos insumo : insumosList ){
-				insumosIds.add(insumo.getInsumoMedicoId());
-			}
-			if( insumosList.isEmpty()) {
-				return new ResponseEntity<List<InsumosMedicos>>(insumosList, HttpStatus.OK);
-			}
-		}
-			
-		List<Integer> medicamentosIds = new ArrayList<Integer>();
-		if( stock.getMedicamentos() != null) {
-			List<Medicamentos> medicamentosList = new ArrayList<Medicamentos>();			
-			
-			medicamentosList = medicamentosService.buscar(fromDate, toDate, stock.getMedicamentos(), pageable);
-
-			for( Medicamentos medicamento : medicamentosList ){
-				medicamentosIds.add(medicamento.getMedicamentoId());
-			}
-			if( medicamentosList.isEmpty()) {
-				return new ResponseEntity<List<Medicamentos>>(medicamentosList, HttpStatus.OK);
-			}
-		}
-		
-		stockList = stockService.buscar(fromDate, toDate, stock, insumosIds, medicamentosIds, pageable);
-		
-        return new ResponseEntity<List<Stock>>(stockList, HttpStatus.OK);
+		insumosList = medicamentosService.buscar(fromDate, toDate, medicamento, pageable);
+	
+        return new ResponseEntity<List<Medicamentos>>(insumosList, HttpStatus.OK);
     }
-
+	
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Stock stock, BindingResult result) throws SigebiException {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Medicamentos medicamento, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		Stock stockNew = null;
+		Medicamentos medicamentoNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -150,24 +121,18 @@ public class StockController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		stockNew = stockService.save(stock);
+		medicamentoNew = medicamentosService.guardar(medicamento);
 		
-		response.put("mensaje", "El stock ha sido creada con éxito!");
-		response.put("stock", stockNew);
+		response.put("mensaje", "El medicamento ha sido creado con éxito!");
+		response.put("medicamento", medicamentoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-
+	
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Stock stock, BindingResult result) throws SigebiException {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Medicamentos medicamento, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( stock.getStockId() == null ) {
-			response.put("mensaje", "Error: stock id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Stock stockActual = stockService.obtener(stock.getStockId());
-		Stock stockUpdated = null;
+		Medicamentos medicamentoUpdated = null;		
 
 		if( result.hasErrors() ) {
 
@@ -179,41 +144,35 @@ public class StockController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		if ( stockActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el stock ID: "
-					.concat(String.valueOf(stock.getStockId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
+				
+		medicamentoUpdated = medicamentosService.actualizar(medicamento);
 
-		stockUpdated = stockService.actualizar(stock);
-
-		response.put("mensaje", "El stock ha sido actualizada con éxito!");
-		response.put("stock", stockUpdated);
+		response.put("mensaje", "El medicamento ha sido actualizado con éxito!");
+		response.put("medicamento", medicamentoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable int id) throws SigebiException {
+	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: stock id es requerido");
+			response.put("mensaje", "Error: medicamento id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Stock stockActual = stockService.obtener(id);
+		Medicamentos medicamentoActual = medicamentosService.obtener(id);
 		
-		if ( stockActual == null ) {
-			response.put("mensaje", "La stock ID: "
+		if ( medicamentoActual == null ) {
+			response.put("mensaje", "El medicamento ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}		
-
-		stockService.delete(id);
+		}
+					
+		medicamentosService.eliminar(id);
 		
-		response.put("mensaje", "Stock eliminado con éxito!");
+		response.put("mensaje", "Medicamento eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

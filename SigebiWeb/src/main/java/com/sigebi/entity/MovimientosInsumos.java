@@ -38,8 +38,12 @@ public class MovimientosInsumos {
 	private String usuarioCreacion;	
 	
 	@OneToOne
-    @JoinColumn(name = "insumo_id", referencedColumnName = "insumoId")
-    private Insumos insumos;	
+    @JoinColumn(name = "insumo_medico_id", referencedColumnName = "insumoMedicoId")
+    private InsumosMedicos insumosMedicos;
+	
+	@OneToOne
+    @JoinColumn(name = "medicamento_id", referencedColumnName = "medicamentoId")
+    private Medicamentos medicamentos;	
 	
 	@PrePersist
 	private void create() {
@@ -107,13 +111,23 @@ public class MovimientosInsumos {
 	}
 
 
-	public Insumos getInsumos() {
-		return insumos;
+	public InsumosMedicos getInsumosMedicos() {
+		return insumosMedicos;
 	}
 
 
-	public void setInsumos(Insumos insumos) {
-		this.insumos = insumos;
+	public void setInsumosMedicos(InsumosMedicos insumosMedicos) {
+		this.insumosMedicos = insumosMedicos;
 	}
-	
+
+
+	public Medicamentos getMedicamentos() {
+		return medicamentos;
+	}
+
+
+	public void setMedicamentos(Medicamentos medicamentos) {
+		this.medicamentos = medicamentos;
+	}
+
 }

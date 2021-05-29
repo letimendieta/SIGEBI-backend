@@ -69,6 +69,10 @@ public class Procedimientos {
     @JoinColumn(name = "motivo_consulta_id", referencedColumnName = "motivoConsultaId", updatable = true)
     private MotivosConsulta motivoConsulta;
 	
+	@OneToOne
+    @JoinColumn(name = "cita_id", referencedColumnName = "citaId", updatable = true)
+    private Citas cita;
+	
 	@PrePersist
 	private void create() {
 		this.fechaCreacion = LocalDateTime.now();
@@ -129,6 +133,14 @@ public class Procedimientos {
 
 	public MotivosConsulta getMotivoConsulta() {
 		return motivoConsulta;
+	}
+
+	public Citas getCita() {
+		return cita;
+	}
+
+	public void setCita(Citas cita) {
+		this.cita = cita;
 	}
 
 	public void setMotivoConsulta(MotivosConsulta motivoConsulta) {

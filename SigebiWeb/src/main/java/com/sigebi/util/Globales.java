@@ -19,6 +19,7 @@ public class Globales {
 		public static String PROCEDIMIENTO = "PRO";
 		public static String CONSULTA = "CON";
 		public static String ALTA_STOCK = "ASTOCK";
+		public static String MODIF_STOCK = "MSTOCK";
 	}
 	public static class TipoInsumo {
 		public static String MATERIAL = "MAT";
