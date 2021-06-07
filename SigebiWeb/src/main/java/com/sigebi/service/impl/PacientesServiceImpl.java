@@ -144,10 +144,10 @@ public class PacientesServiceImpl implements PacientesService{
 		if( paciente.getPersonas() != null ) {
 			//Buscar si la persona ya es paciente
 			
-			List<Personas> personaDb = personasDao.findByCedula(paciente.getPersonas().getCedula());
-			if( personaDb != null && !personaDb.isEmpty() ) {
+			Personas personaDb = personasDao.findByCedula(paciente.getPersonas().getCedula());
+			if( personaDb != null ) {
 				List<Integer> pacienteIds = new ArrayList<Integer>();
-				pacienteIds.add(personaDb.get(0).getPersonaId());
+				pacienteIds.add(personaDb.getPersonaId());
 				
 				List<Pacientes> pacienteDb = buscarNoPaginable(null, null, new Pacientes(), pacienteIds);
 				

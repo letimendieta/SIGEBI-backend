@@ -100,6 +100,12 @@ public class PersonasServiceImpl implements PersonasService{
 	@Transactional
 	public Personas guardar(Personas persona) throws SigebiException {
 		
+		Personas personaDb = personasDao.findByCedula(persona.getCedula());
+		
+		if( personaDb != null ) {
+			throw new SigebiException.DataAlreadyExist("Ya existe una persona con cédula: " + persona.getCedula());
+		}
+		
 		if( persona.getCarreras() != null && persona.getCarreras().getCarreraId() != null) {
 			Carreras carrera = carrerasService.findById(persona.getCarreras().getCarreraId());
 			if(carrera == null) {

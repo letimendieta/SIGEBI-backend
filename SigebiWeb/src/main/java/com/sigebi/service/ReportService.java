@@ -4,7 +4,10 @@ import net.sf.jasperreports.engine.JRException;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public interface ReportService {
     public String exportReport(String reportFormat, Integer consultaid) throws FileNotFoundException, JRException, SQLException;
+
+	public String unionEstamentos(String formato, HashMap<String, Object> filtros) throws FileNotFoundException, JRException, SQLException;
 }

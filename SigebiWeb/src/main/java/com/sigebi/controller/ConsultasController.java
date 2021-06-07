@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -134,6 +135,23 @@ public class ConsultasController {
 
 		String resultado = reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));
 
+		return ResponseEntity.ok(HttpStatus.OK);
+	}
+	
+	@GetMapping("/union-estamentos/{formato}")
+	public ResponseEntity reporteProduccionEstadistica(
+											@RequestParam(value = "anho") Integer anho,
+											@RequestParam(value = "mes") Integer mes,
+											@RequestParam(value = "formato") String formato)
+			throws SQLException, IOException, JRException, SigebiException {
+		HashMap<String, Object> filtros = new HashMap<>();
+		filtros.put("anho", anho);
+		filtros.put("mes", mes);
+		
+		if (null == anho && mes == null) {
+			throw new SigebiException("Debe enviar dato del mes y año");
+		}
+		String salida = reportService.unionEstamentos(formato, filtros);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 }

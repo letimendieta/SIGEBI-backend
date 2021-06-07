@@ -14,10 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IFuncionariosDao;
+import com.sigebi.entity.Carreras;
+import com.sigebi.entity.Departamentos;
+import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PersonasService;
+import com.sigebi.util.exceptions.SigebiException;
 
 @Service
 public class FuncionariosServiceImpl implements FuncionariosService{
@@ -45,6 +50,11 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 
 	@Transactional
 	public Funcionarios guardar(Funcionarios funcionario) throws Exception {
+		Personas persona = null;
+		
+		if ( funcionario.getPersonas() == null ) {
+			throw new SigebiException.BusinessException("Datos de la persona es requerido ");
+		}
 		
 		if( funcionario.getPersonas() != null ) {
 			//Buscar si la persona ya es funcionario
@@ -56,15 +66,29 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 			
 			if( funcionario.getPersonas().getPersonaId() != null ) {
 				//Busca a la persona y si existe actualizar sus datos
-				Personas persona = personasService.obtener(funcionario.getPersonas().getPersonaId());
+				persona = personasService.obtener(funcionario.getPersonas().getPersonaId());
 				
 				if(persona == null) {
-					throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());
+					throw new Exception("No se encontró persona con id: " + funcionario.getPersonas().getPersonaId());
+				}				
+				if( persona.getDepartamentos() != null &&  persona.getDepartamentos().getDepartamentoId() == null) {
+					persona.setDepartamentos(null);
 				}
+				if( persona.getDependencias() != null &&  persona.getDependencias().getDependenciaId() == null) {
+					persona.setDependencias(null);
+				}
+				if( persona.getCarreras() != null &&  persona.getCarreras().getCarreraId() == null) {
+					persona.setCarreras(null);
+				}
+				if( persona.getEstamentos() != null &&  persona.getEstamentos().getEstamentoId() == null) {
+					persona.setEstamentos(null);
+				}				
 			}else {
 				throw new Exception("Id de la persona es requerido ");
 			}				
 		}
+		
+		funcionario.setPersonas(persona);
 		
 		return funcionariosDao.save(funcionario);
 	}
