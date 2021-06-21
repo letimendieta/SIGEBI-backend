@@ -247,7 +247,7 @@ public class ProcedimientosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		procedimientoUpdated = procedimientosService.actualizar(procesoProcedimiento);;
+		procedimientoUpdated = procedimientosService.actualizarProcesoProcedimientos(procesoProcedimiento);
 
 		response.put("mensaje", "El procedimiento ha sido actualizado con éxito!");
 		response.put("procedimiento", procedimientoUpdated);

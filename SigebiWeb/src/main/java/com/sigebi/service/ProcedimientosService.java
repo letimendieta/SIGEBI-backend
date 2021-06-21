@@ -19,7 +19,9 @@ public interface ProcedimientosService{
 	
 	public Procedimientos guardar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
-	public Procedimientos actualizar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
+	//public Procedimientos actualizar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
+	
+	public Procedimientos actualizarProcesoProcedimientos(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
 	public void delete(int id);
 	

@@ -81,8 +81,8 @@ public class ProcedimientosInsumosServiceImpl implements ProcedimientosInsumosSe
 
 	@Override
 	@Transactional
-	public ProcedimientosInsumos save(ProcedimientosInsumos cliente) {
-		return ProcedimientosInsumosDao.save(cliente);
+	public ProcedimientosInsumos save(ProcedimientosInsumos procedimientoInsumo) {
+		return ProcedimientosInsumosDao.save(procedimientoInsumo);
 	}
 
 	@Override

@@ -2,22 +2,19 @@ package com.sigebi.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IMovimientoInsumoDao;
 import com.sigebi.dao.IStockDao;
-import com.sigebi.entity.Areas;
 import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.MovimientosInsumos;
@@ -25,7 +22,6 @@ import com.sigebi.entity.Stock;
 import com.sigebi.service.StockService;
 import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
-import com.sigebi.util.exceptions.SigebiException.DataNotFound;
 
 
 @Service
@@ -157,7 +153,7 @@ public class StockServiceImpl implements StockService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Stock> buscar(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, List<Integer> medicamentosId, Pageable pageable) {
+	public List<Stock> buscar(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, List<Integer> medicamentosId, Pageable pageable)  throws DataAccessException{
 		
         List<Stock> stockList = stockDao.findAll((Specification<Stock>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
@@ -176,6 +172,40 @@ public class StockServiceImpl implements StockService{
             cq.orderBy(cb.desc(root.get("stockId")));
             return p;
         }, pageable).getContent();
+        
+        for(Stock stockData : stockList) {
+        	if(stockData.getInsumosMedicos() == null) {
+        		stockData.setInsumosMedicos(new InsumosMedicos());
+        	}
+        	if(stockData.getMedicamentos() == null ) {
+        		stockData.setMedicamentos(new Medicamentos());
+        	}
+        }
+        return stockList;
+    }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Stock> buscarNoPaginable(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, List<Integer> medicamentosId)  throws DataAccessException {
+		
+        List<Stock> stockList = stockDao.findAll((Specification<Stock>) (root, cq, cb) -> {
+        	
+            Predicate p = cb.conjunction();
+            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( stock != null && stock.getStockId() != null ) {
+                p = cb.and(p, cb.equal(root.get("stockId"), stock.getStockId()) );
+            } 
+            if( insumosId != null && !insumosId.isEmpty() ){
+            	p = cb.and(root.get("insumosMedicos").in(insumosId));
+            } 
+            if( medicamentosId != null && !medicamentosId.isEmpty() ){
+            	p = cb.and(root.get("medicamentos").in(medicamentosId));
+            } 
+            cq.orderBy(cb.desc(root.get("stockId")));
+            return p;
+        });
         
         for(Stock stockData : stockList) {
         	if(stockData.getInsumosMedicos() == null) {
