@@ -7,7 +7,13 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public interface ReportService {
-    public String exportReport(String reportFormat, Integer consultaid) throws FileNotFoundException, JRException, SQLException;
+    String exportReport(String reportFormat, Integer consultaid) throws Exception;
 
-	public String unionEstamentos(String formato, HashMap<String, Object> filtros) throws FileNotFoundException, JRException, SQLException;
+
+    String generarSegundaHoja(String reportFormat, Integer anho, Integer mes) throws Exception;
+
+    String generarTerceraHoja(String reportFormat, Integer anho, Integer mes) throws Exception;
+    String unionEstamentos(String reportFormat, HashMap<String, Object> filtros) throws FileNotFoundException, JRException, SQLException;
+
+    void concatenarPDF() throws Exception;
 }

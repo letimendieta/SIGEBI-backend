@@ -93,4 +93,9 @@ public class ParametrosServiceImpl implements ParametrosService{
         return parametrosList;
     }
 
+    @Override
+    public Parametros findByCodigo(String path_reportes) {
+        return parametrosDao.findByCodigoParametro(path_reportes);
+    }
+
 }
