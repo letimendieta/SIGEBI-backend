@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="funcionarios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ab16104f-9fe6-415c-b011-d65bb9073bd5">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<parameter name="decanato" class="java.lang.String"/>
+	<parameter name="gestionpersonas" class="java.lang.String"/>
+	<parameter name="administracion" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+
+       o.femenino, 
+       o.masculino, 
+       SUM(o.femenino + o.masculino) AS Suma
+FROM(
+select count(per.sexo) as femenino,
+(select count(per.sexo) from consultas c
+join pacientes p
+on  c.paciente_id=p.paciente_id
+join personas per
+on p.persona_id=per.persona_id 
+join dependencias dp
+on per.dependencia_id=dp.dependencia_id
+join estamentos es
+on per.estamento_id = es.estamento_id
+where per.sexo like '%M%' and es.descripcion like '%Funcionarios FP-UNA%' and dp.codigo like '%decanato%') as masculino
+from consultas c
+join pacientes p
+on  c.paciente_id=p.paciente_id
+join personas per
+on p.persona_id=per.persona_id 
+join dependencias dp
+on per.dependencia_id=dp.dependencia_id
+join estamentos es
+on per.estamento_id = es.estamento_id
+where per.sexo like '%F%' and es.descripcion like '%Funcionarios FP-UNA%' and dp.codigo like '%decanato%')
+AS o
+GROUP BY 
+         o.femenino, 
+         o.masculino;]]>
+	</queryString>
+	<field name="femenino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="femenino"/>
+		<property name="com.jaspersoft.studio.field.label" value="femenino"/>
+	</field>
+	<field name="masculino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="masculino"/>
+		<property name="com.jaspersoft.studio.field.label" value="masculino"/>
+	</field>
+	<field name="suma" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="suma"/>
+		<property name="com.jaspersoft.studio.field.label" value="suma"/>
+	</field>
+	<group name="femenino">
+		<groupExpression><![CDATA[$F{femenino}]]></groupExpression>
+	</group>
+	<group name="masculino">
+		<groupExpression><![CDATA[$F{masculino}]]></groupExpression>
+	</group>
+	<group name="suma">
+		<groupExpression><![CDATA[$F{suma}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="135" splitType="Stretch">
+			<textField>
+				<reportElement x="140" y="0" width="100" height="30" uuid="e248f65a-91b7-4d35-9acd-d8d2428291f6"/>
+				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="100" height="30" uuid="3931808e-ea53-4168-b2ef-09d2bd403c00"/>
+				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="100" height="30" uuid="7c157874-5bbf-4e3b-9dd5-e160fc60e1a9"/>
+				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="47" width="100" height="30" uuid="a8374dd5-8b11-4764-9e66-e755cfb10495"/>
+				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="47" width="100" height="30" uuid="2cf0f944-7bbd-4820-af6b-79dbaae364c6"/>
+				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="47" width="100" height="30" uuid="5e2ec95b-e184-46d1-8e10-ec1fcda7bbb9"/>
+				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="90" width="100" height="30" uuid="3643e3aa-e311-479e-ad47-944f37a78320"/>
+				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="90" width="100" height="30" uuid="b2342afc-e9db-4cee-8f9a-78215eefcca4"/>
+				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="90" width="100" height="30" uuid="1fc74669-4d1e-497d-9ac8-405fe7506458"/>
+				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="100" height="30" uuid="5d10b9c4-d06a-46c1-9661-4840d18072fb"/>
+				<textFieldExpression><![CDATA[$P{decanato}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="36" y="47" width="100" height="30" uuid="454cd680-053f-434b-84a2-34acbb66c64e"/>
+				<textFieldExpression><![CDATA[$P{gestionpersonas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="36" y="90" width="100" height="30" uuid="c85892f4-b8c2-4632-b374-016985cccddd"/>
+				<textFieldExpression><![CDATA[$P{administracion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

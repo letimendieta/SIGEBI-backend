@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="total" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="28f4eb4e-c01f-4df3-a258-7ce0950d54fb">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<parameter name="mes" class="java.lang.Integer"/>
+	<parameter name="anho" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[select * from suma_totalestamentos($P{mes},$P{anho})]]>
+	</queryString>
+	<field name="femenino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="femenino"/>
+		<property name="com.jaspersoft.studio.field.label" value="femenino"/>
+	</field>
+	<field name="masculino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="masculino"/>
+		<property name="com.jaspersoft.studio.field.label" value="masculino"/>
+	</field>
+	<field name="suma" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="suma"/>
+		<property name="com.jaspersoft.studio.field.label" value="suma"/>
+	</field>
+	<group name="femenino">
+		<groupExpression><![CDATA[$F{femenino}]]></groupExpression>
+	</group>
+	<group name="masculino">
+		<groupExpression><![CDATA[$F{masculino}]]></groupExpression>
+	</group>
+	<group name="suma">
+		<groupExpression><![CDATA[$F{suma}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnFooter>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="21" uuid="cd048f4a-0a04-4d4e-8957-10053feafeed"/>
+			</rectangle>
+			<textField>
+				<reportElement x="370" y="0" width="80" height="20" uuid="b3faa407-cc88-4c1c-9a38-8be2fef8cf8c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="70" height="20" uuid="7bf2a5fa-c313-4f04-90ad-870edee9bf0d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="0" width="35" height="20" uuid="fde21669-42ab-4253-806c-2a8af9d197eb"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="250" y="0" width="70" height="20" uuid="4243a3b4-7c26-433f-98e3-c629aa935a33"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+</jasperReport>

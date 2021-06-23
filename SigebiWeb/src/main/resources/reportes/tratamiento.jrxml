@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="tratamiento" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="76e734f9-454a-4484-a639-b127b8e14d8e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<parameter name="consultaid" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[select t.prescripcion_farm, i.descripcion,ti.cantidad
+from consultas c
+join tratamientos t
+on c.tratamiento_id= t.tratamiento_id
+join tratamientos_insumos ti
+on
+t.tratamiento_id = ti.tratamiento_id
+join insumos i
+on
+ti.insumo_id=i.insumo_id
+where c.consulta_id=$P{consultaid}]]>
+	</queryString>
+	<field name="prescripcion_farm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="prescripcion_farm"/>
+		<property name="com.jaspersoft.studio.field.label" value="prescripcion_farm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tratamientos"/>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descripcion"/>
+		<property name="com.jaspersoft.studio.field.label" value="descripcion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="insumos"/>
+	</field>
+	<field name="cantidad" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="cantidad"/>
+		<property name="com.jaspersoft.studio.field.label" value="cantidad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tratamientos_insumos"/>
+	</field>
+	<group name="prescripcion_farm">
+		<groupExpression><![CDATA[$F{prescripcion_farm}]]></groupExpression>
+	</group>
+	<group name="descripcion">
+		<groupExpression><![CDATA[$F{descripcion}]]></groupExpression>
+	</group>
+	<group name="cantidad">
+		<groupExpression><![CDATA[$F{cantidad}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="90" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="58" width="155" height="30" uuid="70de894d-17dc-4919-8f46-91ede29cc5d9"/>
+				<textFieldExpression><![CDATA[$F{prescripcion_farm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="100" height="18" uuid="9d317fdb-fcfa-4c23-baa9-249d83e56858"/>
+				<text><![CDATA[Tratamiento]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-1" y="0" width="100" height="30" uuid="aa223bc6-7c75-4e13-82b7-759904da05b5"/>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-101" y="0" width="100" height="30" uuid="0a7b3ce8-6ee9-4791-83cf-85820358bd54"/>
+				<text><![CDATA[cantidad]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="98" y="-1" width="100" height="30" uuid="c4f16abb-c01e-4155-8f98-2b1d82deb146"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="estamentos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5f2c0b35-0f10-4a51-9e43-4c25001f099b">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<parameter name="mes" class="java.lang.Integer"/>
+	<parameter name="anho" class="java.lang.Integer"/>
+	<parameter name="mesletra" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select * from suma_carrera($P{mes},$P{anho})
+union all
+select * from suma_departamento($P{mes},$P{anho})
+union all
+select * from suma_dependencia($P{mes},$P{anho})
+union all
+select * from suma_postulantes($P{mes},$P{anho})
+union all 
+select * from suma_estudiantesotrasfacultades($P{mes},$P{anho})
+union all
+select * from suma_funcionariosotrasfacultades($P{mes},$P{anho})
+union all
+select * from suma_movilidadestudiantil($P{mes},$P{anho})
+union all 
+select * from suma_egresados($P{mes},$P{anho})
+union all 
+select * from suma_cetuna($P{mes},$P{anho})
+union all 
+select * from suma_familiares($P{mes},$P{anho})
+union all 
+select * from suma_otros($P{mes},$P{anho})]]>
+	</queryString>
+	<field name="nombreestamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombreestamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombreestamento"/>
+	</field>
+	<field name="codcarrera" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="codcarrera"/>
+		<property name="com.jaspersoft.studio.field.label" value="codcarrera"/>
+	</field>
+	<field name="femenino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="femenino"/>
+		<property name="com.jaspersoft.studio.field.label" value="femenino"/>
+	</field>
+	<field name="masculino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="masculino"/>
+		<property name="com.jaspersoft.studio.field.label" value="masculino"/>
+	</field>
+	<field name="suma" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="suma"/>
+		<property name="com.jaspersoft.studio.field.label" value="suma"/>
+	</field>
+	<group name="Group1estamentos"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="27">
+			<rectangle>
+				<reportElement positionType="Float" x="10" y="10" width="555" height="17" uuid="2671a36d-3152-43f1-9ca2-a225306dde4b"/>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="340" y="10" width="80" height="17" uuid="7047e832-cc97-443c-b0bf-7bc28c81d1f4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="430" y="10" width="70" height="17" uuid="21bf1347-dfa1-490e-a029-ee61d07a8cf0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="510" y="10" width="50" height="17" uuid="6f6f451a-4809-4b17-95ae-75a12246a5ef"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="230" y="10" width="140" height="17" uuid="b35fb386-80b5-4670-bcef-c06c7ce5e9d7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codcarrera}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="11" width="220" height="16" uuid="0e93adab-2b30-4627-991a-bec06c80741c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="349cc68e-1dba-4ed0-9932-70151b1e6b06"/>
+				</reportElement>
+				<textElement markup="styled">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreestamento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

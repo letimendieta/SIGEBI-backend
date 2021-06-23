@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_estamento" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e46c2f1-d62a-42cc-a40c-1757ee6d8985">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value="ZXN0YW1lbnRvcyAsMTUsMTUsYmJmZWRkMjctM2E1Zi00ODQ0LTkwMjItNDc2ZTY0Nzg5YTQ0Ow=="/>
+	<queryString>
+		<![CDATA[SELECT *
+FROM estamentos]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="126" height="79" uuid="b1e2c2e1-0fca-41b1-9445-8a8e9b87f914"/>
+				<imageExpression><![CDATA["logofpuna.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="126" y="0" width="294" height="20" uuid="1d43a9f2-20eb-4241-a1de-727632e4a588"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Universidad Nacional de Asunción ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="20" width="154" height="20" uuid="f1bc2a22-0023-4760-ad78-703f0a7a1a34"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facultad Politécnica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="40" width="304" height="20" uuid="18eaaab6-a992-4585-ab5d-f1a62bda544a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección de Bienestar Institucional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="60" width="134" height="19" uuid="6a664675-8c38-4b13-b11d-4e22bf28cdda"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[División SALUD]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="128" y="0" width="300" height="20" uuid="fded3806-d441-4a89-b192-e2f388a87d0f"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME DE SERVICIO DE SALUD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="198" y="21" width="50" height="19" uuid="ac0d55e8-6b7e-4e6f-a385-a54ec7b4f451"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mes]]></text>
+			</staticText>
+			<textField pattern="yyyy">
+				<reportElement x="248" y="20" width="180" height="19" uuid="775a80a4-2156-4287-ab12-4617273f41cf"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="250" height="20" uuid="bb5fa0e1-c573-4bf6-9b37-c63483259ff8"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADOS CUANTITATIVOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="545" height="30" uuid="df302cc3-732b-4848-a910-e4750d1051fd"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(Número de atenciones) Atención Médica.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="54" width="552" height="50" uuid="d6be4947-019c-453b-a27a-2e79b2665797"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="490" y="59" width="60" height="30" uuid="0fc5fb22-8f5f-43f4-8eeb-ad88ed93e663"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="59" width="100" height="30" uuid="f908b46c-f96b-427a-bdf1-61cdd86cc2df"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Masculino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="59" width="100" height="30" uuid="a19c66d4-21b7-4e66-9b37-d0c510035b7b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Femenino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="136" y="54" width="154" height="50" uuid="7d45a837-926d-4238-b110-d8c116a586ad"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Carrera / Departa-mento / Dependencia
+Facultades]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="54" width="110" height="30" uuid="fc4fa974-ce62-4f06-b3cf-0f582f008f26"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estamentos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="265"/>
+	</detail>
+</jasperReport>

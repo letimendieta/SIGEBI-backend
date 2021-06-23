@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_totales" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2312eb5-cbfc-460a-8ab1-e3f262ba7dc0">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<parameter name="mes" class="java.lang.Integer"/>
+	<parameter name="anho" class="java.lang.Integer"/>
+	<parameter name="subReporteDir" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select * from sumatotal_carrera($P{mes},$P{anho})]]>
+	</queryString>
+	<field name="total" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="total"/>
+		<property name="com.jaspersoft.studio.field.label" value="total"/>
+	</field>
+	<field name="codcarrera" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="codcarrera"/>
+		<property name="com.jaspersoft.studio.field.label" value="codcarrera"/>
+	</field>
+	<group name="total">
+		<groupExpression><![CDATA[$F{total}]]></groupExpression>
+	</group>
+	<group name="codcarrera">
+		<groupExpression><![CDATA[$F{codcarrera}]]></groupExpression>
+	</group>
+	<group name="Group1"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="95" splitType="Stretch">
+			<staticText>
+				<reportElement x="126" y="0" width="294" height="20" uuid="4eca769c-a9b5-4545-9406-e408addcb9f9"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Universidad Nacional de Asunción ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="20" width="154" height="20" uuid="998a7829-6d0a-40f1-8902-59f9ce659828"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facultad Politécnica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="40" width="304" height="20" uuid="c1391759-626f-4066-80e8-b0d04e7cc08c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección de Bienestar Institucional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="60" width="134" height="19" uuid="9cdcc26f-49a8-4050-af22-d602167f8d7f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[División SALUD]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="115" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="550" height="72" uuid="1dc38e5f-b632-4455-ac92-1c5c79628f8d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="1" width="150" height="39" uuid="6a7fe406-c0d2-4464-9727-44b7043f84cb">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTUDIANTES de Grado FP-UNA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="200" height="30" uuid="709585c3-fca3-4087-8bbc-5732925d68ac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FUNCIONARIOS FP-UNA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="164" height="30" uuid="46ca69e6-bb4c-43aa-b283-5cf3ada84652"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCENTES FP-UNA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="41" width="90" height="30" uuid="52dc06a5-a49e-487b-a899-fbd28a8d2433">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Carreras]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="41" width="110" height="30" uuid="65a1e7f6-c923-436f-8a81-512f7a207cca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dependencias]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="40" width="100" height="32" uuid="2d5d5ad8-f17a-4004-94fe-dd9bd09e77eb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Departamentos de Enseñanza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="41" width="51" height="30" uuid="2a4efceb-d64f-4d89-977d-d27ee51d1d02"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="41" width="70" height="30" uuid="e1542c25-c9bf-4009-a023-e35f193a8a7a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="491" y="41" width="56" height="31" uuid="1ea229a3-3ff6-4f9a-8678-613fad5db50d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<subreport>
+				<reportElement isPrintRepeatedValues="false" x="0" y="72" width="141" height="40" uuid="83740cd4-1da5-4c9d-bba8-6c4813e98323">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<subreportParameter name="anho">
+					<subreportParameterExpression><![CDATA[$P{anho}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="mes">
+					<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{subReporteDir}+"reporte_totalcarreras.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement isPrintRepeatedValues="false" x="141" y="72" width="239" height="40" uuid="c07f431a-df62-48ec-9f06-3c6538296bdc"/>
+				<subreportParameter name="anho">
+					<subreportParameterExpression><![CDATA[$P{anho}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="mes">
+					<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{subReporteDir}+"reporte_totalfuncionarios.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement isPrintRepeatedValues="false" x="380" y="72" width="170" height="40" uuid="a95c06e4-b87e-4a30-8ac4-a986cf6c7b02">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<subreportParameter name="mes">
+					<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="anho">
+					<subreportParameterExpression><![CDATA[$P{anho}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{subReporteDir}+"reporte_totaldocentes.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band height="153" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="199" height="20" uuid="8c5510e9-6082-4fd0-83ae-f310f043c9cd"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADOS CUALITATIVOS]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="2" y="22" width="178" height="22" uuid="c8075623-62a5-4f57-bcad-fbebe6ece337"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="22" width="364" height="22" uuid="b0363859-c7e8-481f-a8a3-2060956271cc"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="30" y="22" width="100" height="22" uuid="1c009fd5-98e3-418e-a9e3-545254fdcbb2"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="22" width="100" height="22" uuid="92934ea4-b7fb-4ff1-a38f-5e43982aba0b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDADES]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="2" y="44" width="178" height="22" uuid="1315b550-dbba-4cb3-8a8e-d36a69dd7138"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="44" width="364" height="22" uuid="d484369e-9f71-4ce4-8fba-aed8bc7e8162"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="64" width="178" height="22" uuid="e8bec4ac-9fc6-43c1-bcec-d0127756cf58"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="64" width="364" height="22" uuid="6dfacac5-96ed-49ba-bdb6-e2a224584a48"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="86" width="178" height="22" uuid="89aab8b6-05f9-4908-9b72-0c4780e0e234"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="86" width="364" height="22" uuid="6f50e130-208e-41b7-a37c-32da448b26f7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="108" width="178" height="22" uuid="02806f9f-4e11-4a27-bee0-984425ae3295"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="108" width="364" height="22" uuid="a0f5f355-1507-4b65-a80a-d62d74242f3f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="130" width="178" height="22" uuid="e0a958a1-f9a6-4b8c-99d9-a57cf52f3596"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="180" y="130" width="364" height="22" uuid="a3892846-eead-439d-9a87-b3d4c985069d"/>
+			</rectangle>
+		</band>
+	</columnFooter>
+</jasperReport>
