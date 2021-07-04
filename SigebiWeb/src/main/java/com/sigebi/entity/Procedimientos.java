@@ -58,11 +58,11 @@ public class Procedimientos {
 	private String usuarioModificacion;
 	
 	@OneToOne
-    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId", unique = true)
+    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId")
     private Funcionarios funcionarios;
 	
 	@OneToOne
-    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId", unique = true)
+    @JoinColumn(name = "paciente_id", referencedColumnName = "pacienteId")
     private Pacientes pacientes;
 	
 	@OneToOne

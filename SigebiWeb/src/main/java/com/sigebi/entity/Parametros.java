@@ -34,7 +34,7 @@ public class Parametros {
 	@Size(max=20, message="maximo 20 caracteres")
 	private String nombre;
 	
-	@Column(name = "valor", length = 20)
+	@Column(name = "valor", length = 100)
 	@Size(max=20, message="maximo 20 caracteres")
 	private String valor;
 	
