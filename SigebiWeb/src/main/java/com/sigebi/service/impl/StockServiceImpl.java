@@ -63,10 +63,16 @@ public class StockServiceImpl implements StockService{
 		
 		return stock;
 	}
-
+	
 	@Override
 	@Transactional
 	public Stock save(Stock stock) throws SigebiException {
+		return stockDao.save(stock);
+	}
+
+	@Override
+	@Transactional
+	public Stock guardar(Stock stock) throws SigebiException {
 		InsumosMedicos insumoMedico = new InsumosMedicos();
 		Medicamentos medicamento = new Medicamentos();
 		Stock stockExistente = null;

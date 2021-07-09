@@ -2,6 +2,8 @@ package com.sigebi.security.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.entity.Personas;
+import com.sigebi.entity.Usuarios;
 import com.sigebi.security.dto.JwtDto;
 import com.sigebi.security.dto.LoginUsuario;
 import com.sigebi.security.dto.NuevoUsuario;
@@ -22,10 +29,16 @@ import com.sigebi.security.enums.RolNombre;
 import com.sigebi.security.jwt.JwtProvider;
 import com.sigebi.security.service.RolService;
 import com.sigebi.security.service.UsuarioService;
+import com.sigebi.service.PersonasService;
+import com.sigebi.service.UtilesService;
 import com.sigebi.util.Mensaje;
 
 import javax.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -47,6 +60,12 @@ public class AuthController {
 
     @Autowired
     JwtProvider jwtProvider;
+    
+    @Autowired
+	private PersonasService personasService;
+    
+    @Autowired
+	private UtilesService utiles;
 
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
@@ -78,5 +97,5 @@ public class AuthController {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);
-    }
+    }    
 }

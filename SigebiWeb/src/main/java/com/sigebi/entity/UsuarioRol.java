@@ -1,5 +1,6 @@
 package com.sigebi.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -7,27 +8,39 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.sigebi.clases.UsuarioRolId;
+import com.sigebi.security.entity.Rol;
+import com.sigebi.security.entity.Usuario;
+
 @Entity
-public class UsuariosRoles {
+@Table(name = "usuario_rol")
+@IdClass(UsuarioRolId.class)
+public class UsuarioRol implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@OneToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id")
+    private Usuario usuario;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_usuarios_roles")
-	@SequenceGenerator(name="seq_usuarios_roles",sequenceName="seq_usuarios_roles",allocationSize=1)
-	private Integer usuarioRolId;
+	@OneToOne
+    @JoinColumn(name = "rol_id", referencedColumnName = "id")
+    private Rol rol;
 	
-	@Column(name = "usuario_id")
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer usuarioId;
-	
-	@Column(name = "rol_id")
-	@NotEmpty(message ="no puede estar vacio")
-	private Integer rolId;
+	@Column(name = "estado", length = 1)
+	private String estado;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -53,28 +66,20 @@ public class UsuariosRoles {
 		this.fechaModificacion = LocalDateTime.now();
 	}
 
-	public int getUsuarioRolId() {
-		return usuarioRolId;
-	}	
-
-	public void setUsuarioRolId(Integer usuarioRolId) {
-		this.usuarioRolId = usuarioRolId;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public Integer getUsuarioId() {
-		return usuarioId;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
-	public void setUsuarioId(Integer usuarioId) {
-		this.usuarioId = usuarioId;
+	public Rol getRol() {
+		return rol;
 	}
 
-	public Integer getRolId() {
-		return rolId;
-	}
-
-	public void setRolId(Integer rolId) {
-		this.rolId = rolId;
+	public void setRol(Rol rol) {
+		this.rol = rol;
 	}
 
 	public String getUsuarioCreacion() {
@@ -107,6 +112,14 @@ public class UsuariosRoles {
 
 	public void setFechaModificacion(LocalDateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 	
 	

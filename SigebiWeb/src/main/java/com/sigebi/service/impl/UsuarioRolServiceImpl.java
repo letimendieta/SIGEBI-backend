@@ -1,39 +1,24 @@
 package com.sigebi.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-import javax.persistence.criteria.Predicate;
-
-import org.aspectj.bridge.AbortException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sigebi.dao.IUsuarioDao;
-import com.sigebi.entity.Funcionarios;
-import com.sigebi.entity.Personas;
-import com.sigebi.entity.Usuarios;
+import com.sigebi.dao.IUsuarioRolDao;
+import com.sigebi.entity.UsuarioRol;
+import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
-import com.sigebi.service.PersonasService;
-import com.sigebi.service.UsuariosService;
+import com.sigebi.service.UsuarioRolService;
 
 @Service
-public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
+public class UsuarioRolServiceImpl implements UsuarioRolService{
 	
 	@Autowired
-	private IUsuarioDao usuarioDao;
+	private IUsuarioRolDao usuarioRolDao;
 	
 	//@Autowired
 	//private BCryptPasswordEncoder encoder;
@@ -41,8 +26,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	//@Autowired
 	//private PersonasService personasService;
 	
-	public UsuariosServiceImpl(IUsuarioDao usuariosDao) {
-        this.usuarioDao = usuariosDao;
+	public UsuarioRolServiceImpl(IUsuarioRolDao usuarioRolDao) {
+        this.usuarioRolDao = usuarioRolDao;
     }
 	
 	/*@Override
@@ -53,14 +38,26 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Usuario findById(int id) {
-		return usuarioDao.findById(id).orElse(null);
+	public List<UsuarioRol> findByUsuario(Usuario usuario) {
+		return usuarioRolDao.findByUsuario(usuario);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Usuario findByFuncionario(Funcionarios funcionario) {
-		return usuarioDao.findByFuncionarios(funcionario);
+	public List<String> listarRolesUsuario(Usuario usuario) {
+		List<UsuarioRol> usuariosRoles = usuarioRolDao.findByUsuario(usuario);
+		List<String> listaRoles = new ArrayList<String>();
+		
+		for(UsuarioRol usuRol : usuariosRoles  ) {
+			listaRoles.add(usuRol.getRol().getRolNombre().toString());
+		}
+		return listaRoles;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<UsuarioRol> findByRol(Rol rol) {
+		return usuarioRolDao.findByRol(rol);
 	}
 	
 	/*@Transactional
@@ -136,7 +133,7 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
         return UsuariosList;
     }*/
 	
-	@Override
+	/*@Override
 	@Transactional(readOnly = true)
 	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> personasId, Pageable pageable) {
 		List<Usuario> UsuariosList = usuarioDao.findAll((Specification<Usuario>) (root, cq, cb) -> {

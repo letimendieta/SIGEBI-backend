@@ -160,6 +160,18 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 		//Guardar la consulta
 		Consultas consulta;
 		try {
+			
+			if( procesoDiagnosticoTratamiento.getConsulta().getFuncionarios() == null 
+					|| procesoDiagnosticoTratamiento.getConsulta().getFuncionarios().getFuncionarioId() == null ) {
+				throw new SigebiException.BusinessException("El usuario " 
+						+ procesoDiagnosticoTratamiento.getConsulta().getUsuarioCreacion() + " no es un funcionario");				
+			}
+			
+			if( procesoDiagnosticoTratamiento.getConsulta().getAreas() == null 
+					|| procesoDiagnosticoTratamiento.getConsulta().getAreas().getAreaId() == null) {
+				throw new SigebiException.BusinessException("El area de consulta es requerido ");
+			}			
+			
 			procesoDiagnosticoTratamiento.getConsulta().setFecha(LocalDateTime.now());
 			procesoDiagnosticoTratamiento.getConsulta().setDiagnosticos(diagnostico);
 			procesoDiagnosticoTratamiento.getConsulta().setTratamientos(tratamiento);
@@ -198,6 +210,7 @@ public class ProcesoDiagnosticoTratamientoServiceImpl implements ProcesoDiagnost
 				
 				procedimientoInsumoEntity.setEstado(Globales.EstadosEntregaInsumos.PENDIENTE);
 				procedimientoInsumoEntity.setInsumosMedicos(tratamientoInsumo.getInsumosMedicos());
+				procedimientoInsumoEntity.setMedicamentos(tratamientoInsumo.getMedicamentos());
 				procedimientoInsumoEntity.setUsuarioCreacion(procesoDiagnosticoTratamiento.getDiagnostico().getUsuarioCreacion());
 				procedimientoInsumoEntity.setProcedimientos(procedimiento);
 				procedimientoInsumoEntity.setCantidad(tratamientoInsumo.getCantidad());

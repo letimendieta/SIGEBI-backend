@@ -1,11 +1,8 @@
 package com.sigebi.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigebi.dao.IUsuariosRolesDao;
-import com.sigebi.entity.UsuariosRoles;
+import com.sigebi.dao.IUsuarioRolDao;
+import com.sigebi.entity.UsuarioRol;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,20 +19,20 @@ import com.sigebi.entity.UsuariosRoles;
 public class UsuariosRolesController {
 
 	@Autowired
-	private IUsuariosRolesDao repo;
+	private IUsuarioRolDao repo;
 
-	@GetMapping
-	public List<UsuariosRoles> listar() {
+	/*@GetMapping
+	public List<UsuarioRol> listar() {
 		return repo.findAll();
-	}
+	}*/
 
 	@PostMapping
-	public void insertar(@RequestBody UsuariosRoles usuarioRol) {
+	public void insertar(@RequestBody UsuarioRol usuarioRol) {
 		repo.save(usuarioRol);
 	}
 
 	@PutMapping
-	public void modificar(@RequestBody UsuariosRoles usuarioRol) {
+	public void modificar(@RequestBody UsuarioRol usuarioRol) {
 		repo.save(usuarioRol);
 	}
 

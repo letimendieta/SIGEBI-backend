@@ -28,7 +28,7 @@ public interface ConsultasService {
 			String orderBy, String orderDir, Pageable pageable) throws DataAccessException;
 	
 	public List<ConsultasResult> buscarConsultas(Date fromDate, Date toDate, Consultas consulta, 
-			String orderBy, String orderDir, Pageable pageable) throws DataAccessException;
+			String orderBy, String orderDir, Pageable pageable) throws DataAccessException, SigebiException;
 	
 	
 }

@@ -1,21 +1,23 @@
 package com.sigebi.service;
 
-import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-
-import com.sigebi.entity.Funcionarios;
+import com.sigebi.entity.UsuarioRol;
+import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
 
 
-public interface UsuariosService {
+public interface UsuarioRolService {
 
 	//public List<Usuarios> findAll();
 	
-	public Usuario findById(int id);	
+	//public UsuarioRol findById(int id);	
 	
-	public Usuario findByFuncionario(Funcionarios funcionario);
+	public List<UsuarioRol> findByUsuario(Usuario usuario);
+	
+	public List<String> listarRolesUsuario(Usuario usuario);
+	
+	public List<UsuarioRol> findByRol(Rol rol);
 	
 	/*public Usuarios guardar(Usuarios usuario) throws Exception;
 	
@@ -25,7 +27,7 @@ public interface UsuariosService {
 	
 	//public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable);
 	
-	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> personasId, Pageable pageable);
+	//public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> personasId, Pageable pageable);
 	
 	/*public UserDetails loadUserByUsername(String username);
 	

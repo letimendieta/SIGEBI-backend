@@ -19,13 +19,12 @@ import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.dao.IStockDao;
 import com.sigebi.entity.Areas;
-import com.sigebi.entity.InsumosMedicos;
-import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.MovimientosInsumos;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.entity.Stock;
+import com.sigebi.service.MovimientosInsumosService;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
 import com.sigebi.service.StockService;
@@ -48,6 +47,8 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	private IStockDao stockDao;
 	@Autowired
 	private IMovimientoInsumoDao movimientoInsumoDao;
+	@Autowired
+	private MovimientosInsumosService movimientosInsumosService;
 		
 	public ProcedimientosServiceImpl(IProcedimientosDao procedimientosDao) {
         this.procedimientosDao = procedimientosDao;
@@ -57,6 +58,12 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	@Transactional(readOnly = true)
 	public List<Procedimientos> findAll() {
 		return (List<Procedimientos>) procedimientosDao.findAll();
+	}
+	
+	@Override
+	@Transactional
+	public Procedimientos guardar(Procedimientos procedimientos) {
+		return procedimientosDao.save(procedimientos);
 	}
 
 	@Override
@@ -147,66 +154,87 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 		return procedimientoResult;
 	}
 	
+	@Transactional
 	public Procedimientos actualizarProcesoProcedimientos(ProcesoProcedimientos procesoProcedimiento) throws Exception {
 				
 		int cantidadMedicamentos = 0;
 		for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
-			if( procedimientoInsumo.getMedicamentos() != null ){
+			if( procedimientoInsumo.getMedicamentos() != null 
+					&& Globales.EstadosEntregaInsumos.ENTREGADO.equals(procedimientoInsumo.getEstado()) ){
 				cantidadMedicamentos++;
 			}
 		}
 		procesoProcedimiento.getProcedimiento().setCantidadInsumo(cantidadMedicamentos);
 		procesoProcedimiento.getProcedimiento().setEstado(Globales.Estados.FINALIZADO);
-		Procedimientos procedimiento = procedimientosDao.save(procesoProcedimiento.getProcedimiento());		
+		Procedimientos procedimiento = guardar(procesoProcedimiento.getProcedimiento());		
 		
 		ProcedimientosInsumos procedimientoBusqueda = new ProcedimientosInsumos();
 		procedimientoBusqueda.setProcedimientos(new Procedimientos());
 		
 		procedimientoBusqueda.getProcedimientos().setProcedimientoId(procesoProcedimiento.getProcedimiento().getProcedimientoId());
-		
-		List<ProcedimientosInsumos> procedimientoInsumoDbList = procedimientosInsumosService.buscarNoPaginable(null, null, procedimientoBusqueda, null);
-		
+				
 		try {
+			
+			List<MovimientosInsumos> movimientosInsumosList = new ArrayList<MovimientosInsumos>();
+			
 			//Actualizar el estado de los insumos si se cambio
 			for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
-				
-				for(ProcedimientosInsumos procedimientoInsumoDb : procedimientoInsumoDbList) {	
+														
+				//Realizar el descuento de insumos si fue entregado
+				if( Globales.EstadosEntregaInsumos.ENTREGADO.equals(procedimientoInsumo.getEstado()) ) {
 					
-					if( procedimientoInsumoDb.getProcedimientoInsumoId().equals(procedimientoInsumo.getProcedimientoInsumoId()) ) {
+					int cantidadUsada = 0;
+					if ( procedimientoInsumo.getCantidad() != null ) {
+						cantidadUsada = procedimientoInsumo.getCantidad();
+					}						
+					
+					if( cantidadUsada > 0) {
+														
+						MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
 						
-						//Realizar el descuento de insumos si fue entregado
-						if( Globales.EstadosEntregaInsumos.ENTREGADO.equals(procedimientoInsumo.getEstado()) ) {
-							
-							int cantidadUsada = 0;
-							if ( procedimientoInsumo.getCantidad() != null ) {
-								cantidadUsada = procedimientoInsumo.getCantidad();
-							}						
-							
-							if( cantidadUsada > 0) {
-								
-								procedimientosInsumosDao.save(procedimientoInsumo);
-								
-								descontarStock(procedimientoInsumo);
-								
-								//guardar el movimiento de insumos
-								
-								MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
-								
-								movimientoInsumo.setCantidadSalida(cantidadUsada);
-								movimientoInsumo.setCodProceso(Globales.Procesos.PROCEDIMIENTO);
-								movimientoInsumo.setInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
-								movimientoInsumo.setMedicamentos(procedimientoInsumo.getMedicamentos());
-								movimientoInsumo.setUsuarioCreacion(procedimientoInsumo.getUsuarioCreacion());
-								
-								movimientoInsumoDao.save(movimientoInsumo);
-							}				
-						}else {
-							procedimientoInsumo.setEstado(Globales.EstadosEntregaInsumos.NOENTREGADO);
-							
-							procedimientosInsumosDao.save(procedimientoInsumo);
-						}
-					}
+						movimientoInsumo.setCantidadSalida(cantidadUsada);
+						movimientoInsumo.setCodProceso(Globales.Procesos.PROCEDIMIENTO);
+						if(procedimientoInsumo.getInsumosMedicos() != null) {
+							movimientoInsumo.setInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
+						}	
+						if(procedimientoInsumo.getMedicamentos() != null) {
+							movimientoInsumo.setMedicamentos(procedimientoInsumo.getMedicamentos());
+						}								
+						movimientoInsumo.setUsuarioCreacion(procedimientoInsumo.getUsuarioCreacion());
+						
+						movimientosInsumosList.add(movimientoInsumo);
+					}				
 				}
+				
+				ProcedimientosInsumos procedimientoInsumoDb = procedimientosInsumosService.obtener(procedimientoInsumo.getProcedimientoInsumoId());
+				if(procedimientoInsumo.getInsumosMedicos() == null || procedimientoInsumo.getInsumosMedicos().getInsumoMedicoId() == null) {
+					procedimientoInsumoDb.setInsumosMedicos(null);
+				}	
+				if(procedimientoInsumo.getMedicamentos() == null || procedimientoInsumo.getMedicamentos().getMedicamentoId() == null) {
+					procedimientoInsumoDb.setMedicamentos(null);
+				}
+				procedimientoInsumoDb.setUsuarioModificacion(procedimientoInsumo.getUsuarioModificacion());
+				procedimientoInsumoDb.setEstado(procedimientoInsumo.getEstado());
+				
+				procedimientosInsumosService.save(procedimientoInsumoDb);
+			
+			}			
+			
+			for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
+				int cantidadUsada = 0;
+				if ( procedimientoInsumo.getCantidad() != null ) {
+					cantidadUsada = procedimientoInsumo.getCantidad();
+				}						
+				
+				if( cantidadUsada > 0) {
+					descontarStock(procedimientoInsumo);
+				}
+			}
+			
+			//guardar el movimiento de insumos
+			
+			for(MovimientosInsumos moviInsu : movimientosInsumosList) {
+				movimientosInsumosService.guardar(moviInsu);
 			}
 		} catch (Exception e) {
 			throw new Exception("Error al actualizar los insumos utilizados " + e.getMessage());
@@ -214,70 +242,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 		
 		return procedimiento;
 	}
-	
-	//@Transactional
-	/*public Procedimientos actualizar(ProcesoProcedimientos procesoProcedimiento) throws Exception {
-				
-		ProcedimientosInsumos procedimientoBusqueda = new ProcedimientosInsumos();
-		procedimientoBusqueda.setProcedimientos(new Procedimientos());
 		
-		procedimientoBusqueda.getProcedimientos().setProcedimientoId(procesoProcedimiento.getProcedimiento().getProcedimientoId());
-		
-		List<ProcedimientosInsumos> procedimientoInsumoDbList = procedimientosInsumosService.buscarNoPaginable(null, null, procedimientoBusqueda, null);
-		
-		try {
-			//Actualizar el estado de los insumos si se cambio
-			for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
-				
-				for(ProcedimientosInsumos procedimientoInsumoDb : procedimientoInsumoDbList) {	
-					
-					if( procedimientoInsumoDb.getProcedimientoInsumoId().equals(procedimientoInsumo.getProcedimientoInsumoId()) ) {
-						
-						//Realizar el descuento de insumos si fue entregado
-						if( Globales.EstadosEntregaInsumos.ENTREGADO.equals(procedimientoInsumo.getEstado()) ) {
-							int cantidadUsada = 0;
-							if ( procedimientoInsumo.getCantidad() != null ) {
-								cantidadUsada = procedimientoInsumo.getCantidad();
-							}						
-							
-							if( cantidadUsada > 0) {
-								descontarStock(procedimientoInsumo);
-								
-								//guardar el movimiento de insumos
-								
-								MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
-								
-								movimientoInsumo.setCantidadSalida(cantidadUsada);
-								movimientoInsumo.setCodProceso(Globales.Procesos.PROCEDIMIENTO);
-								movimientoInsumo.setInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
-								movimientoInsumo.setMedicamentos(procedimientoInsumo.getMedicamentos());
-								movimientoInsumo.setUsuarioCreacion(procedimientoInsumo.getUsuarioCreacion());
-								
-								movimientoInsumoDao.save(movimientoInsumo);
-							}				
-						}else {
-							procedimientoInsumo.setEstado(Globales.EstadosEntregaInsumos.NOENTREGADO);
-						}
-						
-						procedimientosInsumosDao.save(procedimientoInsumo);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new Exception("Error al actualizar los insumos utilizados " + e.getMessage());
-		}
-		
-		int cantidadMedicamentos = 0;
-		for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
-			if( procedimientoInsumo.getMedicamentos() != null ){
-				cantidadMedicamentos++;
-			}
-		}
-		procesoProcedimiento.getProcedimiento().setCantidadInsumo(cantidadMedicamentos);
-		procesoProcedimiento.getProcedimiento().setEstado(Globales.Estados.FINALIZADO);
-		return procedimientosDao.save(procesoProcedimiento.getProcedimiento());
-	}*/
-
 	@Override
 	@Transactional
 	public void delete(int id) {
@@ -366,26 +331,23 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	
 	public void descontarStock(ProcedimientosInsumos procedimientoInsumo) throws Exception, SigebiException {
 		try {
-			List<Stock> stockAdescontar = null;
+			Stock stockAdescontar = null;
+			Stock stock = null;
 			String nombre = ""; 
 			
 			if( procedimientoInsumo.getInsumosMedicos() != null && procedimientoInsumo.getInsumosMedicos().getInsumoMedicoId() != null ) {
-				List<Integer> insumoList = new ArrayList<Integer>();
-				insumoList.add(procedimientoInsumo.getInsumosMedicos().getInsumoMedicoId());
-				stockAdescontar = stockService.buscarNoPaginable(null, null, null, insumoList, null);
-				if( stockAdescontar == null || insumoList.size() < 1) throw new SigebiException.BusinessException("No se encontró stock del insumo " + procedimientoInsumo.getInsumosMedicos().getNombre());
-				stockAdescontar.get(0).setMedicamentos(null);
-				nombre = stockAdescontar.get(0).getInsumosMedicos().getNombre();
+				stockAdescontar = stockDao.findByInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
+				stock = stockAdescontar;//stockService.obtener(stockAdescontar.getStockId());
+				if( stock == null ) throw new SigebiException.BusinessException("No se encontró stock del insumo " + procedimientoInsumo.getInsumosMedicos().getNombre());
+				nombre = stock.getInsumosMedicos().getNombre();
 			}else if( procedimientoInsumo.getMedicamentos() != null && procedimientoInsumo.getMedicamentos().getMedicamentoId() != null ) {
-				List<Integer> medicamentoList = new ArrayList<Integer>();
-				medicamentoList.add(procedimientoInsumo.getMedicamentos().getMedicamentoId());
-				stockAdescontar = stockService.buscarNoPaginable(null, null, null, null, medicamentoList);
-				if( stockAdescontar == null || stockAdescontar.size() < 1) throw new SigebiException.BusinessException("No se encontró stock del medicamento " + procedimientoInsumo.getMedicamentos().getMedicamento());
-				stockAdescontar.get(0).setInsumosMedicos(null);
-				nombre = stockAdescontar.get(0).getMedicamentos().getMedicamento();
+				stockAdescontar = stockDao.findByMedicamentos(procedimientoInsumo.getMedicamentos());
+				stock = stockAdescontar;//stockService.obtener(stockAdescontar.getStockId());
+				if( stock == null ) throw new SigebiException.BusinessException("No se encontró stock del medicamento " + procedimientoInsumo.getMedicamentos().getMedicamento());
+				nombre = stock.getMedicamentos().getMedicamento();
 			}
 			
-			int cantidadActual = stockAdescontar.get(0).getCantidad();
+			int cantidadActual = stock.getCantidad();
 			int cantidadUsada = procedimientoInsumo.getCantidad();
 			
 			if( cantidadActual <= 0) {
@@ -398,12 +360,12 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 						+" cantidad usada: " + cantidadUsada);
 			}
 			
-			stockAdescontar.get(0).setCantidad(cantidadActual - cantidadUsada);
+			stock.setCantidad(cantidadActual - cantidadUsada);
 			
-			stockDao.save(stockAdescontar.get(0));
+			stockService.save(stock);
 			
 		} catch (Exception e) {
-			throw new Exception("Error al descontar stock " + e.getMessage());
+			throw new Exception("Error al descontar stock. " + e.getMessage());
 		}
 	}
 	

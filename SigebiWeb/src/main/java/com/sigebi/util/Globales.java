@@ -29,4 +29,12 @@ public class Globales {
 		public static String PENDIENTE = "PENDIENTE";
 		public static String FINALIZADO = "FINALIZADO";
 	}
+
+	public static String ROLE_USER = "ROLE_USER";
+	public static String ROLE_CLINICA_MEDICA = "ROLE_CLINICA_MEDICA";
+	public static String ROLE_ODONTOLOGIA = "ROLE_ODONTOLOGIA";
+	public static String ROLE_ENFERMERIA = "ROLE_ENFERMERIA";
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
+	
+	
 }

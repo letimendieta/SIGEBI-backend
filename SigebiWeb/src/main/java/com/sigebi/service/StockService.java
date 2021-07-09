@@ -17,6 +17,8 @@ public interface StockService {
 	
 	public Stock save(Stock stock) throws SigebiException;
 	
+	public Stock guardar(Stock stock) throws SigebiException;
+	
 	public Stock actualizar(Stock stock) throws SigebiException;
 	
 	public void delete(int id);

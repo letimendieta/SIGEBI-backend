@@ -31,7 +31,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Personas;
-import com.sigebi.entity.Usuarios;
+import com.sigebi.security.entity.Usuario;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UsuariosService;
 import com.sigebi.service.UtilesService;
@@ -53,7 +53,7 @@ public class UsuariosController {
         this.usuariosService = usuariosService;
     }
 
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<?> listar() {
 		Map<String, Object> response = new HashMap<>();
 		List<Usuarios> usuariosList = null;
@@ -65,9 +65,9 @@ public class UsuariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
-	}
+	}*/
 	
-	@GetMapping(value = "/{id}")
+	/*@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
 		Usuarios usuario = null;
@@ -80,10 +80,10 @@ public class UsuariosController {
 		}
 		
 		return new ResponseEntity<Usuarios>(usuario, HttpStatus.OK);
-	}
+	}*/
 	
 	@GetMapping("/buscar")
-    public ResponseEntity<?> buscarusuarios(
+    public ResponseEntity<?> buscarUsuarios(
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
@@ -91,16 +91,15 @@ public class UsuariosController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		Usuarios usuario = null;
+		Usuario usuario = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			usuario = objectMapper.readValue(filtros, Usuarios.class);
+			usuario = objectMapper.readValue(filtros, Usuario.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
-		List<Usuarios> usuariosList = new ArrayList<Usuarios>();
+		List<Usuario> usuariosList = new ArrayList<Usuario>();
 		
 		if ( usuario == null ) {
-			usuario = new Usuarios();
+			usuario = new Usuario();
 		}
 		List<Personas> personasList = new ArrayList<Personas>();
 		List<Integer> personasIds = new ArrayList<Integer>();
@@ -111,16 +110,16 @@ public class UsuariosController {
 				personasIds.add(persona.getPersonaId());
 			}
 			if( personasList.isEmpty()) {
-				return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
+				return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
 			}
 		}
 		
 		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, personasIds, pageable);
 						
-        return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
+        return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
     }
 
-	@PostMapping
+	/*@PostMapping
 	public ResponseEntity<?> insertar(@Valid @RequestBody Usuarios usuario, BindingResult result) throws Exception {
 		Map<String, Object> response = new HashMap<>();		
 		Usuarios usuarioNew = null;
@@ -207,5 +206,5 @@ public class UsuariosController {
 		response.put("mensaje", "usuario eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-	}
+	}*/
 }

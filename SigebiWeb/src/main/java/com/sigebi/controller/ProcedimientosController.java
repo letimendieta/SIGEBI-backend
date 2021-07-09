@@ -2,7 +2,6 @@ package com.sigebi.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,7 +38,6 @@ import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.entity.Procedimientos;
-import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PersonasService;

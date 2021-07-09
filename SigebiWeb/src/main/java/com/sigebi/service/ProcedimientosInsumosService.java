@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
 
 public interface ProcedimientosInsumosService {

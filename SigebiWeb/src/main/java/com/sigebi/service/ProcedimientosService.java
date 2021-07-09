@@ -17,10 +17,10 @@ public interface ProcedimientosService{
 	
 	public List<Procedimientos> obtenerProcedimientoPaciente(int pacienteId);
 	
+	public Procedimientos guardar(Procedimientos procedimiento);
+	
 	public Procedimientos guardar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
-	
-	//public Procedimientos actualizar(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
-	
+		
 	public Procedimientos actualizarProcesoProcedimientos(ProcesoProcedimientos Procesoprocedimiento) throws Exception;
 	
 	public void delete(int id);
