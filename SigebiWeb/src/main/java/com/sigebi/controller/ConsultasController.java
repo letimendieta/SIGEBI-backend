@@ -38,6 +38,7 @@ import com.sigebi.service.ConsultasService;
 import com.sigebi.service.ReportService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.util.exceptions.SigebiException;
+import com.sigebi.util.exceptions.SigebiException.BusinessException;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -103,7 +104,7 @@ public class ConsultasController {
             @RequestParam(required = false) String size,
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) String orderDir,
-            Pageable pageable) throws JsonMappingException, JsonProcessingException, DataAccessException{
+            Pageable pageable) throws JsonMappingException, JsonProcessingException, DataAccessException, SigebiException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
@@ -130,7 +131,7 @@ public class ConsultasController {
 
 	@PostMapping ("/reportes")
 	@ResponseBody
-	public ResponseEntity generateReport(@RequestBody Reporte reporte) throws IOException, JRException, SQLException {
+	public ResponseEntity generateReport(@RequestBody Reporte reporte) throws NumberFormatException, Exception {
 
 
 		String resultado = reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));

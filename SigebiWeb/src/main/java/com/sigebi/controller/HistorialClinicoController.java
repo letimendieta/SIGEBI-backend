@@ -135,7 +135,7 @@ public class HistorialClinicoController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		HistorialClinicoPaciente busqueda = null;
+		HistorialClinicoPaciente busqueda = new HistorialClinicoPaciente();
 		HistorialClinico historialClinico = null;
 		Pacientes paciente = null;
 		List<HistorialClinicoPaciente> busquedaList = new ArrayList<HistorialClinicoPaciente>();
@@ -203,7 +203,7 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( historialClinico.getPacienteId() == null || historialClinico.getPacienteId() == null ) {
+		if ( historialClinico == null || historialClinico.getPacienteId() == null ) {
 			response.put("mensaje", "Error: Datos del paciente es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}
@@ -262,7 +262,7 @@ public class HistorialClinicoController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		if ( historialClinico.getPacienteId() == null || historialClinico.getPacienteId() == null ) {
+		if ( historialClinico == null || historialClinico.getPacienteId() == null ) {
 			response.put("mensaje", "Error: Datos del paciente es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.PRECONDITION_FAILED);
 		}

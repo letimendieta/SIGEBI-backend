@@ -333,7 +333,8 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 		try {
 			Stock stockAdescontar = null;
 			Stock stock = null;
-			String nombre = ""; 
+			String nombre = "";
+			int cantidadActual = 0;
 			
 			if( procedimientoInsumo.getInsumosMedicos() != null && procedimientoInsumo.getInsumosMedicos().getInsumoMedicoId() != null ) {
 				stockAdescontar = stockDao.findByInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
@@ -347,7 +348,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 				nombre = stock.getMedicamentos().getMedicamento();
 			}
 			
-			int cantidadActual = stock.getCantidad();
+			cantidadActual = stock != null ? stock.getCantidad() : 0;
 			int cantidadUsada = procedimientoInsumo.getCantidad();
 			
 			if( cantidadActual <= 0) {

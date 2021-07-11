@@ -108,7 +108,7 @@ public class CitasController {
 		LocalDate fecha = null;
 		
 		//se quita fecha de filtros por que da error al mapear
-		if(!fechaString.equals(null) && !fechaString.equals("")) {
+		if( fechaString != null && !fechaString.equals("")) {
 			String fechaAquitar = '"' + (String) jo.get("fecha") + '"';
 			filtros = filtros.replace(fechaAquitar, "null");			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");

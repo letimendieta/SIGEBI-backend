@@ -2,6 +2,10 @@ package com.sigebi.util;
 import java.awt.*;
 import java.awt.print.*;
 import javax.swing.JOptionPane;
+
+import com.sigebi.util.exceptions.SigebiException;
+import com.sigebi.util.exceptions.SigebiException.InternalServerError;
+
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
 import javax.print.PrintService;
@@ -53,7 +57,7 @@ public class Ticket {
         this.contentTicket = this.contentTicket.replace("{{change}}", change);
     }
 
-    public void print() {
+    public void print() throws InternalServerError {
         //Especificamos el tipo de dato a imprimir
         //Tipo: bytes; Subtipo: autodetectado
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
@@ -92,7 +96,7 @@ public class Ticket {
             System.out.println("impresion ticket ");
 
         } catch (Exception er) {
-            er.printStackTrace();
+            throw new SigebiException.InternalServerError(er.getMessage());
         }
     }
 

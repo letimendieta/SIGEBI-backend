@@ -43,7 +43,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="21" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
 				<reportElement x="207" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="ebf9a2b8-4aa7-434d-815c-9820797e7bbb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -78,18 +78,6 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="0" y="1" width="595" height="20" uuid="da11e267-9641-4a18-9955-b9923fdb1366">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<text><![CDATA[]]></text>
-			</staticText>
 		</band>
 	</detail>
 </jasperReport>

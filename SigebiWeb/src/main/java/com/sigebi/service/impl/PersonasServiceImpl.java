@@ -196,7 +196,7 @@ public class PersonasServiceImpl implements PersonasService{
 		
 		if ( personaActual == null ) {
 			String mensaje = "La persona ID: "
-					.concat(String.valueOf(personaActual.getPersonaId()).concat(" no existe en la base de datos!"));
+					.concat(String.valueOf(id).concat(" no existe en la base de datos!"));
 			throw new SigebiException.DataNotFound(mensaje);
 		}
 		personasDao.deleteById(id);

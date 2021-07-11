@@ -3,18 +3,18 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="tratamiento" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="76e734f9-454a-4484-a639-b127b8e14d8e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="553"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="433"/>
 	<parameter name="consultaid" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select t.prescripcion_farm, i.descripcion,ti.cantidad
+		<![CDATA[select t.prescripcion_farm, concat(m.medicamento, ' ', m.concentracion) as descripcion ,ti.cantidad
 from consultas c
 join tratamientos t
 on c.tratamiento_id= t.tratamiento_id
 join tratamientos_insumos ti
 on
 t.tratamiento_id = ti.tratamiento_id
-join insumos i
-on
-ti.insumo_id=i.insumo_id
+left join medicamentos m on ti.medicamento_id = m.medicamento_id 
 where c.consulta_id=$P{consultaid}]]>
 	</queryString>
 	<field name="prescripcion_farm" class="java.lang.String">

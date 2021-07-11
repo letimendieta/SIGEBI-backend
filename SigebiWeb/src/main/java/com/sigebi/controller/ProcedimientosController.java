@@ -125,7 +125,7 @@ public class ProcedimientosController {
 		
 		
 		//se quita fecha de filtros por que da error al mapear
-		if(!fechaString.equals(null) && !fechaString.equals("")) {
+		if( fechaString != null && !fechaString.equals("")) {
 			String fechaAquitar = '"' + (String) jo.get("fecha") + '"';
 			filtros = filtros.replace(fechaAquitar, "null");
 			LocalDate date = LocalDate.parse(fechaString);

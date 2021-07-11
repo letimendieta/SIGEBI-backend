@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -78,9 +79,16 @@ public class AuthController {
                 new Usuario( nuevoUsuario.getNombreUsuario(),
                         passwordEncoder.encode(nuevoUsuario.getPassword()));
         Set<Rol> roles = new HashSet<>();
-        roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-        if(nuevoUsuario.getRoles().contains("admin"))
-            roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
+        Optional<Rol> rolUsr = rolService.getByRolNombre(RolNombre.ROLE_USER);
+        if( rolUsr.isPresent() ){
+        	roles.add(rolUsr.get());
+        }        
+        if(nuevoUsuario.getRoles().contains("admin")){
+        	Optional<Rol> rolAdm = rolService.getByRolNombre(RolNombre.ROLE_ADMIN);
+        	if( rolAdm.isPresent() ){
+        		roles.add(rolAdm.get());
+        	}            
+        }
         usuario.setRoles(roles);
         usuarioService.save(usuario);
         return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
