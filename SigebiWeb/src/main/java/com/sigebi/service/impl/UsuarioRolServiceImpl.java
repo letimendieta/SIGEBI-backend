@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sigebi.dao.IUsuarioRolDao;
-import com.sigebi.entity.UsuarioRol;
 import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
-import com.sigebi.service.UsuarioRolService;
+import com.sigebi.security.entity.UsuarioRol;
+import com.sigebi.security.service.UsuarioRolService;
 
 @Service
 public class UsuarioRolServiceImpl implements UsuarioRolService{
@@ -98,13 +98,13 @@ public class UsuarioRolServiceImpl implements UsuarioRolService{
 		//usuario.setPassword(encodePass);
 		
 		return usuariosDao.save(usuario);
-	}
+	}*/
 	
 	@Override
 	@Transactional
 	public void delete(int id) {
-		usuariosDao.deleteById(id);
-	}*/
+		usuarioRolDao.deleteById(id);
+	}
 	
 	/*@Override
 	@Transactional(readOnly = true)

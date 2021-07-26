@@ -25,14 +25,14 @@ import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.Personas;
-import com.sigebi.entity.UsuarioRol;
 import com.sigebi.security.entity.Usuario;
+import com.sigebi.security.entity.UsuarioRol;
 import com.sigebi.security.service.RolService;
+import com.sigebi.security.service.UsuarioRolService;
 import com.sigebi.security.service.UsuarioService;
 import com.sigebi.service.ConsultasService;
 import com.sigebi.service.EnfermedadesCie10Service;
 import com.sigebi.service.FuncionariosService;
-import com.sigebi.service.UsuarioRolService;
 import com.sigebi.service.UsuariosService;
 import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
@@ -158,7 +158,7 @@ public class ConsultasServiceImpl implements ConsultasService{
 			
 			List<String> usuarioRol = usuarioRolService.listarRolesUsuario(usuario);
 					
-			if( !usuarioRol.contains( Globales.ROLE_ADMIN) ) {
+			if( !usuarioRol.contains( Globales.ROL_ADMIN) ) {
 				Areas area = new Areas();
 				area = funcionarioConsulta.getAreas();				
 				consulta.setAreas(area);

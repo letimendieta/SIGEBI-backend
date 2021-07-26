@@ -72,7 +72,7 @@ public class PersonasServiceImpl implements PersonasService{
 	@Transactional(readOnly = true)
 	public Personas obtener(int id) throws SigebiException {
 		
-		Personas persona = personasDao.findById(id).orElse(null);;
+		Personas persona = personasDao.findById(id).orElse(null);
 		
 		if ( persona != null ) {
 			if( persona.getDepartamentos() == null ) {

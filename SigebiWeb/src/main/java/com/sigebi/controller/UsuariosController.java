@@ -30,11 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
 import com.sigebi.security.entity.Usuario;
+import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UsuariosService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.exceptions.SigebiException;
+
+import io.swagger.models.Response;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -44,6 +49,8 @@ public class UsuariosController {
 	private UsuariosService usuariosService;
 	@Autowired
 	private PersonasService personasService;
+	@Autowired
+	private FuncionariosService funcionariosService;
 	@Autowired
 	private UtilesService utiles;
 	
@@ -67,10 +74,22 @@ public class UsuariosController {
 		return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
 	}*/
 	
-	/*@GetMapping(value = "/{id}")
+	@GetMapping(value = "/generar/{personaId}")
+	public ResponseEntity generarNombreUsuario(@PathVariable("personaId") Integer personaId) throws SigebiException {
+
+		String nombreUsuario = usuariosService.generarNombreUsuario(personaId);
+		
+		Usuario usu = new Usuario();
+		usu.setNombreUsuario(nombreUsuario);
+		
+		//return nombreUsuario;
+		return new ResponseEntity(usu, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		Usuarios usuario = null;
+		Usuario usuario = null;
 
 		usuario = usuariosService.findById(id);
 		
@@ -79,8 +98,8 @@ public class UsuariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Usuarios>(usuario, HttpStatus.OK);
-	}*/
+		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+	}
 	
 	@GetMapping("/buscar")
     public ResponseEntity<?> buscarUsuarios(
@@ -102,19 +121,30 @@ public class UsuariosController {
 			usuario = new Usuario();
 		}
 		List<Personas> personasList = new ArrayList<Personas>();
+		List<Funcionarios> funcionariosList = new ArrayList<Funcionarios>();
 		List<Integer> personasIds = new ArrayList<Integer>();
-		if( usuario.getPersonas() != null) {
-			personasList = personasService.buscar(fromDate, toDate, usuario.getPersonas(), pageable);
+		List<Integer> funcionariosId = new ArrayList<Integer>();
+		if( usuario.getFuncionarios() != null && usuario.getFuncionarios().getPersonas() != null) {
+			personasList = personasService.buscar(fromDate, toDate, usuario.getFuncionarios().getPersonas(), pageable);
 
-			for( Personas persona : personasList ){
-				personasIds.add(persona.getPersonaId());
-			}
-			if( personasList.isEmpty()) {
+			if(personasList != null && personasList.size() > 0) {
+				for( Personas persona : personasList ){
+					personasIds.add(persona.getPersonaId());
+				}
+				funcionariosList = funcionariosService.buscar(null, null, null, personasIds, pageable);
+				
+				if( personasList.isEmpty()) {
+					return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
+				}
+				for( Funcionarios funcionario : funcionariosList ){
+					funcionariosId.add(funcionario.getFuncionarioId());
+				}
+			}else {
 				return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
-			}
+			}			
 		}
 		
-		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, personasIds, pageable);
+		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, funcionariosId, pageable);
 						
         return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
     }

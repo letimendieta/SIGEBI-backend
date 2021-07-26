@@ -1,6 +1,7 @@
 package com.sigebi.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.CallableStatement;
@@ -23,6 +24,7 @@ import com.sigebi.entity.Parametros;
 import com.sigebi.service.ParametrosService;
 import com.sigebi.service.ReportService;
 import com.sigebi.util.ConcatenarPDF;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 import net.sf.jasperreports.engine.JRException;
@@ -48,36 +50,39 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ParametrosService parametrosService;
+    
+    private static final String SEPARATOR = System.getProperty("file.separator");
 
 
     public String exportReport(String reportFormat, Integer consultaid) throws Exception {
-        String path;
+        String pathReportes;
 		Connection conn = null;
 		try {
-			Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
-			path = pathParametroReportes.getValor();
+			Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
+			pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
-			File file = ResourceUtils.getFile("classpath:reportes/receta.jrxml");
+			//File file = ResourceUtils.getFile("classpath:reportes/receta.jrxml");
 
 			conn = dataSource.getConnection();
-			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-			InputStream in = getClass().getResourceAsStream("/reportes/receta.jrxml");
+			//JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			//InputStream in = getClass().getResourceAsStream("/reportes/receta.jrxml");
 
-			JasperCompileManager.compileReport(in);
-			JRSaver.saveObject(jasperReport, "src/main/resources/reportes/receta.jasper");
+			//JasperCompileManager.compileReport(in);
+			//JRSaver.saveObject(jasperReport, "src/main/resources/reportes/receta.jasper");
+			FileInputStream inputStream = new FileInputStream(pathReportes + "receta.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("consultaid",consultaid);
 			parameters.put("consulta_id",consultaid);
-			parameters.put("subReporteDir", "src/main/resources/reportes/" );
-			parameters.put("reportLogo", "src/main/resources/reportes/" );
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
-			if (reportFormat.equalsIgnoreCase("html")) {
-			    JasperExportManager.exportReportToHtmlFile(jasperPrint,   path+ "receta.html");
+			parameters.put("subReporteDir", pathReportes );
+			parameters.put("reportLogo", pathReportes );
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
+			if ("html".equalsIgnoreCase(reportFormat)) {
+			    JasperExportManager.exportReportToHtmlFile(jasperPrint, pathReportes + "receta.html");
 			    JasperViewer jasperViewer = new JasperViewer(jasperPrint);
 			    jasperViewer.setVisible(true);
 			}
-			if (reportFormat.equalsIgnoreCase("pdf")) {
-			    JasperExportManager.exportReportToPdfFile(jasperPrint, path + "receta.pdf");
+			if ("pdf".equalsIgnoreCase(reportFormat)) {
+			    JasperExportManager.exportReportToPdfFile(jasperPrint, pathReportes + "receta.pdf");
 			    JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
 			    jasperViewer.setVisible(true);
 
@@ -88,13 +93,13 @@ public class ReportServiceImpl implements ReportService {
 			if ( conn != null ) conn.close();//para probar	
 		}
 
-        return "report generated in path : " + path ;
+        return "report generated in path : " + pathReportes ;
     }
     public String unionEstamentos(String reportFormat, HashMap<String, Object>  filtros) throws FileNotFoundException, JRException, SQLException, SigebiException {
-        Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
-        String path = pathParametroReportes.getValor();
+        Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
+        String pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
-        File file = ResourceUtils.getFile("classpath:reportes/servicios_salud.jrxml");
+        //File file = ResourceUtils.getFile("classpath:reportes/servicios_salud.jrxml");
 
         Connection conn = null;
         CallableStatement cstmt = null;
@@ -136,16 +141,18 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 			JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(listaReporte);
-			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-			InputStream in = getClass().getResourceAsStream("/reportes/servicios_salud.jrxml");
+			//JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			//InputStream in = getClass().getResourceAsStream("/reportes/servicios_salud.jrxml");
 
-			JasperCompileManager.compileReport(in);
-			JRSaver.saveObject(jasperReport, "src/main/resources/reportes/servicios_salud.jasper");
+			//JasperCompileManager.compileReport(in);
+			//JRSaver.saveObject(jasperReport, "src/main/resources/reportes/servicios_salud.jasper");
+			FileInputStream inputStream = new FileInputStream(pathReportes + "servicios_salud.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",filtros.get("anho"));
 			parameters.put("mes",filtros.get("mes"));
 			parameters.put("itemsJRBean", itemsJRBean);
-			parameters.put("subReporteDir", "src/main/resources/reportes/" );
+			parameters.put("subReporteDir", pathReportes);
+			parameters.put("reportLogo", pathReportes );
 			parameters.put("mesLetra", obtenerMes(Integer.parseInt(filtros.get("mes").toString())));
 
 			Integer femenino =0;
@@ -162,14 +169,14 @@ public class ReportServiceImpl implements ReportService {
 			parameters.put("totalMasculino", masculino);
 			parameters.put("totalSuma", suma);
 
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, itemsJRBean);
-			if (reportFormat.equalsIgnoreCase("html")) {
-			    JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "servicios_salud.html");
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, itemsJRBean);
+			if ("html".equalsIgnoreCase(reportFormat)) {
+			    JasperExportManager.exportReportToHtmlFile(jasperPrint, pathReportes + "servicios_salud.html");
 			    //JasperViewer jasperViewer = new JasperViewer(jasperPrint);
 			    //jasperViewer.setVisible(true);
 			}
-			if (reportFormat.equalsIgnoreCase("pdf")) {
-			    JasperExportManager.exportReportToPdfFile(jasperPrint, path + "servicios_salud.pdf");
+			if ("pdf".equalsIgnoreCase(reportFormat)) {
+			    JasperExportManager.exportReportToPdfFile(jasperPrint, pathReportes + "servicios_salud.pdf");
 			    JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
 			    //jasperViewer.setVisible(true);
 			}
@@ -182,7 +189,7 @@ public class ReportServiceImpl implements ReportService {
 			if ( resultUnion != null ) resultUnion.close();
 			if( resultTotal != null ) resultTotal.close();
 		}
-        return "report generated in path : " + path;
+        return "report generated in path : " + pathReportes;
     }
 
     @Override
@@ -194,25 +201,26 @@ public class ReportServiceImpl implements ReportService {
 		try {
 			conn = dataSource.getConnection();
 			
-			Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
+			Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
 
-			pathReportes = pathParametroReportes.getValor();
+			pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
-			File file = ResourceUtils.getFile("classpath:reportes/reporte_atenciones.jrxml");
+			//File file = ResourceUtils.getFile("classpath:reportes/reporte_atenciones.jrxml");
 
-			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-			InputStream in = getClass().getResourceAsStream("/reportes/reporte_atenciones.jrxml");
+			//JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			//InputStream in = getClass().getResourceAsStream("/reportes/reporte_atenciones.jrxml");
 
-			JasperCompileManager.compileReport(in);
-			JRSaver.saveObject(jasperReport, "src/main/resources/reportes/reporte_atenciones.jasper");
+			//JasperCompileManager.compileReport(in);
+			//JRSaver.saveObject(jasperReport, "src/main/resources/reportes/reporte_atenciones.jasper");
+			FileInputStream inputStream = new FileInputStream(pathReportes + "reporte_atenciones.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",anho);
 			parameters.put("mes",mes);
-			parameters.put("subReporteDir", "src/main/resources/reportes/" );
-			parameters.put("reportLogo", "src/main/resources/reportes/" );
+			parameters.put("subReporteDir", pathReportes );
+			parameters.put("reportLogo", pathReportes );
 
 
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			JRPdfExporter exporter = new JRPdfExporter();
 
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
@@ -241,7 +249,6 @@ public class ReportServiceImpl implements ReportService {
 		}        
 
         return "Reporte generado en : " + pathReportes;
-
     }
 
     @Override
@@ -253,30 +260,31 @@ public class ReportServiceImpl implements ReportService {
 		try {
 			conn = dataSource.getConnection();
 			 
-			Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");			
+			Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);			
 
 			if (pathParametroReportes == null){
-			    throw new Exception("No existe la paramétrica con código 'PATH_REPORTES'");
+			    throw new Exception("No existe la paramétrica con código " + Globales.PATH_REPORTE);
 			}
 			
 			System.out.println(" parametro " + pathParametroReportes.getValor());
 
-			pathReportes = pathParametroReportes.getValor();
+			pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
-			File file = ResourceUtils.getFile("classpath:reportes/reporte_totales.jrxml");
+			//File file = ResourceUtils.getFile("classpath:reportes/reporte_totales.jrxml");
 
-			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-			InputStream in = getClass().getResourceAsStream("/reportes/reporte_totales.jrxml");
+			//JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			//InputStream in = getClass().getResourceAsStream("/reportes/reporte_totales.jrxml");
 
-			JasperCompileManager.compileReport(in);
-			JRSaver.saveObject(jasperReport, "src/main/resources/reportes/reporte_totales.jasper");
+			//JasperCompileManager.compileReport(in);
+			//JRSaver.saveObject(jasperReport, "src/main/resources/reportes/reporte_totales.jasper");
+			FileInputStream inputStream = new FileInputStream(pathReportes + "reporte_totales.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",anho);
 			parameters.put("mes",mes);
-			parameters.put("subReporteDir", "src/main/resources/reportes/" );
+			parameters.put("subReporteDir", pathReportes );
+			parameters.put("reportLogo", pathReportes );
 
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			JRPdfExporter exporter = new JRPdfExporter();
 
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
@@ -312,15 +320,15 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void concatenarPDF() throws Exception {
-        Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
+        Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
 
         if (pathParametroReportes == null){
-            throw new Exception("No existe la paramétrica con código 'PATH_REPORTES'");
+            throw new Exception("No existe la paramétrica con código " + Globales.PATH_REPORTE);
         }
 
         System.out.println(" parametro " + pathParametroReportes.getValor());
 
-        String pathReportes = pathParametroReportes.getValor();
+        String pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
         ConcatenarPDF concatenarPDF = new ConcatenarPDF();
         concatenarPDF.copiar(pathReportes);

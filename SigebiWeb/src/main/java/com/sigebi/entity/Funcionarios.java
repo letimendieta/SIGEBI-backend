@@ -14,6 +14,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -34,6 +35,10 @@ public class Funcionarios {
 	@Column(name = "estado", length = 1)
 	@Size(max=1, message="maximo 1 caracteres")
 	private String estado;
+		
+	@Column(name = "reg_prof", length = 20)	
+	@Size(max=20, message="maximo 20 caracteres")
+	private String regProf;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -97,6 +102,14 @@ public class Funcionarios {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public String getRegProf() {
+		return regProf;
+	}
+
+	public void setRegProf(String regProf) {
+		this.regProf = regProf;
 	}
 
 	public String getUsuarioCreacion() {

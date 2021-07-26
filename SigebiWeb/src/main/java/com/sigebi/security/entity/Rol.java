@@ -25,6 +25,10 @@ public class Rol {
     @Column(name = "descripcion", length = 50)
 	@Size(max=50, message="maximo 50 caracteres")
 	private String descripcion;
+    
+    @Column(name = "estado", length = 1)
+	@Size(max=1, message="maximo 1 caracteres")
+	private String estado;
 
     public Rol() {
     }
@@ -55,5 +59,14 @@ public class Rol {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}  
+	
 }

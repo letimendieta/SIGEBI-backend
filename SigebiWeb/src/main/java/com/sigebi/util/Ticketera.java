@@ -1,7 +1,9 @@
 package com.sigebi.util;
 
+import com.sigebi.util.exceptions.SigebiException;
+
 public class Ticketera {
-    public static void main (String args[]) {
+    public static void main (String args[]) throws SigebiException {
         //Aca llenamos los articulos, sustituyelo por lo de tu eleccion
         String items = "2   Articulo Prueba   15.00\n"+
                 "7   Articulo Tar" +

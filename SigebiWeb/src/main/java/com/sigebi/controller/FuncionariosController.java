@@ -180,7 +180,7 @@ public class FuncionariosController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		funcionarioUpdated = funcionariosService.actualizar(funcionario);;
+		funcionarioUpdated = funcionariosService.actualizar(funcionario);
 
 		response.put("mensaje", "El funcionario ha sido actualizado con éxito!");
 		response.put("funcionario", funcionarioUpdated);

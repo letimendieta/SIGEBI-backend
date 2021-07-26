@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sigebi.dao.IUsuarioRolDao;
-import com.sigebi.entity.UsuarioRol;
+import com.sigebi.security.entity.UsuarioRol;
 
 @RestController
 @CrossOrigin(origins = "*")

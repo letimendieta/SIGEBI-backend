@@ -32,15 +32,19 @@ import com.sigebi.security.service.UsuarioService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.util.Mensaje;
+import com.sigebi.util.exceptions.SigebiException;
 
 import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -62,42 +66,56 @@ public class AuthController {
     @Autowired
     JwtProvider jwtProvider;
     
-    @Autowired
-	private PersonasService personasService;
-    
-    @Autowired
-	private UtilesService utiles;
-
     @PostMapping("/nuevo")
-    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity(new Mensaje("campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
-        if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
-            return new ResponseEntity(new Mensaje("ese nombre ya existe"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult result) throws SigebiException{
+    	
+    	Map<String, Object> response = new HashMap<>();	
+    	
+    	if( result.hasErrors() ) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+    	
+        if(usuarioService.existsByNombreUsuario(nuevoUsuario.getUsuario().getNombreUsuario()))
+            return new ResponseEntity(new Mensaje("Nombre de usuario ya existe "), HttpStatus.BAD_REQUEST);
       
-        Usuario usuario =
-                new Usuario( nuevoUsuario.getNombreUsuario(),
-                        passwordEncoder.encode(nuevoUsuario.getPassword()));
-        Set<Rol> roles = new HashSet<>();
-        Optional<Rol> rolUsr = rolService.getByRolNombre(RolNombre.ROLE_USER);
-        if( rolUsr.isPresent() ){
-        	roles.add(rolUsr.get());
-        }        
-        if(nuevoUsuario.getRoles().contains("admin")){
-        	Optional<Rol> rolAdm = rolService.getByRolNombre(RolNombre.ROLE_ADMIN);
-        	if( rolAdm.isPresent() ){
-        		roles.add(rolAdm.get());
-        	}            
-        }
-        usuario.setRoles(roles);
-        usuarioService.save(usuario);
+        usuarioService.save(nuevoUsuario);
+        
+        return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
+    }
+    
+    @PostMapping("/actualizar")
+    public ResponseEntity<?> actualizar(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult result) throws SigebiException{
+    	Map<String, Object> response = new HashMap<>();	
+    	
+    	if( result.hasErrors() ) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+    	
+        usuarioService.update(nuevoUsuario);
+        
         return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
+        
+    	if(bindingResult.hasErrors())
             return new ResponseEntity(new Mensaje("campos mal puestos"), HttpStatus.BAD_REQUEST);
+        
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(), loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -3,6 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="receta" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="349"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="640"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -65,16 +67,17 @@
 	<parameter name="subReporteDir" class="java.lang.String"/>
 	<parameter name="reportLogo" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select per.cedula,per.nombres, per.apellidos,c.consulta_id,
-(select (per.nombres||' '||per.apellidos) as funcionario from funcionarios f
-join personas per 
-on f.persona_id=per.persona_id 
-where f.funcionario_id= c.funcionario_id)
+		<![CDATA[select perPa.cedula, perPa.nombres, perPa.apellidos, c.consulta_id,	
+	concat(perFun.nombres,' ' ,perFun.apellidos) as nombreFuncionario,
+	a.descripcion as area, fun.reg_prof as registroProf,
+	t2.prescripcion_farm as prescripcion 
 from consultas c
-join pacientes p
-on  c.paciente_id=p.paciente_id
-join personas per
-on p.persona_id=per.persona_id 
+join pacientes p on  c.paciente_id = p.paciente_id
+join personas perPa on p.persona_id = perPa.persona_id 
+join funcionarios fun on c.funcionario_id = fun.funcionario_id 
+join personas perFun on fun.persona_id = perFun.persona_id 
+join areas a on fun.area_id = a.area_id 
+left join tratamientos t2 on c.tratamiento_id = t2.tratamiento_id 
 where c.consulta_id=$P{consultaid}]]>
 	</queryString>
 	<field name="cedula" class="java.lang.String">
@@ -93,7 +96,10 @@ where c.consulta_id=$P{consultaid}]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="personas"/>
 	</field>
 	<field name="consulta_id" class="java.lang.Integer"/>
-	<field name="funcionario" class="java.lang.String"/>
+	<field name="nombreFuncionario" class="java.lang.String"/>
+	<field name="area" class="java.lang.String"/>
+	<field name="registroProf" class="java.lang.String"/>
+	<field name="prescripcion" class="java.lang.String"/>
 	<group name="nombres">
 		<groupExpression><![CDATA[$F{nombres}]]></groupExpression>
 	</group>
@@ -107,21 +113,23 @@ where c.consulta_id=$P{consultaid}]]>
 		<groupExpression><![CDATA[$F{consulta_id}]]></groupExpression>
 	</group>
 	<title>
-		<band height="160" splitType="Stretch">
+		<band height="162" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="90" width="84" height="25" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
-					<font size="16" isBold="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Paciente]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="115" width="84" height="15" uuid="33274f5d-5b7e-4be2-a2ff-65d452a618ed"/>
-				<textElement>
-					<font size="12"/>
+				<reportElement x="0" y="115" width="84" height="20" uuid="33274f5d-5b7e-4be2-a2ff-65d452a618ed">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CI:]]></text>
 			</staticText>
@@ -132,31 +140,33 @@ where c.consulta_id=$P{consultaid}]]>
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="410" y="115" width="120" height="15" uuid="edbd74ac-0cbd-44c9-8a8e-ccf745191172"/>
-				<text><![CDATA[Nº Reg. Prof.:12345]]></text>
+				<reportElement x="320" y="115" width="138" height="15" uuid="edbd74ac-0cbd-44c9-8a8e-ccf745191172"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº Reg. Prof.: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="90" width="40" height="25" uuid="139ebe8d-25b0-411e-986c-270015400874">
+				<reportElement x="320" y="90" width="88" height="25" uuid="139ebe8d-25b0-411e-986c-270015400874">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dr.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="410" y="130" width="120" height="15" uuid="2d2f365d-7b12-4a8f-990d-ff528a2660bc"/>
-				<text><![CDATA[Clinica Medica]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="150" y="60" width="50" height="20" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8"/>
 				<box rightPadding="4"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="200" y="60" width="170" height="20" uuid="bb10dbe1-0a4f-4722-9953-c163b63cf979"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center">
@@ -164,70 +174,92 @@ where c.consulta_id=$P{consultaid}]]>
 				<imageExpression><![CDATA[$P{reportLogo}+"logofpuna.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="95" y="0" width="315" height="25" uuid="e622555d-198b-4ccd-a4a1-c59c53304058">
+				<reportElement x="130" y="0" width="315" height="25" uuid="e622555d-198b-4ccd-a4a1-c59c53304058">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Universidad Nacional de Asunción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="95" y="25" width="315" height="25" uuid="c226e44d-3bb5-4145-b0b3-903bf1d79fde"/>
-				<textElement textAlignment="Center">
+				<reportElement x="130" y="25" width="315" height="25" uuid="c226e44d-3bb5-4145-b0b3-903bf1d79fde"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Facultad Politécnica]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="84" y="115" width="130" height="15" forecolor="#000000" uuid="7704da8a-15f5-49a1-9c4c-5fa682bd4652"/>
-				<textElement>
+				<reportElement positionType="Float" x="84" y="115" width="130" height="20" forecolor="#000000" uuid="7704da8a-15f5-49a1-9c4c-5fa682bd4652">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="false" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="84" y="95" width="130" height="15" forecolor="#000000" uuid="c92d52a7-6d87-4973-81a4-049bc17c4cb4"/>
-				<textElement>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="84" y="90" width="216" height="25" forecolor="#000000" uuid="c92d52a7-6d87-4973-81a4-049bc17c4cb4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombres}+" "+$F{apellidos}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="214" y="95" width="130" height="15" forecolor="#000000" uuid="2adf243d-d62e-4c1f-9dee-935f7459b12b"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{apellidos}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="430" y="90" width="100" height="25" uuid="d336cb85-46cf-422f-b58a-9ab12b1f4853"/>
-				<textElement>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="360" y="90" width="195" height="25" uuid="d336cb85-46cf-422f-b58a-9ab12b1f4853"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{funcionario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombreFuncionario}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="320" y="132" width="235" height="18" uuid="004f5162-8c89-4948-9d95-2bdae9cbace7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="409" y="115" width="146" height="15" uuid="199ee1fa-6027-400e-a8f0-5ea37abd8fa0"/>
+				<textFieldExpression><![CDATA[$F{registroProf}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<detail>
-		<band height="254">
+		<band height="65">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="0" y="-1" width="120" height="21" uuid="97858568-a5a4-4cab-9e8d-aea56db56727"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Rp.) ]]></text>
+				<text><![CDATA[Rp.]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="0" y="20" width="555" height="200" uuid="554f8a2f-9384-40ff-91e3-90711d8ee4a9"/>
+				<reportElement x="0" y="20" width="555" height="40" uuid="554f8a2f-9384-40ff-91e3-90711d8ee4a9"/>
 				<subreportParameter name="consultaid">
 					<subreportParameterExpression><![CDATA[$P{consultaid}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{subReporteDir}+"tratamiento.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="173">
+			<staticText>
+				<reportElement x="0" y="3" width="115" height="24" uuid="27052ac6-71c7-4c76-99d5-6af9cf166e05">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prescripción]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="10" y="31" width="545" height="140" uuid="618b040d-1a09-4e3d-b65c-edae16a8b695"/>
+				<textFieldExpression><![CDATA[$F{prescripcion}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<lastPageFooter>
@@ -238,7 +270,7 @@ where c.consulta_id=$P{consultaid}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Serif" size="9" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Orden medica tiene validez 1 mes desde la fecha de emision]]></text>
+				<text><![CDATA[Orden médica tiene validez 1 mes desde la fecha de emisión]]></text>
 			</staticText>
 		</band>
 	</lastPageFooter>

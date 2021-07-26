@@ -7,16 +7,36 @@ import com.sigebi.security.entity.Usuario;
 
 public class UsuarioRolId implements Serializable {
 	
-	private Usuario usuario;	
+	private static final long serialVersionUID = 1L;
 	
-	private Rol rol;
+	private Integer usuario;
+	
+	private Integer rol;
 		
 	public UsuarioRolId() {
 		super();
 	}
 
-	public UsuarioRolId(Usuario usuario, Rol rol) {
+	public UsuarioRolId(Integer usuario, Integer rol) {
+		super();
 		this.usuario = usuario;
 		this.rol = rol;
-	}	
+	}
+
+	public Integer getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Integer usuario) {
+		this.usuario = usuario;
+	}
+
+	public Integer getRol() {
+		return rol;
+	}
+
+	public void setRol(Integer rol) {
+		this.rol = rol;
+	}
+
 }

@@ -19,5 +19,5 @@ public interface FuncionariosService {
 	
 	public void delete(int id);
 	
-	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionarios, List<Integer> funcionariosId, Pageable pageable);
+	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionarios, List<Integer> personasId, Pageable pageable);
 }

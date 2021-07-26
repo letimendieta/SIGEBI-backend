@@ -15,16 +15,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sigebi.entity.Parametros;
 import com.sigebi.service.FilesStorageService;
+import com.sigebi.service.ParametrosService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 	@Autowired
 	private UtilesService utiles;
-
-  private final Path rootHistorialClinico = Paths.get("historial");
+	
+	@Autowired
+    private ParametrosService parametrosService;
+	
+  //private final Path rootHistorialClinico = Paths.get("historial");
+  //Path path = Paths.get("/home/mkyong/test/file.txt");
 
   @Override
   public void init(String tipo) throws Exception {
@@ -126,11 +133,20 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
   }
   
-  private Path obtenerPath(String tipo) {
+  private Path obtenerPath(String tipo) throws SigebiException {
 	 Path path = null;
 	 
+	 Parametros pathParametroHistorial = parametrosService.findByCodigo(Globales.PATH_HISTORIAL);
+	 
+	 if (pathParametroHistorial == null || pathParametroHistorial.getValor() == null){
+		    throw new SigebiException.BusinessException("No existe la paramétrica con código "+ Globales.PATH_HISTORIAL);
+	 }
+	
+	 //private final Path rootHistorialClinico = Paths.get("historial");
+	 Path pathHistorial = Paths.get(pathParametroHistorial.getValor());
+	 
 	 if("HC".equals(tipo)) {
-  		path = this.rootHistorialClinico;
+  		path = pathHistorial;//this.rootHistorialClinico;
   	 }
 	  
 	return path;	  

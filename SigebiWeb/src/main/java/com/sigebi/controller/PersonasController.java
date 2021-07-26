@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -99,7 +100,8 @@ public class PersonasController {
         return new ResponseEntity<List<Personas>>(personasList, HttpStatus.OK);
     }
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROL_ABM_PERSONA') or hasRole('ROL_ADMIN')")
+	//@Secured({ "ROL_ABM_PERSONA", "ROL_ADMIN" })
 	@PostMapping
 	public ResponseEntity<?> crear(@Valid @RequestBody Personas persona, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();		
@@ -120,7 +122,9 @@ public class PersonasController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROL_ABM_PERSONA')")
+	//@PreAuthorize("hasRole('ROL_ADMIN')")
+	//@Secured({ "ROL_ABM_PERSONA" })
 	@PutMapping
 	public ResponseEntity<?> actualizar(@Valid @RequestBody Personas persona, BindingResult result) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
@@ -143,7 +147,8 @@ public class PersonasController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROL_ABM_PERSONA') or hasRole('ROL_ADMIN')")
+	//@Secured({ "ROL_ABM_PERSONA", "ROL_ADMIN" })
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();

@@ -29,12 +29,31 @@ public class Globales {
 		public static final String PENDIENTE = "PENDIENTE";
 		public static final String FINALIZADO = "FINALIZADO";
 	}
+	
+	public static final String PATH_REPORTE = "PATH_REPORTE";
+	public static final String PATH_HISTORIAL = "PATH_HISTORIAL";
 
-	public static final String ROLE_USER = "ROLE_USER";
-	public static final String ROLE_CLINICA_MEDICA = "ROLE_CLINICA_MEDICA";
-	public static final String ROLE_ODONTOLOGIA = "ROLE_ODONTOLOGIA";
-	public static final String ROLE_ENFERMERIA = "ROLE_ENFERMERIA";
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROL_CLINICA_MEDICA = "ROL_CLINICA_MEDICA";
+	public static final String ROL_ODONTOLOGIA = "ROL_ODONTOLOGIA";
+	public static final String ROL_ENFERMERIA = "ROL_ENFERMERIA";
+	public static final String ROL_ADMIN = "ROL_ADMIN";
+	
+	public static final String ROL_USUARIOS = "ROL_USUARIOS";
+	public static final String ROL_ABM_USUARIO = "ROL_ABM_USUARIO";
+	public static final String ROL_STOCK = "ROL_STOCK";
+	public static final String ROL_ABM_STOCK = "ROL_ABM_STOCK";
+	public static final String ROL_REPORTES = "ROL_REPORTES";
+	public static final String ROL_PROCEDIMIENTOS = "ROL_PROCEDIMIENTOS";
+	public static final String ROL_ABM_PROCEDIMIENTO = "ROL_ABM_PROCEDIMIENTO";
+	public static final String ROL_PERSONAS = "ROL_PERSONAS";
+	public static final String ROL_ABM_PERSONA = "ROL_ABM_PERSONA";
+	public static final String ROL_PACIENTES = "ROL_PACIENTES";
+	public static final String ROL_ABM_PACIENTE = "ROL_ABM_PACIENTE";
+	public static final String ROL_FUNCIONARIOS = "ROL_FUNCIONARIOS";
+	public static final String ROL_ABM_FUNCIONARIO = "ROL_ABM_FUNCIONARIO";
+	public static final String ROL_CONSULTORIO = "ROL_CONSULTORIO";
+	public static final String ROL_CONFIGURACIONES = "ROL_CONFIGURACIONES";
+	public static final String ROL_ABM_CONFIGURACION = "ROL_ABM_CONFIGURACION";
 	
 	
 }

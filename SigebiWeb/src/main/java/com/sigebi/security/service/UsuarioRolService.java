@@ -1,10 +1,10 @@
-package com.sigebi.service;
+package com.sigebi.security.service;
 
 import java.util.List;
 
-import com.sigebi.entity.UsuarioRol;
 import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
+import com.sigebi.security.entity.UsuarioRol;
 
 
 public interface UsuarioRolService {
@@ -21,9 +21,9 @@ public interface UsuarioRolService {
 	
 	/*public Usuarios guardar(Usuarios usuario) throws Exception;
 	
-	public Usuarios actualizar(Usuarios usuario) throws Exception;
+	public Usuarios actualizar(Usuarios usuario) throws Exception;*/
 	
-	public void delete(int id);*/
+	public void delete(int id);
 	
 	//public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable);
 	

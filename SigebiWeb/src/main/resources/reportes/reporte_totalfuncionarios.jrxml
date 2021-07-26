@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_totalfuncionarios" pageWidth="235" pageHeight="40" columnWidth="235" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2acca52e-7e18-45aa-ba85-2386bc331369">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_totalfuncionarios" pageWidth="239" pageHeight="40" columnWidth="239" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2acca52e-7e18-45aa-ba85-2386bc331369">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="anho" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString language="SQL">
@@ -38,10 +29,11 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="22" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="55" height="20" isPrintWhenDetailOverflows="true" uuid="428738d1-450b-4d3b-b4c6-2ba5ee17beac">
+				<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="59" height="22" isPrintWhenDetailOverflows="true" uuid="428738d1-450b-4d3b-b4c6-2ba5ee17beac">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -54,7 +46,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="20" isPrintWhenDetailOverflows="true" uuid="930bd5cc-120d-495c-87d0-d900c8ddc0e1">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="22" isPrintWhenDetailOverflows="true" uuid="930bd5cc-120d-495c-87d0-d900c8ddc0e1">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -67,8 +59,9 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="55" height="20" isPrintWhenDetailOverflows="true" uuid="61b51564-8144-445d-9e54-b4ebbcc6153d">
+				<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="58" height="22" isPrintWhenDetailOverflows="true" uuid="61b51564-8144-445d-9e54-b4ebbcc6153d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -76,7 +69,9 @@
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" evaluationTime="Group" evaluationGroup="total" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="20" isPrintWhenDetailOverflows="true" uuid="2d75df8c-8dd9-4354-9a60-6b06f546f0de"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="22" isPrintWhenDetailOverflows="true" uuid="2d75df8c-8dd9-4354-9a60-6b06f546f0de">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codcarrera}]]></textFieldExpression>
 			</textField>
@@ -95,7 +90,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="0" width="55" height="20" isPrintWhenDetailOverflows="true" uuid="90f3d916-31d2-443f-8f33-20696af8aaba">
+				<reportElement x="180" y="0" width="59" height="20" isPrintWhenDetailOverflows="true" uuid="90f3d916-31d2-443f-8f33-20696af8aaba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -108,7 +103,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="180" y="0" width="55" height="20" uuid="806fccba-6fdc-4057-9a6f-419c96e9d6b4">
+				<reportElement x="180" y="0" width="58" height="20" uuid="806fccba-6fdc-4057-9a6f-419c96e9d6b4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">

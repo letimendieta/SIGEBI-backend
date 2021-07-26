@@ -37,8 +37,8 @@ public class ReportesController {
     UsuarioService usuarioService;
     @Autowired
     ParametrosService parametrosService;
-
-
+    
+    private static final String SEPARATOR = System.getProperty("file.separator");
 
     @PostMapping("/segundahoja")
     @ResponseBody
@@ -86,13 +86,16 @@ public class ReportesController {
             throw new SigebiException("Debe enviar dato del mes y año");
         }
        String salida = reportService.unionEstamentos(formato, filtros);
-        reportService.generarSegundaHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));
-        reportService.generarTerceraHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));
+       
+       reportService.generarSegundaHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));
+       reportService.generarTerceraHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));
        reportService.concatenarPDF();
-        String fileName = "reporte_general.pdf";
-        File file = new File(pathParametroReportes.getValor()+fileName);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("content-disposition", "inline;filename=" +fileName);
+       
+	   String fileName = "reporte_general.pdf";
+	   
+	   File file = new File(pathParametroReportes.getValor()+SEPARATOR + fileName);
+	   HttpHeaders headers = new HttpHeaders();
+	   headers.add("content-disposition", "inline;filename=" +fileName);
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 

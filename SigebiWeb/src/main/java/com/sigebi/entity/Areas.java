@@ -32,6 +32,10 @@ public class Areas {
 	@Size(max=50, message="maximo 50 caracteres")
 	private String descripcion;	
 	
+	@Column(name = "tipo", length = 20, updatable=true)
+	@NotEmpty(message ="no puede estar vacio")
+	private String tipo;
+	
 	@Column(name = "estado", length = 1)
 	@Size(max=1, message="maximo 1 caracteres")
 	private String estado;
@@ -81,6 +85,14 @@ public class Areas {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getEstado() {

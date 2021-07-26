@@ -94,7 +94,7 @@ public class AreasServiceImpl implements AreasService{
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public void eliminar(int id) throws SigebiException {
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
@@ -130,6 +130,9 @@ public class AreasServiceImpl implements AreasService{
             }
             if (!StringUtils.isEmpty(area.getDescripcion())) {
                 p = cb.and(p, cb.like(root.get("descripcion"), "%" + area.getDescripcion() + "%"));
+            }
+            if (!StringUtils.isEmpty(area.getTipo())) {
+                p = cb.and(p, cb.like(root.get("tipo"), "%" + area.getTipo() + "%"));
             }
             if (!StringUtils.isEmpty(area.getEstado())) {
                 p = cb.and(p, cb.like(root.get("estado"), "%" + area.getEstado() + "%"));

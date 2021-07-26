@@ -10,6 +10,6 @@ import com.sigebi.entity.Personas;
 import com.sigebi.security.entity.Usuario;
 
 public interface IUsuarioDao extends JpaRepository<Usuario, Integer>, JpaSpecificationExecutor<Usuario> {
-	Usuario findByPersonas(Personas personas);	
+	//Usuario findByPersonas(Personas personas);	
 	Usuario findByFuncionarios(Funcionarios funcionarios);
 }

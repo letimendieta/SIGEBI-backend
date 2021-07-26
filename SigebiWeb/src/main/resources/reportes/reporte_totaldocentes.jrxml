@@ -38,9 +38,12 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="22" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" uuid="7a15a07a-98c4-4212-a085-35548a5fab45"/>
+				<reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="50" height="22" isPrintWhenDetailOverflows="true" uuid="7a15a07a-98c4-4212-a085-35548a5fab45">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -50,7 +53,9 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="20" isPrintWhenDetailOverflows="true" uuid="ae469199-83f6-4971-b246-6d2108727938"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="22" isPrintWhenDetailOverflows="true" uuid="ae469199-83f6-4971-b246-6d2108727938">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -60,12 +65,16 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="20" isPrintWhenDetailOverflows="true" uuid="364562cd-f18f-4bde-9e00-ca4674d33981"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="22" isPrintWhenDetailOverflows="true" uuid="364562cd-f18f-4bde-9e00-ca4674d33981">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codcarrera}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" uuid="0e4dfdbc-22f8-40d2-af9d-d32c0069da3e"/>
+				<reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="50" height="22" isPrintWhenDetailOverflows="true" uuid="0e4dfdbc-22f8-40d2-af9d-d32c0069da3e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>

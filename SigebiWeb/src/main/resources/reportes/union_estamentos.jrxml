@@ -14,6 +14,7 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="itemsJRBean" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="nombreestamento" class="java.lang.String"/>
+	<parameter name="subReporteDir" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -38,46 +39,34 @@
 		<property name="com.jaspersoft.studio.field.label" value="nombreestamento"/>
 	</field>
 	<filterExpression><![CDATA[$F{nombreestamento}.equals( $P{nombreestamento} )]]></filterExpression>
-	<group name="Group1"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{nombreestamento}]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<textField textAdjust="StretchHeight">
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="37" uuid="94fc607d-68fa-42f7-a2a6-304b3bba864f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{nombreestamento}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="415" height="37" uuid="0b9fdd0b-24c7-4dde-9c7b-19148982c43b">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<subreportParameter name="itemsJRBean">
+						<subreportParameterExpression><![CDATA[$P{itemsJRBean}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="nombreestamento">
+						<subreportParameterExpression><![CDATA[$P{nombreestamento}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{itemsJRBean}.cloneDataSource()]]></dataSourceExpression>
+					<subreportExpression><![CDATA[$P{subReporteDir}+"union_estamentos_data.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<detail>
-		<band height="20" splitType="Stretch">
-			<textField textAdjust="StretchHeight">
-				<reportElement x="207" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="ebf9a2b8-4aa7-434d-815c-9820797e7bbb">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{codcarrera}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="365" y="0" width="50" height="20" uuid="df35bb32-5c34-4c80-a6c6-7ac86ed92aba">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="436" y="0" width="50" height="20" uuid="871f32f9-2e9a-47a9-9777-4819b898deab">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="506" y="0" width="63" height="20" uuid="ef891285-5384-414f-ba99-b627d834418d">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 </jasperReport>

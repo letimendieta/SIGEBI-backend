@@ -1,19 +1,15 @@
 package com.sigebi.util;
-import java.awt.*;
-import java.awt.print.*;
-import javax.swing.JOptionPane;
-
-import com.sigebi.util.exceptions.SigebiException;
-import com.sigebi.util.exceptions.SigebiException.InternalServerError;
-
+import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.Doc;
 import javax.print.ServiceUI;
-import javax.print.attribute.*;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+
+import com.sigebi.util.exceptions.SigebiException;
 
 public class Ticket {
 
@@ -57,7 +53,7 @@ public class Ticket {
         this.contentTicket = this.contentTicket.replace("{{change}}", change);
     }
 
-    public void print() throws InternalServerError {
+    public void print() throws SigebiException {
         //Especificamos el tipo de dato a imprimir
         //Tipo: bytes; Subtipo: autodetectado
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;

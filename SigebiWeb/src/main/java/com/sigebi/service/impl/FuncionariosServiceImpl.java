@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IFuncionariosDao;
+import com.sigebi.dao.IPersonasDao;
 import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
@@ -29,6 +30,8 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	
 	@Autowired
 	private IFuncionariosDao funcionariosDao;
+	@Autowired
+	private IPersonasDao personasDao;
 	
 	@Autowired
 	private PersonasService personasService;
@@ -97,11 +100,13 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	public Funcionarios actualizar(Funcionarios funcionario) throws Exception {
 						
 		//Busca a la persona y actualizar sus datos
-		Personas persona = personasService.obtener(funcionario.getPersonas().getPersonaId());
+		Personas persona = personasDao.findById(funcionario.getPersonas().getPersonaId()).orElse(null); //personasDao.findById(funcionario.getPersonas().getPersonaId());// personasService.obtener(funcionario.getPersonas().getPersonaId());
 		
 		if(persona == null) {
 			throw new Exception("No se encontro persona con id: " + funcionario.getPersonas().getPersonaId());
 		}
+		
+		funcionario.setPersonas(persona);
 				
 		return funcionariosDao.save(funcionario);
 	}
@@ -124,13 +129,13 @@ public class FuncionariosServiceImpl implements FuncionariosService{
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
-            if ( funcionario.getFuncionarioId() != null ) {
+            if ( funcionario != null && funcionario.getFuncionarioId() != null ) {
                 p = cb.and(p, cb.equal(root.get("funcionarioId"), funcionario.getFuncionarioId()) );
             }
-            if ( funcionario.getAreas() != null && funcionario.getAreas().getAreaId() != null ) {
+            if ( funcionario != null && funcionario.getAreas() != null && funcionario.getAreas().getAreaId() != null ) {
                 p = cb.and(p, cb.equal(root.get("areas"), funcionario.getAreas().getAreaId()) );
             }
-            if (funcionario.getEstado() != null ) {
+            if ( funcionario != null && funcionario.getEstado() != null ) {
                 p = cb.and(p, cb.equal(root.get("estado"), funcionario.getEstado() ));
             }
             cq.orderBy(cb.desc(root.get("funcionarioId")));

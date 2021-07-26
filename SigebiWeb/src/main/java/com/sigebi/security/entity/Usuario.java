@@ -52,9 +52,9 @@ public class Usuario {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String usuarioModificacion;
     
-    @OneToOne
+    /*@OneToOne
     @JoinColumn(name = "persona_id", referencedColumnName = "personaId", unique = true)
-    private Personas personas;
+    private Personas personas;*/
 	
 	@OneToOne
     @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId", unique = true)
@@ -159,13 +159,13 @@ public class Usuario {
 		this.usuarioModificacion = usuarioModificacion;
 	}
 
-	public Personas getPersonas() {
+	/*public Personas getPersonas() {
 		return personas;
 	}
 
 	public void setPersonas(Personas personas) {
 		this.personas = personas;
-	}
+	}*/
 
 	public Funcionarios getFuncionarios() {
 		return funcionarios;
