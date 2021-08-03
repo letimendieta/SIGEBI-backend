@@ -2,13 +2,18 @@ package com.sigebi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class SigebiWebApplication {
+public class SigebiWebApplication extends SpringBootServletInitializer {
+	
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(SigebiWebApplication.class);
+	}
 
 	public static void main(String[] args) {
-
-		System.setProperty("java.awt.headless", "false");
 		
 		SpringApplication.run(SigebiWebApplication.class, args);
 	}

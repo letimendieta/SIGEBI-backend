@@ -1,30 +1,35 @@
 package com.sigebi.controller;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
-import com.sigebi.entity.Parametros;
-import com.sigebi.security.service.UsuarioService;
-import com.sigebi.service.ParametrosService;
-import com.sigebi.service.ReportService;
-import com.sigebi.util.exceptions.SigebiException;
-import net.sf.jasperreports.engine.JRException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.lowagie.text.DocumentException;
+import com.sigebi.entity.Parametros;
+import com.sigebi.security.service.UsuarioService;
+import com.sigebi.service.ParametrosService;
+import com.sigebi.service.ReportService;
+import com.sigebi.util.exceptions.SigebiException;
+
+import net.sf.jasperreports.engine.JRException;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -42,7 +47,7 @@ public class ReportesController {
 
     @PostMapping("/segundahoja")
     @ResponseBody
-    public Map<String,Object> reporteSegundaHoja(@RequestBody String reportFormat, Integer anho, Integer mes) throws Exception {
+    public Map<String,Object> reporteSegundaHoja(@RequestBody String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException {
 
 
         Map<String, Object> respuesta = new HashMap<>();
@@ -57,7 +62,7 @@ public class ReportesController {
 
     @PostMapping("/tercerahoja")
     @ResponseBody
-    public Map<String,Object> reporteTerceraHoja(@RequestBody String reportFormat, Integer anho, Integer mes) throws Exception {
+    public Map<String,Object> reporteTerceraHoja(@RequestBody String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException {
 
 
         Map<String, Object> respuesta = new HashMap<>();
@@ -75,7 +80,7 @@ public class ReportesController {
             @RequestParam(value = "anho") String anho,
             @RequestParam(value = "mes") String mes,
             @RequestParam(value = "formato") String formato)
-            throws Exception {
+            throws FileNotFoundException, JRException, SQLException, SigebiException, IOException, DocumentException {
         Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
 
         HashMap<String, Object> filtros = new HashMap<>();
@@ -105,29 +110,4 @@ public class ReportesController {
                 .contentType(MediaType.parseMediaType("application/pdf"))
                 .body(resource);
     }
-
-
-
-
-
-   /* @GetMapping(value = "/ver")
-    public ResponseEntity<InputStreamResource> getTermsConditions() throws FileNotFoundException {
-        Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTES");
-
-
-        String fileName = "concatenatedPDF.pdf";
-        File file = new File(pathParametroReportes.getValor()+fileName);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("content-disposition", "inline;filename=" +fileName);
-
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                .body(resource);
-    }*/
-
-
 }

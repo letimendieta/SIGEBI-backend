@@ -29,10 +29,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 	
 	@Autowired
     private ParametrosService parametrosService;
-	
-  //private final Path rootHistorialClinico = Paths.get("historial");
-  //Path path = Paths.get("/home/mkyong/test/file.txt");
-
+		
   @Override
   public void init(String tipo) throws Exception {
     try {
@@ -54,7 +51,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 		throw new SigebiException.BusinessException("Se requiere tipo para guardar el archivo");
 	}
 	Path path = obtenerPath(tipo);
-	
 	if(path == null) {
 		throw new SigebiException.BusinessException("No se ha encontrado el path de la carpeta para guardar el archivo");
 	}
@@ -142,11 +138,10 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 		    throw new SigebiException.BusinessException("No existe la paramétrica con código "+ Globales.PATH_HISTORIAL);
 	 }
 	
-	 //private final Path rootHistorialClinico = Paths.get("historial");
 	 Path pathHistorial = Paths.get(pathParametroHistorial.getValor());
 	 
 	 if("HC".equals(tipo)) {
-  		path = pathHistorial;//this.rootHistorialClinico;
+  		path = pathHistorial;
   	 }
 	  
 	return path;	  

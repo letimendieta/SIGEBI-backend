@@ -28,7 +28,6 @@ import com.sigebi.util.exceptions.SigebiException;
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth/archivos")
 public class FilesController {
-
   @Autowired
   FilesStorageService storageService;
 
@@ -40,9 +39,7 @@ public class FilesController {
 		    message = "Seleccionar un archivo";
 		    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 		}
-		
 		storageService.save(file, tipo);
-		
 		message = "Archivo subido exitosamente: " + file.getOriginalFilename();
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 

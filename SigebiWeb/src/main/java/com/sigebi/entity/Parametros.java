@@ -35,11 +35,11 @@ public class Parametros {
 	private String nombre;
 	
 	@Column(name = "valor", length = 100)
-	@Size(max=20, message="maximo 20 caracteres")
+	@Size(max=100, message="maximo 100 caracteres")
 	private String valor;
 	
 	@Column(name = "descripcion_valor", length = 30)
-	@Size(max=20, message="maximo 30 caracteres")
+	@Size(max=30, message="maximo 30 caracteres")
 	private String descripcionValor;
 	
 	@Column(name = "estado", length = 1)
