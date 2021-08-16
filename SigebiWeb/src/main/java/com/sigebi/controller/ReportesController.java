@@ -27,6 +27,7 @@ import com.sigebi.entity.Parametros;
 import com.sigebi.security.service.UsuarioService;
 import com.sigebi.service.ParametrosService;
 import com.sigebi.service.ReportService;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 import net.sf.jasperreports.engine.JRException;
@@ -81,7 +82,8 @@ public class ReportesController {
             @RequestParam(value = "mes") String mes,
             @RequestParam(value = "formato") String formato)
             throws FileNotFoundException, JRException, SQLException, SigebiException, IOException, DocumentException {
-        Parametros pathParametroReportes = parametrosService.findByCodigo("PATH_REPORTE");
+    	
+        Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
 
         HashMap<String, Object> filtros = new HashMap<>();
         filtros.put("anho", Integer.parseInt(anho));

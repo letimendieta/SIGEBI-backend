@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IUsuarioDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
 import com.sigebi.security.entity.Rol;
@@ -42,11 +43,11 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
         this.usuarioDao = usuariosDao;
     }
 	
-	/*@Override
+	@Override
 	@Transactional(readOnly = true)
-	public List<Usuarios> findAll() {
-		return (List<Usuarios>) usuariosDao.findAll();
-	}*/
+	public int count() {
+		return (int) usuarioDao.count();
+	}
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -88,85 +89,14 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 		return nombreUsuario;
 		
 	}
-	
-	/*@Transactional
-	public Usuarios guardar(Usuarios usuario) throws Exception {
 		
-		//Buscar si la persona ya es usuario
-		List<Usuarios> usuarioDb = usuariosDao.findByPersonas(usuario.getPersonas());
-		
-		if( !usuarioDb.isEmpty() ) {
-			throw new Exception("La persona ya existe como usuario");
-		}
-		
-		if( usuario.getPersonas().getPersonaId() != null ) {
-			//Busca a la persona y si existe actualizar sus datos
-			Personas persona = personasService.obtener(usuario.getPersonas().getPersonaId());
-			
-			if(persona == null) {
-				throw new Exception("No se encontro persona con id: " + usuario.getPersonas().getPersonaId());
-			}
-		}else {
-			throw new Exception("Id de la persona es requerido ");
-		}		
-		//codificar la contrasenha
-		//String encodePass = encoder.encode(usuario.getPassword());	
-		//usuario.setPassword(encodePass);
-				
-		return usuariosDao.save(usuario);
-	}
-	
-	@Transactional
-	public Usuarios actualizar(Usuarios usuario) throws Exception {						
-		
-		if(usuario.getFuncionarios() != null && usuario.getFuncionarios().getFuncionarioId() == null) {
-			usuario.setFuncionarios(null);
-		}		
-		//codificar la contrasenha
-		//String encodePass = encoder.encode(usuario.getPassword());	
-		//usuario.setPassword(encodePass);
-		
-		return usuariosDao.save(usuario);
-	}
-	
-	@Override
-	@Transactional
-	public void delete(int id) {
-		usuariosDao.deleteById(id);
-	}*/
-	
-	/*@Override
-	@Transactional(readOnly = true)
-	public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable) {
-		List<Usuarios> UsuariosList = usuariosDao.findAll((Specification<Usuarios>) (root, cq, cb) -> {
-            
-			Predicate p = cb.conjunction();
-            if( personasId != null && !personasId.isEmpty() ){
-            	p = cb.and(root.get("personas").in(personasId));
-            }            
-            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
-                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
-            }
-            if ( usuario.getUsuarioId() != null ) {
-                p = cb.and(p, cb.equal(root.get("usuarioId"), usuario.getUsuarioId()) );
-            }
-            if ( usuario.getCodigoUsuario() != null ) {
-                p = cb.and(p, cb.equal(root.get("codigoUsuario"), usuario.getCodigoUsuario()) );
-            }
-            if ( usuario.getEstado()!= null ) {
-                p = cb.and(p, cb.equal(root.get("estado"), usuario.getEstado()) );
-            }
-            cq.orderBy(cb.desc(root.get("usuarioId")));
-            return p;
-        }, pageable).getContent();
-        return UsuariosList;
-    }*/
-	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> funcionariosId, Pageable pageable) {
-		List<Usuario> UsuariosList = usuarioDao.findAll((Specification<Usuario>) (root, cq, cb) -> {
-            
+	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> funcionariosId, String orderBy, String orderDir, Pageable pageable){
+		List<Usuario> usuariosList;
+		
+		Specification<Usuario> usuarioSpec = (Specification<Usuario>) (root, cq, cb) -> {
+		            
 			Predicate p = cb.conjunction();
             if( funcionariosId != null && !funcionariosId.isEmpty() ){
             	p = cb.and(root.get("funcionarios").in(funcionariosId));
@@ -186,15 +116,29 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
             if ( !StringUtils.isEmpty(usuario.getEstado()) ) {
                 p = cb.and(p, cb.equal(root.get("estado"), usuario.getEstado()) );
             }
-            cq.orderBy(cb.desc(root.get("id")));
+            String orden = "id";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	usuariosList = usuarioDao.findAll(usuarioSpec, pageable).getContent();			
+		}else {
+			usuariosList = usuarioDao.findAll(usuarioSpec);
+		}
 		
-		for( Usuario usu : UsuariosList ){
+		for( Usuario usu : usuariosList ){
 			usu.setPassword(null);
 		}
 		
-        return UsuariosList;
+        return usuariosList;
     }
 
 	@Override

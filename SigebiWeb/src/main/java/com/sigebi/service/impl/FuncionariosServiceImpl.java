@@ -18,6 +18,7 @@ import com.sigebi.dao.IPersonasDao;
 import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
@@ -43,6 +44,12 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	@Transactional(readOnly = true)
 	public List<Funcionarios> findAll() {
 		return (List<Funcionarios>) funcionariosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) funcionariosDao.count();
 	}
 
 	@Override
@@ -119,9 +126,11 @@ public class FuncionariosServiceImpl implements FuncionariosService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> personasId, Pageable pageable) {
-		List<Funcionarios> funcionariosList = funcionariosDao.findAll((Specification<Funcionarios>) (root, cq, cb) -> {
-            
+	public List<Funcionarios> buscar(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> personasId, String orderBy, String orderDir, Pageable pageable){
+		List<Funcionarios> funcionariosList;
+		
+		Specification<Funcionarios> funcionarioSpec = (Specification<Funcionarios>) (root, cq, cb) -> {
+		            
 			Predicate p = cb.conjunction();
             if( personasId != null && !personasId.isEmpty() ){
             	p = cb.and(root.get("personas").in(personasId));
@@ -138,9 +147,50 @@ public class FuncionariosServiceImpl implements FuncionariosService{
             if ( funcionario != null && funcionario.getEstado() != null ) {
                 p = cb.and(p, cb.equal(root.get("estado"), funcionario.getEstado() ));
             }
+            String orden = "funcionarioId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
+            return p;
+        };
+        if(pageable != null) {
+        	funcionariosList = funcionariosDao.findAll(funcionarioSpec, pageable).getContent();			
+		}else {
+			funcionariosList = funcionariosDao.findAll(funcionarioSpec);
+		}
+        return funcionariosList;
+    }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Funcionarios> buscarNoPaginable(Date fromDate, Date toDate, Funcionarios funcionario, List<Integer> personasId){
+		List<Funcionarios> funcionariosList = funcionariosDao.findAll((Specification<Funcionarios>) (root, cq, cb) -> {
+		
+			Predicate p = cb.conjunction();
+            if( personasId != null && !personasId.isEmpty() ){
+            	p = cb.and(root.get("personas").in(personasId));
+            }            
+            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( funcionario != null && funcionario.getFuncionarioId() != null ) {
+                p = cb.and(p, cb.equal(root.get("funcionarioId"), funcionario.getFuncionarioId()) );
+            }
+            if ( funcionario != null && funcionario.getAreas() != null && funcionario.getAreas().getAreaId() != null ) {
+                p = cb.and(p, cb.equal(root.get("areas"), funcionario.getAreas().getAreaId()) );
+            }
+            if ( funcionario != null && funcionario.getEstado() != null ) {
+                p = cb.and(p, cb.equal(root.get("estado"), funcionario.getEstado() ));
+            }          
+            
             cq.orderBy(cb.desc(root.get("funcionarioId")));
             return p;
-        }, pageable).getContent();
+		});
         return funcionariosList;
     }
 }

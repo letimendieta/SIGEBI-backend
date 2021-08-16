@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IParametrosDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Parametros;
 import com.sigebi.service.ParametrosService;
 
@@ -32,6 +33,12 @@ public class ParametrosServiceImpl implements ParametrosService{
 	@Transactional(readOnly = true)
 	public List<Parametros> findAll() {
 		return (List<Parametros>) parametrosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) parametrosDao.count();
 	}
 
 	@Override
@@ -56,7 +63,10 @@ public class ParametrosServiceImpl implements ParametrosService{
 	@Transactional(readOnly = true)
 	public List<Parametros> buscar(Date fromDate, Date toDate, Parametros parametro, String orderBy, String orderDir, Pageable pageable) {
 						
-        List<Parametros> parametrosList = parametrosDao.findAll((Specification<Parametros>) (root, cq, cb) -> {
+		List<Parametros> parametrosList;
+		
+		Specification<Parametros> parametroSpec = (Specification<Parametros>) (root, cq, cb) -> {
+		
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -89,7 +99,12 @@ public class ParametrosServiceImpl implements ParametrosService{
             	cq.orderBy(cb.desc(root.get(orden)));
             }            
             return p;
-        }, pageable).getContent();
+        };
+        if(pageable != null) {
+        	parametrosList = parametrosDao.findAll(parametroSpec, pageable).getContent();			
+		}else {
+			parametrosList = parametrosDao.findAll(parametroSpec);
+		}
         return parametrosList;
     }
 

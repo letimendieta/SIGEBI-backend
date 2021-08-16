@@ -11,8 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IHorariosDisponiblesDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.HorariosDisponibles;
 import com.sigebi.service.HorariosDisponiblesService;
 
@@ -31,6 +33,12 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
 	@Transactional(readOnly = true)
 	public List<HorariosDisponibles> findAll() {
 		return (List<HorariosDisponibles>) horariosDisponiblesDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) horariosDisponiblesDao.count();
 	}
 
 	@Override
@@ -61,10 +69,11 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
 	@Transactional(readOnly = true)
 	public List<HorariosDisponibles> buscar(Date fromDate, Date toDate, 
 										HorariosDisponibles horariosDisponible, 
-										List<Integer> funcionariosId,
-										Pageable pageable) {
-		List<HorariosDisponibles> HorariosDisponiblesList = horariosDisponiblesDao.findAll((Specification<HorariosDisponibles>) (root, cq, cb) -> {
-            
+										List<Integer> funcionariosId, String orderBy, String orderDir, Pageable pageable){
+		List<HorariosDisponibles> HorariosDisponiblesList;
+		
+		Specification<HorariosDisponibles> horariosDisponibleSpec = (Specification<HorariosDisponibles>) (root, cq, cb) -> {
+		            
 			Predicate p = cb.conjunction();
             if( funcionariosId != null && !funcionariosId.isEmpty() ){
             	p = cb.and(root.get("funcionarios").in(funcionariosId));
@@ -81,9 +90,22 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
             if ( horariosDisponible.getEstado() != null ) {
                 p = cb.and(p, cb.equal(root.get("estado"), horariosDisponible.getEstado()) );
             }
-            cq.orderBy(cb.desc(root.get("horarioDisponibleId")));
+            String orden = "horarioDisponibleId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        if(pageable != null) {
+        	HorariosDisponiblesList = horariosDisponiblesDao.findAll(horariosDisponibleSpec, pageable).getContent();			
+		}else {
+			HorariosDisponiblesList = horariosDisponiblesDao.findAll(horariosDisponibleSpec);
+		}
         return HorariosDisponiblesList;
     }
 	

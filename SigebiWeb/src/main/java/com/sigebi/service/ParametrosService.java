@@ -14,6 +14,8 @@ public interface ParametrosService {
 	
 	public Parametros findById(int id);
 	
+	public int count();
+	
 	public Parametros save(Parametros parametro);
 	
 	public void delete(int id);

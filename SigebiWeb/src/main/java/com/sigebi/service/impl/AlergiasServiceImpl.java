@@ -11,9 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IAlergiasDao;
 import com.sigebi.entity.Alergias;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.AlergiasService;
 
 
@@ -31,6 +33,12 @@ public class AlergiasServiceImpl implements AlergiasService{
 	@Transactional(readOnly = true)
 	public List<Alergias> findAll() {
 		return (List<Alergias>) alergiasDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) alergiasDao.count();
 	}
 
 	@Override
@@ -59,9 +67,10 @@ public class AlergiasServiceImpl implements AlergiasService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Alergias> buscar(Date fromDate, Date toDate, Alergias alergias, 
-										Pageable pageable) {
-		List<Alergias> AlergiasList = alergiasDao.findAll((Specification<Alergias>) (root, cq, cb) -> {
+	public List<Alergias> buscar(Date fromDate, Date toDate, Alergias alergias, String orderBy, String orderDir, Pageable pageable) {
+		List<Alergias> AlergiasList;
+		
+		Specification<Alergias> enfermedadesCie10Spec = (Specification<Alergias>) (root, cq, cb) -> {
             
 			Predicate p = cb.conjunction();            
             if( alergias.getPacienteId() != null ){
@@ -74,9 +83,22 @@ public class AlergiasServiceImpl implements AlergiasService{
                 p = cb.and(p, cb.equal(root.get("alergiaId"), alergias.getAlergiaId()) );
             }
            
-            cq.orderBy(cb.desc(root.get("alergiaId")));
+            String orden = "alergiaId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        if(pageable != null) {
+        	AlergiasList = alergiasDao.findAll(enfermedadesCie10Spec, pageable).getContent();			
+		}else {
+			AlergiasList = alergiasDao.findAll(enfermedadesCie10Spec);
+		}
         return AlergiasList;
     }
 	

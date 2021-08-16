@@ -12,7 +12,7 @@ import com.sigebi.util.exceptions.SigebiException;
 
 public interface ReportService {
 	
-    String exportReport(String reportFormat, Integer consultaid) throws SigebiException, SQLException;
+    String exportReport(String reportFormat, Integer consultaid) throws SigebiException, SQLException, FileNotFoundException, JRException;
     
     String generarSegundaHoja(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException ;
     

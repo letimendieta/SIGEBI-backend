@@ -133,16 +133,23 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 	 Path path = null;
 	 
 	 Parametros pathParametroHistorial = parametrosService.findByCodigo(Globales.PATH_HISTORIAL);
+	 Parametros pathParametroArchivos = parametrosService.findByCodigo(Globales.PATH_ARCHIVOS);
 	 
 	 if (pathParametroHistorial == null || pathParametroHistorial.getValor() == null){
 		    throw new SigebiException.BusinessException("No existe la paramétrica con código "+ Globales.PATH_HISTORIAL);
 	 }
+	 if (pathParametroArchivos == null || pathParametroArchivos.getValor() == null){
+		    throw new SigebiException.BusinessException("No existe la paramétrica con código "+ Globales.PATH_ARCHIVOS);
+	 }
 	
 	 Path pathHistorial = Paths.get(pathParametroHistorial.getValor());
+	 Path pathArchivos = Paths.get(pathParametroArchivos.getValor());
 	 
-	 if("HC".equals(tipo)) {
+	 if(Globales.HC.equals(tipo)) {
   		path = pathHistorial;
-  	 }
+  	 }else if(Globales.AR.equals(tipo)) {
+   		path = pathArchivos;
+   	 }
 	  
 	return path;	  
   }

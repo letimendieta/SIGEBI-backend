@@ -13,6 +13,8 @@ public interface HorariosDisponiblesService{
 	
 	public HorariosDisponibles findById(int id);	
 	
+	public int count();
+	
 	public HorariosDisponibles guardar(HorariosDisponibles horariosDisponible) throws Exception;
 	
 	public HorariosDisponibles actualizar(HorariosDisponibles horariosDisponible) throws Exception;
@@ -22,6 +24,6 @@ public interface HorariosDisponiblesService{
 	public List<HorariosDisponibles> buscar(Date fromDate, Date toDate, 
 										HorariosDisponibles horariosDisponible, 
 										List<Integer> funcionariosId,
-										Pageable pageable);
+										String orderBy, String orderDir, Pageable pageable);
 	
 }

@@ -111,17 +111,29 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult){
+    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) throws SigebiException{
         
-    	if(bindingResult.hasErrors())
-            return new ResponseEntity(new Mensaje("campos mal puestos"), HttpStatus.BAD_REQUEST);
+    	JwtDto jwtDto = null;
+    	    	
+    	if( loginUsuario.getNombreUsuario().isEmpty() )
+            return new ResponseEntity(new Mensaje("Ingrese un usuario"), HttpStatus.BAD_REQUEST);
+    	
+    	if( loginUsuario.getPassword().isEmpty() )
+            return new ResponseEntity(new Mensaje("Ingrese una contraseña"), HttpStatus.BAD_REQUEST);
+    	
+    	if( loginUsuario.getNombreUsuario().isEmpty() || !usuarioService.existsByNombreUsuario(loginUsuario.getNombreUsuario()) )
+            return new ResponseEntity(new Mensaje("Usuario incorrecto"), HttpStatus.UNAUTHORIZED);
+    	
+    	if( !usuarioService.esUsuarioActivo(loginUsuario.getNombreUsuario()) )
+            return new ResponseEntity(new Mensaje("Usuario inactivo"), HttpStatus.UNAUTHORIZED);
+    	
+        try {
+        	jwtDto = usuarioService.autenticar(loginUsuario);
+		} catch (SigebiException e) {
+			return new ResponseEntity(new Mensaje(e.getMessage()), HttpStatus.UNAUTHORIZED);
+		}
+    	
         
-        Authentication authentication =
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(), loginUsuario.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtProvider.generateToken(authentication);
-        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-        JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);
     }    
 }

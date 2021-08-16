@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IDependenciasDao;
 import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.DependenciasService;
 
 
@@ -32,6 +33,12 @@ public class DependenciasServiceImpl implements DependenciasService{
 	@Transactional(readOnly = true)
 	public List<Dependencias> findAll() {
 		return (List<Dependencias>) dependenciasDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) dependenciasDao.count();
 	}
 
 	@Override
@@ -55,8 +62,9 @@ public class DependenciasServiceImpl implements DependenciasService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<Dependencias> buscar(Date fromDate, Date toDate, Dependencias dependencia, String orderBy, String orderDir, Pageable pageable) {
+		List<Dependencias> dependenciasList;
 		
-        List<Dependencias> dependenciasList = dependenciasDao.findAll((Specification<Dependencias>) (root, cq, cb) -> {
+		Specification<Dependencias> dependenciaSpec = (Specification<Dependencias>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -83,7 +91,13 @@ public class DependenciasServiceImpl implements DependenciasService{
             	cq.orderBy(cb.desc(root.get(orden)));
             }            
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	dependenciasList = dependenciasDao.findAll(dependenciaSpec, pageable).getContent();			
+		}else {
+			dependenciasList = dependenciasDao.findAll(dependenciaSpec);
+		}
         return dependenciasList;
     }
 

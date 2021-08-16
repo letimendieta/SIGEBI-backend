@@ -1,6 +1,5 @@
 package com.sigebi.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,14 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.ICitasDao;
 import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.entity.Citas;
-import com.sigebi.entity.Procedimientos;
 import com.sigebi.service.CitasService;
-import com.sigebi.util.Globales;
-import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -39,6 +36,12 @@ public class CitasServiceImpl implements CitasService{
 	public List<Citas> findAll() {
 		return (List<Citas>) citasDao.findAll();
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) citasDao.count();
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -50,25 +53,6 @@ public class CitasServiceImpl implements CitasService{
 	public Citas guardar(Citas cita) throws Exception {
 		Citas citaSave = citasDao.save(cita);
 		
-		//Guardar procedimiento
-		/*try {			
-						
-			Procedimientos procedimientoEntity = new Procedimientos();
-			procedimientoEntity.setFuncionarios(citaSave.getFuncionarios());			
-			procedimientoEntity.setPacientes(citaSave.getPacientes());
-			procedimientoEntity.setUsuarioCreacion(citaSave.getUsuarioCreacion());
-			procedimientoEntity.setCita(citaSave);
-			//procedimientoEntity.setFecha(LocalDateTime.now());
-			procedimientoEntity.setAreas(citaSave.getAreas());
-			procedimientoEntity.setMotivoConsulta(citaSave.getMotivoConsulta());
-			
-			procedimientoEntity.setEstado(Globales.Estados.PENDIENTE);
-			
-			Procedimientos procedimiento = procedimientosDao.save(procedimientoEntity);
-			
-		} catch (Exception e) {
-			throw new SigebiException.InternalServerError("Error al guardar el procedimiento " + e.getMessage());
-		}*/
 		
 		return citaSave;
 	}
@@ -90,9 +74,11 @@ public class CitasServiceImpl implements CitasService{
 	public List<Citas> buscar(Date fromDate, Date toDate, 
 										Citas cita, 
 										List<Integer> funcionariosId,
-										List<Integer> pacientesId,
-										Pageable pageable) {
-		List<Citas> CitasList = citasDao.findAll((Specification<Citas>) (root, cq, cb) -> {
+										List<Integer> pacientesId, String orderBy, String orderDir, Pageable pageable) {
+		
+		List<Citas> citasList;
+		
+		Specification<Citas> citasSpec = (Specification<Citas>) (root, cq, cb) -> {		
             
 			Predicate p = cb.conjunction();
             if( funcionariosId != null && !funcionariosId.isEmpty() ){
@@ -119,10 +105,25 @@ public class CitasServiceImpl implements CitasService{
             if ( cita.getEstado() != null ) {
                 p = cb.and(p, cb.equal( root.get("estado"), cita.getEstado()) );
             }
-            cq.orderBy(cb.desc( root.get("citaId")) );
+            String orden = "citaId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
-        return CitasList;
+        };
+        
+        if(pageable != null) {
+        	citasList = citasDao.findAll(citasSpec, pageable).getContent();			
+		}else {
+			citasList = citasDao.findAll(citasSpec);
+		}
+        
+        return citasList;
     }
 	
 }

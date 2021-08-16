@@ -28,8 +28,8 @@ public class EnfermedadesCie10 {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String codigo;
 	
-	@Column(name = "descripcion", length = 100)
-	@Size(max=50, message="maximo 100 caracteres")
+	@Column(name = "descripcion", length = 200)
+	@Size(max=200, message="maximo 200 caracteres")
 	private String descripcion;	
 	
 	@Column(name = "estado", length = 1)

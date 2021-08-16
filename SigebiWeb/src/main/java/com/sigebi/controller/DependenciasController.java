@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,8 @@ public class DependenciasController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
@@ -95,11 +98,16 @@ public class DependenciasController {
 			dependencia = objectMapper.readValue(filtros, Dependencias.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Dependencias> dependenciasList = new ArrayList<Dependencias>();
 		
 		if ( dependencia == null ) {
 			dependencia = new Dependencias();
+		}
+		
+		if ("-1".equals(size)) {
+			int total = dependenciasService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
 		}
 		
 		dependenciasList = dependenciasService.buscar(fromDate, toDate, dependencia, orderBy, orderDir, pageable);		

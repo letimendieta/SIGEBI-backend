@@ -98,7 +98,6 @@ public class EnfermedadesCie10Controller {
 			enfermedadCie10 = objectMapper.readValue(filtros, EnfermedadesCie10.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<EnfermedadesCie10> enfermedadesCie10List = new ArrayList<EnfermedadesCie10>();
 		
 		if ( enfermedadCie10 == null ) {

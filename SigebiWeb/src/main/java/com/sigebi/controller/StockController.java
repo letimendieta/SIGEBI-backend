@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -86,6 +87,10 @@ public class StockController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -105,7 +110,7 @@ public class StockController {
 		if( stock.getInsumosMedicos() != null) {
 			List<InsumosMedicos> insumosList = new ArrayList<InsumosMedicos>();			
 			
-			insumosList = insumosMedicosService.buscar(fromDate, toDate, stock.getInsumosMedicos(), pageable);
+			insumosList = insumosMedicosService.buscarNoPaginable(fromDate, toDate, stock.getInsumosMedicos());
 
 			for( InsumosMedicos insumo : insumosList ){
 				insumosIds.add(insumo.getInsumoMedicoId());
@@ -119,7 +124,7 @@ public class StockController {
 		if( stock.getMedicamentos() != null) {
 			List<Medicamentos> medicamentosList = new ArrayList<Medicamentos>();			
 			
-			medicamentosList = medicamentosService.buscar(fromDate, toDate, stock.getMedicamentos(), pageable);
+			medicamentosList = medicamentosService.buscarNoPaginable(fromDate, toDate, stock.getMedicamentos());
 
 			for( Medicamentos medicamento : medicamentosList ){
 				medicamentosIds.add(medicamento.getMedicamentoId());
@@ -128,8 +133,12 @@ public class StockController {
 				return new ResponseEntity<List<Medicamentos>>(medicamentosList, HttpStatus.OK);
 			}
 		}
-		
-		stockList = stockService.buscar(fromDate, toDate, stock, insumosIds, medicamentosIds, pageable);
+		if ("-1".equals(size)) {
+			int total = stockService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
+		stockList = stockService.buscar(fromDate, toDate, stock, insumosIds, medicamentosIds, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Stock>>(stockList, HttpStatus.OK);
     }

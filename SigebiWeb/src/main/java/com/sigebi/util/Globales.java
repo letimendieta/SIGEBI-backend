@@ -28,10 +28,16 @@ public class Globales {
 	public static final class Estados {
 		public static final String PENDIENTE = "PENDIENTE";
 		public static final String FINALIZADO = "FINALIZADO";
+		public static final String ACTIVO = "A";
+		public static final String INACTIVO = "I";
 	}
 	
 	public static final String PATH_REPORTE = "PATH_REPORTE";
 	public static final String PATH_HISTORIAL = "PATH_HISTORIAL";
+	public static final String PATH_ARCHIVOS = "PATH_ARCHIVOS";
+	
+	public static final String HC = "HC";
+	public static final String AR = "AR";
 
 	public static final String ROL_CLINICA_MEDICA = "ROL_CLINICA_MEDICA";
 	public static final String ROL_ODONTOLOGIA = "ROL_ODONTOLOGIA";

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IEstamentosDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Estamentos;
 import com.sigebi.service.EstamentosService;
 
@@ -32,6 +33,12 @@ public class EstamentosServiceImpl implements EstamentosService{
 	@Transactional(readOnly = true)
 	public List<Estamentos> findAll() {
 		return (List<Estamentos>) estamentosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) estamentosDao.count();
 	}
 
 	@Override
@@ -55,8 +62,10 @@ public class EstamentosServiceImpl implements EstamentosService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<Estamentos> buscar(Date fromDate, Date toDate, Estamentos estamento, String orderBy, String orderDir, Pageable pageable) {
+		List<Estamentos> estamentosList;
 		
-        List<Estamentos> estamentosList = estamentosDao.findAll((Specification<Estamentos>) (root, cq, cb) -> {
+		Specification<Estamentos> estamentoSpec = (Specification<Estamentos>) (root, cq, cb) -> {
+		
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -83,7 +92,13 @@ public class EstamentosServiceImpl implements EstamentosService{
             	cq.orderBy(cb.desc(root.get(orden)));
             }            
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	estamentosList = estamentosDao.findAll(estamentoSpec, pageable).getContent();			
+		}else {
+			estamentosList = estamentosDao.findAll(estamentoSpec);
+		}
         return estamentosList;
     }
 

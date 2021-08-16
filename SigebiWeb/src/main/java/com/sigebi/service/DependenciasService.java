@@ -13,6 +13,8 @@ public interface DependenciasService {
 	
 	public Dependencias findById(int id);
 	
+	public int count();
+	
 	public Dependencias save(Dependencias dependencia);
 	
 	public void delete(int id);

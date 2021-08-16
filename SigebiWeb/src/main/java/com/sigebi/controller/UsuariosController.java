@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -59,20 +60,7 @@ public class UsuariosController {
 	public UsuariosController(UsuariosService usuariosService) {
         this.usuariosService = usuariosService;
     }
-
-	/*@GetMapping
-	public ResponseEntity<?> listar() {
-		Map<String, Object> response = new HashMap<>();
-		List<Usuarios> usuariosList = null;
-
-		usuariosList = usuariosService.findAll();
-
-		if( usuariosList.isEmpty()) {
-			response.put("mensaje", "No se encontraron datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<List<Usuarios>>(usuariosList, HttpStatus.OK);
-	}*/
+	
 	
 	@GetMapping(value = "/generar/{personaId}")
 	public ResponseEntity generarNombreUsuario(@PathVariable("personaId") Integer personaId) throws SigebiException {
@@ -106,6 +94,10 @@ public class UsuariosController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -125,13 +117,13 @@ public class UsuariosController {
 		List<Integer> personasIds = new ArrayList<Integer>();
 		List<Integer> funcionariosId = new ArrayList<Integer>();
 		if( usuario.getFuncionarios() != null && usuario.getFuncionarios().getPersonas() != null) {
-			personasList = personasService.buscar(fromDate, toDate, usuario.getFuncionarios().getPersonas(), pageable);
+			personasList = personasService.buscarNoPaginable(fromDate, toDate, usuario.getFuncionarios().getPersonas());
 
 			if(personasList != null && personasList.size() > 0) {
 				for( Personas persona : personasList ){
 					personasIds.add(persona.getPersonaId());
 				}
-				funcionariosList = funcionariosService.buscar(null, null, null, personasIds, pageable);
+				funcionariosList = funcionariosService.buscarNoPaginable(null, null, null, personasIds);
 				
 				if( personasList.isEmpty()) {
 					return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
@@ -144,97 +136,15 @@ public class UsuariosController {
 			}			
 		}
 		
-		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, funcionariosId, pageable);
+		if ("-1".equals(size)) {
+			int total = usuariosService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
+		
+		usuariosList = usuariosService.buscar(fromDate, toDate, usuario, funcionariosId, orderBy, orderDir, pageable);
 						
         return new ResponseEntity<List<Usuario>>(usuariosList, HttpStatus.OK);
     }
 
-	/*@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Usuarios usuario, BindingResult result) throws Exception {
-		Map<String, Object> response = new HashMap<>();		
-		Usuarios usuarioNew = null;
-		
-		if( result.hasErrors() ) {
-
-			List<String> errors = result.getFieldErrors()
-					.stream()
-					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
-					.collect(Collectors.toList());
-			
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}
-		
-		if ( usuario.getPersonas() == null ) {
-			response.put("mensaje", "Error: Datos de la persona es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		usuarioNew = usuariosService.guardar(usuario);
-		
-		response.put("mensaje", "El usuario ha sido creado con éxito!");
-		response.put("usuario", usuarioNew);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
-	}
-
-	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Usuarios usuario, BindingResult result) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		
-		if ( usuario.getUsuarioId() == null ) {
-			response.put("mensaje", "Error: usuario id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Usuarios usuarioActual = usuariosService.findById(usuario.getUsuarioId());
-		Usuarios usuarioUpdated = null;
-
-		if( result.hasErrors() ) {
-
-			List<String> errors = result.getFieldErrors()
-					.stream()
-					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
-					.collect(Collectors.toList());
-			
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}
-		
-		if ( usuarioActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el usuario ID: "
-					.concat(String.valueOf(usuario.getUsuarioId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-
-		usuarioUpdated = usuariosService.actualizar(usuario);;
-
-		response.put("mensaje", "El usuario ha sido actualizado con éxito!");
-		response.put("usuario", usuarioUpdated);
-
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
-	}
-
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable int id) {
-		Map<String, Object> response = new HashMap<>();
-		
-		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: usuario id es requerido");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		
-		Usuarios usuarioActual = usuariosService.findById(id);
-		
-		if ( usuarioActual == null ) {
-			response.put("mensaje", "El usuario ID: "
-					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-
-		usuariosService.delete(id);
-		
-		response.put("mensaje", "usuario eliminado con éxito!");
-		
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-	}*/
 }

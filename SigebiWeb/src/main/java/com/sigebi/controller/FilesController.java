@@ -83,7 +83,7 @@ public class FilesController {
     return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
   }
 
-  @GetMapping("/files/{filename:.+}")
+  @GetMapping("/files/{filename:.+}/{tipo}")
   public ResponseEntity<Resource> getFile(@PathVariable String filename,
 		  @PathVariable("tipo") String tipo) throws Exception {
     Resource file = storageService.load(filename, tipo);

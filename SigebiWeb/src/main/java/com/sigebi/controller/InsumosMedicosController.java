@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,10 @@ public class InsumosMedicosController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -98,8 +103,14 @@ public class InsumosMedicosController {
 		if ( insumo == null ) {
 			insumo = new InsumosMedicos();
 		}
+		
+		if ("-1".equals(size)) {
+			int total = insumosService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
 
-		insumosList = insumosService.buscar(fromDate, toDate, insumo, pageable);
+		insumosList = insumosService.buscar(fromDate, toDate, insumo, orderBy, orderDir, pageable);
 	
         return new ResponseEntity<List<InsumosMedicos>>(insumosList, HttpStatus.OK);
     }

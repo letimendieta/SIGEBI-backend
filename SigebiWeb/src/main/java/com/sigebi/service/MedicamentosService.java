@@ -13,6 +13,8 @@ public interface MedicamentosService {
 	public List<Medicamentos> listar();
 	
 	public Medicamentos obtener(int id);
+	
+	public int count();
 				
 	public Medicamentos guardar(Medicamentos medicamento);
 	
@@ -20,6 +22,8 @@ public interface MedicamentosService {
 	
 	public void eliminar(int id);
 			
-	public List<Medicamentos> buscar(Date fromDate, Date toDate, Medicamentos medicamento, Pageable pageable);	
+	public List<Medicamentos> buscar(Date fromDate, Date toDate, Medicamentos medicamento, String orderBy, String orderDir, Pageable pageable);
+	
+	public List<Medicamentos> buscarNoPaginable(Date fromDate, Date toDate, Medicamentos medicamento);
 	
 }

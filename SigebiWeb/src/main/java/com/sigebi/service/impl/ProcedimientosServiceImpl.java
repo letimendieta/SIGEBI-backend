@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.clases.ProcesoProcedimientos;
 import com.sigebi.dao.IMovimientoInsumoDao;
@@ -19,6 +20,7 @@ import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.dao.IStockDao;
 import com.sigebi.entity.Areas;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.MovimientosInsumos;
 import com.sigebi.entity.Procedimientos;
@@ -58,6 +60,12 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	@Transactional(readOnly = true)
 	public List<Procedimientos> findAll() {
 		return (List<Procedimientos>) procedimientosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) procedimientosDao.count();
 	}
 	
 	@Override
@@ -254,10 +262,11 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	public List<Procedimientos> buscar(Date fromDate, Date toDate, 
 										Procedimientos procedimiento, 
 										List<Integer> funcionariosId,
-										List<Integer> pacientesId,
-										Pageable pageable) {
-		List<Procedimientos> ProcedimientosList = procedimientosDao.findAll((Specification<Procedimientos>) (root, cq, cb) -> {
-            
+										List<Integer> pacientesId, String orderBy, String orderDir, Pageable pageable){
+		List<Procedimientos> ProcedimientosList;
+		
+		Specification<Procedimientos> procedimientoSpec = (Specification<Procedimientos>) (root, cq, cb) -> {
+		            
 			Predicate p = cb.conjunction();
             if( funcionariosId != null && !funcionariosId.isEmpty() ){
             	p = cb.and(root.get("funcionarios").in(funcionariosId));
@@ -275,13 +284,28 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
                 p = cb.and(p, cb.equal(root.get("estado"), procedimiento.getEstado()) );
             }
             if ( procedimiento.getFecha() != null ) {
-                p = cb.and(p, cb.lessThanOrEqualTo(root.get("fecha"), procedimiento.getFecha()) );
+                //p = cb.and(p, cb.lessThanOrEqualTo(root.get("fecha"), procedimiento.getFecha()) );
+                p = cb.and(p, cb.between(root.get("fecha"), procedimiento.getFecha(), procedimiento.getFecha()));
             }
-            cq.orderBy(cb.desc(root.get("procedimientoId")));
+                        
+            String orden = "procedimientoId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
 		
-		
+        if(pageable != null) {
+        	ProcedimientosList = procedimientosDao.findAll(procedimientoSpec, pageable).getContent();			
+		}else {
+			ProcedimientosList = procedimientosDao.findAll(procedimientoSpec);
+		}
+        
 		for( Procedimientos proced : ProcedimientosList ) {
 			if( proced.getAreas() == null ) {
 				proced.setAreas(new Areas());

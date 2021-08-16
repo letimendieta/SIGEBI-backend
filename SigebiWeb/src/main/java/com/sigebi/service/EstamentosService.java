@@ -13,6 +13,8 @@ public interface EstamentosService {
 	
 	public Estamentos findById(int id);
 	
+	public int count();
+	
 	public Estamentos save(Estamentos estamento);
 	
 	public void delete(int id);

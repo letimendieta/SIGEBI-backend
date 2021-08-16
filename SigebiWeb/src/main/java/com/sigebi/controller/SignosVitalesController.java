@@ -97,6 +97,10 @@ public class SignosVitalesController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -106,7 +110,6 @@ public class SignosVitalesController {
 			signoVital = objectMapper.readValue(filtros, SignosVitales.class);
 		}
 		
-		Map<String, Object> response = new HashMap<>();
 		List<SignosVitales> signosVitalesList = new ArrayList<SignosVitales>();
 		
 		if ( signoVital == null ) {
@@ -120,12 +123,12 @@ public class SignosVitalesController {
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( signoVital.getFuncionarios() != null) {
 			if(signoVital.getFuncionarios().getPersonas() != null) {
-				personasList = personasService.buscar(null, null, signoVital.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				personasList = personasService.buscarNoPaginable(null, null, signoVital.getFuncionarios().getPersonas());
 				for( Personas persona : personasList ){
 					personasId.add(persona.getPersonaId());
 				}
 			}				
-			funcionariosList = funcionariosService.buscar(null, null, signoVital.getFuncionarios(), personasId, PageRequest.of(0, 20));
+			funcionariosList = funcionariosService.buscarNoPaginable(null, null, signoVital.getFuncionarios(), personasId);
 
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
@@ -139,20 +142,26 @@ public class SignosVitalesController {
 			personasList = new ArrayList<Personas>();
 			
 			if(signoVital.getPacientes().getPersonas() != null) {
-				personasList = personasService.buscar(null, null, signoVital.getPacientes().getPersonas(), PageRequest.of(0, 20));
+				personasList = personasService.buscarNoPaginable(null, null, signoVital.getPacientes().getPersonas());
 				
 				for( Personas persona : personasList ){
 					personasId.add(persona.getPersonaId());
 				}
 			}
-			pacientesList = pacientesService.buscar(null, null, signoVital.getPacientes(), personasId, PageRequest.of(0, 20));				
+			pacientesList = pacientesService.buscarNoPaginable(null, null, signoVital.getPacientes(), personasId);				
 
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
 			}
 		}
 		
-		signosVitalesList = signosVitalesService.buscar(fromDate, toDate, signoVital, null, null, pageable);
+		if ("-1".equals(size)) {
+			int total = signosVitalesService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
+		
+		signosVitalesList = signosVitalesService.buscar(fromDate, toDate, signoVital, orderBy, orderDir, pageable);
 						
         return new ResponseEntity<List<SignosVitales>>(signosVitalesList, HttpStatus.OK);
     }

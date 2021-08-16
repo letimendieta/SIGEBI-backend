@@ -11,6 +11,8 @@ public interface SignosVitalesService{
 
 	public List<SignosVitales> findAll();
 	
+	public int count();
+	
 	public SignosVitales findById(int id);	
 	
 	public SignosVitales save(SignosVitales signoVital) throws Exception;
@@ -19,7 +21,6 @@ public interface SignosVitalesService{
 	
 	public List<SignosVitales> buscar(Date fromDate, Date toDate,										
 										SignosVitales procedimiento, 
-										String orderBy, String orderDir,
-										Pageable pageable);
+										String orderBy, String orderDir, Pageable pageable);
 	
 }

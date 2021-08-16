@@ -13,13 +13,14 @@ public interface AlergiasService{
 	
 	public Alergias findById(int id);	
 	
+	public int count();
+	
 	public Alergias guardar(Alergias alergia) throws Exception;
 	
 	public Alergias actualizar(Alergias alergia) throws Exception;
 	
 	public void delete(int id);
 	
-	public List<Alergias> buscar(Date fromDate, Date toDate, Alergias alergia, 
-										Pageable pageable);
+	public List<Alergias> buscar(Date fromDate, Date toDate, Alergias alergia, String orderBy, String orderDir, Pageable pageable);
 	
 }

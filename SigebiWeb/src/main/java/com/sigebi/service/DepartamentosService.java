@@ -13,6 +13,8 @@ public interface DepartamentosService {
 	
 	public Departamentos findById(int id);
 	
+	public int count();
+	
 	public Departamentos save(Departamentos departamento);
 	
 	public void delete(int id);

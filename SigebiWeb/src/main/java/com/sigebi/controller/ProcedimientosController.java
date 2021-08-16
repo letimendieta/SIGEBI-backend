@@ -114,6 +114,10 @@ public class ProcedimientosController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -154,12 +158,12 @@ public class ProcedimientosController {
 		List<Integer> funcionariosIds = new ArrayList<Integer>();		
 		if( procedimiento.getFuncionarios() != null) {
 			if(procedimiento.getFuncionarios().getPersonas() != null) {
-				personasList = personasService.buscar(null, null, procedimiento.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				personasList = personasService.buscarNoPaginable(null, null, procedimiento.getFuncionarios().getPersonas());
 				for( Personas persona : personasList ){
 					personasId.add(persona.getPersonaId());
 				}
 			}				
-			funcionariosList = funcionariosService.buscar(null, null, procedimiento.getFuncionarios(), personasId, PageRequest.of(0, 20));
+			funcionariosList = funcionariosService.buscarNoPaginable(null, null, procedimiento.getFuncionarios(), personasId);
 
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
@@ -173,21 +177,27 @@ public class ProcedimientosController {
 			personasList = new ArrayList<Personas>();
 			
 			if(procedimiento.getPacientes().getPersonas() != null) {
-				personasList = personasService.buscar(null, null, procedimiento.getPacientes().getPersonas(), PageRequest.of(0, 20));
+				personasList = personasService.buscarNoPaginable(null, null, procedimiento.getPacientes().getPersonas());
 				
 				for( Personas persona : personasList ){
 					personasId.add(persona.getPersonaId());
 				}
 			}
-			pacientesList = pacientesService.buscar(null, null, procedimiento.getPacientes(), personasId, PageRequest.of(0, 20));					
+			pacientesList = pacientesService.buscarNoPaginable(null, null, procedimiento.getPacientes(), personasId);					
 
 			for( Pacientes paciente : pacientesList ){
 				pacientesIds.add(paciente.getPacienteId());
 			}
 		}
 		
+		if ("-1".equals(size)) {
+			int total = procedimientosService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
+		
 		procedimientosList = procedimientosService.buscar(fromDate, toDate, procedimiento, 
-																funcionariosIds, pacientesIds, pageable);
+																funcionariosIds, pacientesIds, orderBy, orderDir, pageable);
 						
         return new ResponseEntity<List<Procedimientos>>(procedimientosList, HttpStatus.OK);
     }

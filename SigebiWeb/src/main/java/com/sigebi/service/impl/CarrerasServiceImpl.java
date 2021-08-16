@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.ICarrerasDao;
 import com.sigebi.entity.Carreras;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.CarrerasService;
 
 
@@ -32,6 +33,12 @@ public class CarrerasServiceImpl implements CarrerasService{
 	@Transactional(readOnly = true)
 	public List<Carreras> findAll() {
 		return (List<Carreras>) carrerasDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) carrerasDao.count();
 	}
 
 	@Override
@@ -56,8 +63,10 @@ public class CarrerasServiceImpl implements CarrerasService{
 	@Transactional(readOnly = true)
 	public List<Carreras> buscar(Date fromDate, Date toDate, Carreras carrera, String orderBy, String orderDir, Pageable pageable) {
 		
-        List<Carreras> carrerasList = carrerasDao.findAll((Specification<Carreras>) (root, cq, cb) -> {
-            Predicate p = cb.conjunction();
+		List<Carreras> carrerasList;
+		
+		Specification<Carreras> carrerasSpec = (Specification<Carreras>) (root, cq, cb) -> {
+		    Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
@@ -83,7 +92,13 @@ public class CarrerasServiceImpl implements CarrerasService{
             	cq.orderBy(cb.desc(root.get(orden)));
             }            
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	carrerasList = carrerasDao.findAll(carrerasSpec, pageable).getContent();			
+		}else {
+			carrerasList = carrerasDao.findAll(carrerasSpec);
+		}
         return carrerasList;
     }
 

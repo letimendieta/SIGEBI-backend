@@ -1,8 +1,10 @@
 package com.sigebi.service.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,6 +18,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import com.lowagie.text.DocumentException;
 import com.sigebi.clases.UnionEstamentos;
@@ -27,11 +30,14 @@ import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRSaver;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
@@ -52,6 +58,7 @@ public class ReportServiceImpl implements ReportService {
 
     public String exportReport(String reportFormat, Integer consultaid) throws SigebiException, SQLException {
         String pathReportes;
+        String path;
 		Connection conn = null;
 		try {
 			Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
@@ -65,6 +72,7 @@ public class ReportServiceImpl implements ReportService {
 			parameters.put("consulta_id",consultaid);
 			parameters.put("subReporteDir", pathReportes );
 			parameters.put("reportLogo", pathReportes );
+			
 			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			if ("html".equalsIgnoreCase(reportFormat)) {
 			    JasperExportManager.exportReportToHtmlFile(jasperPrint, pathReportes + "receta.html");
@@ -73,10 +81,10 @@ public class ReportServiceImpl implements ReportService {
 			}
 			if ("pdf".equalsIgnoreCase(reportFormat)) {
 			    JasperExportManager.exportReportToPdfFile(jasperPrint, pathReportes + "receta.pdf");
-			    JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
-			    jasperViewer.setVisible(true);
-
+			    //JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
+			    //jasperViewer.setVisible(true);
 			}
+			
 		} catch (Exception e) {
 			throw new SigebiException.InternalServerError("Error: " + e.getMessage());
 		}finally {
@@ -85,6 +93,7 @@ public class ReportServiceImpl implements ReportService {
 
         return "report generated in path : " + pathReportes ;
     }
+    
     public String unionEstamentos(String reportFormat, HashMap<String, Object>  filtros) throws FileNotFoundException, JRException, SQLException, SigebiException {
         Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
         String pathReportes = pathParametroReportes.getValor() + SEPARATOR;
@@ -273,7 +282,7 @@ public class ReportServiceImpl implements ReportService {
 		} catch (Exception e) {
 			throw new SigebiException.InternalServerError("Error: " + e.getMessage());
 		}finally {
-			if ( conn != null ) conn.close();//para probar
+			if ( conn != null ) conn.close();
 		}        
 
         return "Reporte generado en : " + pathReportes;

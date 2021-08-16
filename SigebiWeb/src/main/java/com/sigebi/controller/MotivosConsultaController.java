@@ -98,7 +98,6 @@ public class MotivosConsultaController {
 			motivoConsulta = objectMapper.readValue(filtros, MotivosConsulta.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<MotivosConsulta> motivosConsultaList = new ArrayList<MotivosConsulta>();
 		
 		if ( motivoConsulta == null ) {

@@ -15,7 +15,9 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IInsumosMedicosDao;
 import com.sigebi.dao.IMedicamentosDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.InsumosMedicos;
+import com.sigebi.entity.Personas;
 import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.util.exceptions.SigebiException;
 
@@ -35,6 +37,12 @@ public class InsumosMedicosServiceImpl implements InsumosMedicosService{
 	@Transactional(readOnly = true)
 	public List<InsumosMedicos> listar() {
 		return (List<InsumosMedicos>) insumosMedicosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) insumosMedicosDao.count();
 	}
 	
 	@Override
@@ -76,9 +84,11 @@ public class InsumosMedicosServiceImpl implements InsumosMedicosService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<InsumosMedicos> buscar(Date fromDate, Date toDate, InsumosMedicos insumo, Pageable pageable) {
+	public List<InsumosMedicos> buscar(Date fromDate, Date toDate, InsumosMedicos insumo, String orderBy, String orderDir, Pageable pageable){
 		
-        List<InsumosMedicos> insumosList = insumosMedicosDao.findAll((Specification<InsumosMedicos>) (root, cq, cb) -> {
+		List<InsumosMedicos> insumosList;
+		
+		Specification<InsumosMedicos> insumoSpec = (Specification<InsumosMedicos>) (root, cq, cb) -> {		
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -95,9 +105,50 @@ public class InsumosMedicosServiceImpl implements InsumosMedicosService{
             if (!StringUtils.isEmpty(insumo.getCaracteristicas())) {
                 p = cb.and(p, cb.like(cb.lower(root.get("caracteristicas")), "%" + insumo.getCaracteristicas().toLowerCase() + "%"));
             }
+            String orden = "insumoMedicoId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
+            return p;
+        };
+        if(pageable != null) {
+        	insumosList = insumosMedicosDao.findAll(insumoSpec, pageable).getContent();			
+		}else {
+			insumosList = insumosMedicosDao.findAll(insumoSpec);
+		}
+        return insumosList;
+    }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<InsumosMedicos> buscarNoPaginable(Date fromDate, Date toDate, InsumosMedicos insumo) {
+		List<InsumosMedicos> insumosList = insumosMedicosDao.findAll((Specification<InsumosMedicos>) (root, cq, cb) -> {
+            
+			Predicate p = cb.conjunction();
+			if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( insumo.getInsumoMedicoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("insumoMedicoId"), insumo.getInsumoMedicoId()) );
+            }
+            if (!StringUtils.isEmpty(insumo.getCodigo())) {
+                p = cb.and(p, cb.like(cb.lower(root.get("codigo")), "%" + insumo.getCodigo().toLowerCase() + "%"));
+            }
+            if (!StringUtils.isEmpty(insumo.getNombre())) {
+                p = cb.and(p, cb.like(cb.lower(root.get("nombre")), "%" + insumo.getNombre().toLowerCase() + "%"));
+            }
+            if (!StringUtils.isEmpty(insumo.getCaracteristicas())) {
+                p = cb.and(p, cb.like(cb.lower(root.get("caracteristicas")), "%" + insumo.getCaracteristicas().toLowerCase() + "%"));
+            }
+         
             cq.orderBy(cb.desc(root.get("insumoMedicoId")));
             return p;
-        }, pageable).getContent();
+        });
         return insumosList;
     }
 

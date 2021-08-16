@@ -98,7 +98,6 @@ public class AlergenosController {
 			alergeno = objectMapper.readValue(filtros, Alergenos.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Alergenos> alergenosList = new ArrayList<Alergenos>();
 		
 		if ( alergeno == null ) {

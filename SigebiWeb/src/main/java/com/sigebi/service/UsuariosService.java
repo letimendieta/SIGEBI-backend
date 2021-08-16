@@ -12,26 +12,14 @@ import com.sigebi.util.exceptions.SigebiException;
 
 public interface UsuariosService {
 
-	//public List<Usuarios> findAll();
+	public int count();
 	
 	public Usuario findById(int id);	
 	
 	public Usuario findByFuncionario(Funcionarios funcionario);
 	
 	public String generarNombreUsuario(Integer personaId) throws SigebiException;
-	
-	/*public Usuarios actualizar(Usuarios usuario) throws Exception;
-	
-	public void delete(int id);*/
-	
-	//public List<Usuarios> buscar(Date fromDate, Date toDate, Usuarios usuario, List<Integer> personasId, Pageable pageable);
-	
-	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> funcionariosId, Pageable pageable);
-	
-	/*public UserDetails loadUserByUsername(String username);
-	
-	public List<GrantedAuthority> buildGrante(byte rol);
-	
-	public void crearUsuario(Usuarios usuario);*/
-	
+		
+	public List<Usuario> buscar(Date fromDate, Date toDate, Usuario usuario, List<Integer> funcionariosId, String orderBy, String orderDir, Pageable pageable);
+		
 }

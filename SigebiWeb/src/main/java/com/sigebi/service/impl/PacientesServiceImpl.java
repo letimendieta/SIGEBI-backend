@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.clases.FichaMedica;
 import com.sigebi.clases.ProcesoPacienteHistorialClinico;
@@ -36,6 +37,7 @@ import com.sigebi.entity.Antecedentes;
 import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
@@ -103,6 +105,12 @@ public class PacientesServiceImpl implements PacientesService{
 		
 		return pacientes;
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) pacientesDao.count();
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -163,27 +171,30 @@ public class PacientesServiceImpl implements PacientesService{
 				if(persona == null) {
 					throw new SigebiException.DataNotFound("No se encontró persona con id: " + paciente.getPersonas().getPersonaId());
 				}
-								
+				
+				persona.setCedula(paciente.getPersonas().getCedula());
+				persona.setSexo(paciente.getPersonas().getSexo());
 				persona.setNombres(paciente.getPersonas().getNombres());
 				persona.setApellidos(paciente.getPersonas().getApellidos());
-				persona.setCarreras(paciente.getPersonas().getCarreras());
-				persona.setCedula(paciente.getPersonas().getCedula());
-				persona.setCelular(paciente.getPersonas().getCelular());
-				persona.setDepartamentos(paciente.getPersonas().getDepartamentos());
-				persona.setDependencias(paciente.getPersonas().getDependencias());
-				persona.setDireccion(paciente.getPersonas().getDireccion());
-				persona.setEmail(paciente.getPersonas().getEmail());
-				persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
-				persona.setEstamentos(paciente.getPersonas().getEstamentos());
-				persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());
+				persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());				
+				persona.setLugarNacimiento(paciente.getPersonas().getLugarNacimiento());
 				persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
-				persona.setSexo(paciente.getPersonas().getSexo());
+				persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
+				persona.setDireccion(paciente.getPersonas().getDireccion());
+				persona.setCelular(paciente.getPersonas().getCelular());
 				persona.setTelefono(paciente.getPersonas().getTelefono());
+				persona.setEmail(paciente.getPersonas().getEmail());
+				persona.setProfesion(paciente.getPersonas().getProfesion());				
+				persona.setCarreras(paciente.getPersonas().getCarreras());
+				persona.setDepartamentos(paciente.getPersonas().getDepartamentos());				
+				persona.setDependencias(paciente.getPersonas().getDependencias());				
+				persona.setEstamentos(paciente.getPersonas().getEstamentos());
 				persona.setObservacion(paciente.getPersonas().getObservacion());
 				persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
+				persona.setFoto(paciente.getPersonas().getFoto());
 				
 				paciente.setPersonas(persona);
-				personasService.guardar(persona);
+				personasService.actualizar(persona);
 			}else {
 				//Crear nueva persona
 				Personas personaNew = personasDao.save(paciente.getPersonas());
@@ -567,21 +578,23 @@ public class PacientesServiceImpl implements PacientesService{
 			throw new SigebiException.DataNotFound("No se encontro persona con id: " + paciente.getPersonas().getPersonaId());
 		}
 				
+		persona.setCedula(paciente.getPersonas().getCedula());
+		persona.setSexo(paciente.getPersonas().getSexo());
 		persona.setNombres(paciente.getPersonas().getNombres());
 		persona.setApellidos(paciente.getPersonas().getApellidos());
-		persona.setCarreras(paciente.getPersonas().getCarreras());
-		persona.setCedula(paciente.getPersonas().getCedula());
-		persona.setCelular(paciente.getPersonas().getCelular());
-		persona.setDepartamentos(paciente.getPersonas().getDepartamentos());
-		persona.setDependencias(paciente.getPersonas().getDependencias());
-		persona.setDireccion(paciente.getPersonas().getDireccion());
-		persona.setEmail(paciente.getPersonas().getEmail());
-		persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
-		persona.setEstamentos(paciente.getPersonas().getEstamentos());
-		persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());
+		persona.setFechaNacimiento(paciente.getPersonas().getFechaNacimiento());				
+		persona.setLugarNacimiento(paciente.getPersonas().getLugarNacimiento());
 		persona.setNacionalidad(paciente.getPersonas().getNacionalidad());
-		persona.setSexo(paciente.getPersonas().getSexo());
+		persona.setEstadoCivil(paciente.getPersonas().getEstadoCivil());
+		persona.setDireccion(paciente.getPersonas().getDireccion());
+		persona.setCelular(paciente.getPersonas().getCelular());
 		persona.setTelefono(paciente.getPersonas().getTelefono());
+		persona.setEmail(paciente.getPersonas().getEmail());
+		persona.setProfesion(paciente.getPersonas().getProfesion());				
+		persona.setCarreras(paciente.getPersonas().getCarreras());
+		persona.setDepartamentos(paciente.getPersonas().getDepartamentos());				
+		persona.setDependencias(paciente.getPersonas().getDependencias());				
+		persona.setEstamentos(paciente.getPersonas().getEstamentos());
 		persona.setObservacion(paciente.getPersonas().getObservacion());
 		persona.setUsuarioModificacion(paciente.getPersonas().getUsuarioModificacion());
 		persona.setFoto(paciente.getPersonas().getFoto());
@@ -611,9 +624,12 @@ public class PacientesServiceImpl implements PacientesService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable) throws DataAccessException {
-		List<Pacientes> pacientesList = pacientesDao.findAll((Specification<Pacientes>) (root, cq, cb) -> {
-            
+	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, String orderBy, String orderDir, Pageable pageable){
+		
+		List<Pacientes> pacientesList ;
+		
+		Specification<Pacientes> pacientesSpec = (Specification<Pacientes>) (root, cq, cb) -> {
+		            
 			Predicate p = cb.conjunction();
             if( personasId != null && !personasId.isEmpty() ){
             	p = cb.and(root.get("personas").in(personasId));
@@ -625,9 +641,23 @@ public class PacientesServiceImpl implements PacientesService{
                 p = cb.and(p, cb.equal(root.get("pacienteId"), paciente.getPacienteId()) );
             }
    
-            cq.orderBy(cb.desc(root.get("pacienteId")));
+            String orden = "pacienteId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	pacientesList = pacientesDao.findAll(pacientesSpec, pageable).getContent();			
+		}else {
+			pacientesList = pacientesDao.findAll(pacientesSpec);
+		}
 						
         return pacientesList;
         
@@ -657,7 +687,7 @@ public class PacientesServiceImpl implements PacientesService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Pacientes> buscarPacientes(Date fromDate, Date toDate, Pacientes paciente, Pageable pageable) throws DataAccessException {
+	public List<Pacientes> buscarPacientes(Date fromDate, Date toDate, Pacientes paciente, String orderBy, String orderDir, Pageable pageable){
 		
 		List<Pacientes> pacientesList = new ArrayList<Pacientes>();
 		
@@ -668,7 +698,7 @@ public class PacientesServiceImpl implements PacientesService{
 		List<Integer> personasIds = new ArrayList<Integer>();
 		
 		if( paciente.getPersonas() != null) {
-			personasList = personasService.buscar(fromDate, toDate, paciente.getPersonas(), pageable);
+			personasList = personasService.buscarNoPaginable(fromDate, toDate, paciente.getPersonas());
 				
 			for( Personas persona : personasList ){
 				personasIds.add(persona.getPersonaId());
@@ -678,7 +708,7 @@ public class PacientesServiceImpl implements PacientesService{
 			}
 		}
 					
-		pacientesList = buscar(fromDate, toDate, paciente, personasIds, pageable);
+		pacientesList = buscar(fromDate, toDate, paciente, personasIds, orderBy, orderDir, pageable);
 		
 		for( Pacientes pacienteFor : pacientesList) {
 			

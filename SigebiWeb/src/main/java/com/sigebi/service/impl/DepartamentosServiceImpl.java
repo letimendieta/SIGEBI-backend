@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IDepartamentosDao;
 import com.sigebi.entity.Departamentos;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.DepartamentosService;
 
 
@@ -39,6 +40,12 @@ public class DepartamentosServiceImpl implements DepartamentosService{
 	public Departamentos findById(int id) {
 		return departamentosDao.findById(id).orElse(null);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) departamentosDao.count();
+	}
 
 	@Override
 	@Transactional
@@ -56,7 +63,10 @@ public class DepartamentosServiceImpl implements DepartamentosService{
 	@Transactional(readOnly = true)
 	public List<Departamentos> buscar(Date fromDate, Date toDate, Departamentos departamento, String orderBy, String orderDir, Pageable pageable) {
 		
-        List<Departamentos> departamentosList = departamentosDao.findAll((Specification<Departamentos>) (root, cq, cb) -> {
+		List<Departamentos> departamentosList;
+		
+		Specification<Departamentos> departamentosSpec = (Specification<Departamentos>) (root, cq, cb) -> {
+		
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -83,7 +93,12 @@ public class DepartamentosServiceImpl implements DepartamentosService{
             	cq.orderBy(cb.desc(root.get(orden)));
             }            
             return p;
-        }, pageable).getContent();
+        };
+        if(pageable != null) {
+        	departamentosList = departamentosDao.findAll(departamentosSpec, pageable).getContent();			
+		}else {
+			departamentosList = departamentosDao.findAll(departamentosSpec);
+		}
         return departamentosList;
     }
 

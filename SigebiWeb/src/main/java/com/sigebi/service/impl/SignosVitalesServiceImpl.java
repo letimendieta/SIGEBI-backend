@@ -36,6 +36,12 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
 	
 	@Override
 	@Transactional(readOnly = true)
+	public int count() {
+		return (int) signoVitalsDao.count();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
 	public SignosVitales findById(int id) {
 		return signoVitalsDao.findById(id).orElse(null);
 	}
@@ -54,7 +60,7 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<SignosVitales> buscar(Date fromDate, Date toDate, SignosVitales signoVital, String orderBy, String orderDir, Pageable pageable) {
+	public List<SignosVitales> buscar(Date fromDate, Date toDate, SignosVitales signoVital, String orderBy, String orderDir, Pageable pageable){
 		List<SignosVitales> signoVitalsList;
 		
 		Specification<SignosVitales> signoVitalsSpec = (Specification<SignosVitales>) (root, cq, cb) -> {

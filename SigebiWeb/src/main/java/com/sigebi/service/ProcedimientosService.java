@@ -15,6 +15,8 @@ public interface ProcedimientosService{
 	
 	public Procedimientos findById(int id);
 	
+	public int count();
+	
 	public List<Procedimientos> obtenerProcedimientoPaciente(int pacienteId);
 	
 	public Procedimientos guardar(Procedimientos procedimiento);
@@ -28,8 +30,7 @@ public interface ProcedimientosService{
 	public List<Procedimientos> buscar(Date fromDate, Date toDate, 
 										Procedimientos procedimiento, 
 										List<Integer> funcionariosId,
-										List<Integer> pacientesId,
-										Pageable pageable);
+										List<Integer> pacientesId, String orderBy, String orderDir, Pageable pageable);
 	
 	public List<Procedimientos> buscarNoPaginable(Date fromDate, Date toDate, 
 			Procedimientos procedimiento, 

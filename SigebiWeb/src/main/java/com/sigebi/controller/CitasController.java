@@ -99,6 +99,10 @@ public class CitasController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -121,12 +125,17 @@ public class CitasController {
 			cita.setFecha(fecha);
 		}
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Citas> citasList = new ArrayList<Citas>();
 		
 		if ( cita == null ) {
 			cita = new Citas();
 		}
+		
+		if ( "-1".equals(size) ) {
+	      int total = citasService.count();
+	      int pagina = page != null ? Integer.parseInt(page) : 0;
+	      pageable = PageRequest.of(pagina, total);
+	    }
 		
 		List<Personas> personasList = new ArrayList<Personas>();
 		List<Integer> personasId = new ArrayList<Integer>();
@@ -136,7 +145,7 @@ public class CitasController {
 		if( cita.getFuncionarios() != null) {
 			
 				if(cita.getFuncionarios().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, cita.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+					personasList = personasService.buscarNoPaginable(null, null, cita.getFuncionarios().getPersonas());
 					
 					//Si se reciben datos de persona y si no se encuentra, retornar vacio
 					if(personasList.isEmpty()) {
@@ -146,7 +155,7 @@ public class CitasController {
 						personasId.add(persona.getPersonaId());
 					}
 				}				
-				funcionariosList = funcionariosService.buscar(null, null, cita.getFuncionarios(), personasId, PageRequest.of(0, 20));
+				funcionariosList = funcionariosService.buscarNoPaginable(null, null, cita.getFuncionarios(), personasId);
 				
 				//Si se reciben datos de funcionario y si no se encuentra, retornar vacio
 				if(funcionariosList.isEmpty()) {
@@ -165,7 +174,7 @@ public class CitasController {
 				personasList = new ArrayList<Personas>();
 				
 				if(cita.getPacientes().getPersonas() != null) {
-					personasList = personasService.buscar(null, null, cita.getPacientes().getPersonas(), PageRequest.of(0, 20));
+					personasList = personasService.buscarNoPaginable(null, null, cita.getPacientes().getPersonas());
 					
 					//Si se reciben datos de persona y si no se encuentra, retornar vacio
 					if(personasList.isEmpty()) {
@@ -175,7 +184,7 @@ public class CitasController {
 						personasId.add(persona.getPersonaId());
 					}
 				}
-				pacientesList = pacientesService.buscar(null, null, cita.getPacientes(), personasId, PageRequest.of(0, 20));
+				pacientesList = pacientesService.buscarNoPaginable(null, null, cita.getPacientes(), personasId);
 				
 				//Si se reciben datos de paciente y si no se encuentra, retornar vacio
 				if(pacientesList.isEmpty()) {
@@ -186,7 +195,7 @@ public class CitasController {
 			}
 		}
 		
-		citasList = citasService.buscar(fromDate, toDate, cita, funcionariosIds, pacientesIds, pageable);
+		citasList = citasService.buscar(fromDate, toDate, cita, funcionariosIds, pacientesIds, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Citas>>(citasList, HttpStatus.OK);
     }

@@ -12,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IMovimientoInsumoDao;
 import com.sigebi.dao.IStockDao;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.MovimientosInsumos;
@@ -35,6 +37,12 @@ public class StockServiceImpl implements StockService{
 	public StockServiceImpl(IStockDao stockDao) {
         this.stockDao = stockDao;
     }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) stockDao.count();
+	}
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -159,9 +167,10 @@ public class StockServiceImpl implements StockService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Stock> buscar(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, List<Integer> medicamentosId, Pageable pageable)  throws DataAccessException{
+	public List<Stock> buscar(Date fromDate, Date toDate, Stock stock, List<Integer> insumosId, List<Integer> medicamentosId, String orderBy, String orderDir, Pageable pageable){
+		List<Stock> stockList;
 		
-        List<Stock> stockList = stockDao.findAll((Specification<Stock>) (root, cq, cb) -> {
+		Specification<Stock> stockSpec = (Specification<Stock>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -175,9 +184,23 @@ public class StockServiceImpl implements StockService{
             if( medicamentosId != null && !medicamentosId.isEmpty() ){
             	p = cb.and(root.get("medicamentos").in(medicamentosId));
             } 
-            cq.orderBy(cb.desc(root.get("stockId")));
+            String orden = "stockId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        
+        if(pageable != null) {
+        	stockList = stockDao.findAll(stockSpec, pageable).getContent();			
+		}else {
+			stockList = stockDao.findAll(stockSpec);
+		}
         
         for(Stock stockData : stockList) {
         	if(stockData.getInsumosMedicos() == null) {

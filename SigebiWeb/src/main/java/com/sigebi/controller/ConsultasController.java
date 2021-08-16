@@ -1,5 +1,7 @@
 package com.sigebi.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,11 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,9 +39,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.clases.ConsultasResult;
 import com.sigebi.clases.Reporte;
 import com.sigebi.entity.Consultas;
+import com.sigebi.entity.Parametros;
 import com.sigebi.service.ConsultasService;
+import com.sigebi.service.ParametrosService;
 import com.sigebi.service.ReportService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 import com.sigebi.util.exceptions.SigebiException.BusinessException;
 
@@ -53,8 +61,11 @@ public class ConsultasController {
 	private UtilesService utiles;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+    ParametrosService parametrosService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";
+	private static final String SEPARATOR = System.getProperty("file.separator");
 
 	@GetMapping
 	public List<Consultas> listar() throws SigebiException {
@@ -137,6 +148,31 @@ public class ConsultasController {
 		String resultado = reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));
 
 		return ResponseEntity.ok(HttpStatus.OK);
+	}
+	
+	@PostMapping ("/receta")
+	@ResponseBody
+	public ResponseEntity<InputStreamResource> generarReceta(@RequestBody Reporte reporte) throws NumberFormatException, Exception {
+		String pathReportes;
+
+		String resultado = reportService.exportReport(reporte.getFormat(),Integer.parseInt(reporte.getConsultaid()));
+		
+		Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
+		pathReportes = pathParametroReportes.getValor() + SEPARATOR;
+		
+		String fileName = "receta.pdf";
+		   
+	   File file = new File(pathReportes + fileName);
+	   HttpHeaders headers = new HttpHeaders();
+	   headers.add("content-disposition", "inline;filename=" + fileName);
+
+	   InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+	
+	   return ResponseEntity.ok()
+	            .headers(headers)
+	            .contentLength(file.length())
+	            .contentType(MediaType.parseMediaType("application/pdf"))
+	            .body(resource);
 	}
 	
 	@GetMapping("/union-estamentos/{formato}")

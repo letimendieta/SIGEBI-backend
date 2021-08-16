@@ -13,6 +13,8 @@ public interface CitasService{
 	
 	public Citas findById(int id);	
 	
+	public int count();
+	
 	public Citas guardar(Citas cita) throws Exception;
 	
 	public Citas actualizar(Citas cita) throws Exception;
@@ -22,7 +24,6 @@ public interface CitasService{
 	public List<Citas> buscar(Date fromDate, Date toDate, 
 										Citas cita, 
 										List<Integer> funcionariosId,
-										List<Integer> pacientesId,
-										Pageable pageable);
+										List<Integer> pacientesId, String orderBy, String orderDir, Pageable pageable);
 	
 }

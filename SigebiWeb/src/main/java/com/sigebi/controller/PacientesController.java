@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import com.sigebi.clases.ProcesoPacienteHistorialClinico;
 import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
+import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
@@ -87,6 +89,10 @@ public class PacientesController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException, DataAccessException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -95,9 +101,19 @@ public class PacientesController {
 		Pacientes paciente = null;
 		if(!utiles.isNullOrBlank(filtros)) {
 			paciente = objectMapper.readValue(filtros, Pacientes.class);
-		}				
+		}	
 		
-		pacientesList = pacientesService.buscarPacientes(fromDate, toDate, paciente, pageable);
+		if ( paciente == null ) {
+			paciente = new Pacientes();
+		}
+		
+		if ("-1".equals(size)) {
+			int total = pacientesService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
+		
+		pacientesList = pacientesService.buscarPacientes(fromDate, toDate, paciente, orderBy, orderDir, pageable);
 						
         return new ResponseEntity<List<Pacientes>>(pacientesList, HttpStatus.OK);
     }

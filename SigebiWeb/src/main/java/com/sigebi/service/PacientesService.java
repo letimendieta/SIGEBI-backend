@@ -15,7 +15,9 @@ public interface PacientesService{
 
 	public List<Pacientes> listar() throws SigebiException;
 	
-	public Pacientes obtener(int id) throws SigebiException;	
+	public Pacientes obtener(int id) throws SigebiException;
+	
+	public int count();
 		
 	public Pacientes guardar(Pacientes paciente) throws SigebiException;
 	
@@ -27,9 +29,9 @@ public interface PacientesService{
 	
 	public void eliminar(int id) throws SigebiException;
 	
-	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, Pageable pageable) throws DataAccessException;
+	public List<Pacientes> buscar(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId, String orderBy, String orderDir, Pageable pageable);
 	
 	public List<Pacientes> buscarNoPaginable(Date fromDate, Date toDate, Pacientes paciente, List<Integer> personasId) throws DataAccessException;
 	
-	public List<Pacientes> buscarPacientes(Date fromDate, Date toDate, Pacientes paciente, Pageable pageable) throws DataAccessException;
+	public List<Pacientes> buscarPacientes(Date fromDate, Date toDate, Pacientes paciente, String orderBy, String orderDir, Pageable pageable);
 }

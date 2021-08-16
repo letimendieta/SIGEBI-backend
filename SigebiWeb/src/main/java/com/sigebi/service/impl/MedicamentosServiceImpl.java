@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IMedicamentosDao;
+import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
 import com.sigebi.service.MedicamentosService;
 import com.sigebi.util.exceptions.SigebiException;
@@ -33,6 +35,12 @@ public class MedicamentosServiceImpl implements MedicamentosService{
 	@Transactional(readOnly = true)
 	public List<Medicamentos> listar() {
 		return (List<Medicamentos>) medicamentosDao.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int count() {
+		return (int) medicamentosDao.count();
 	}
 
 	@Override
@@ -75,9 +83,11 @@ public class MedicamentosServiceImpl implements MedicamentosService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Medicamentos> buscar(Date fromDate, Date toDate, Medicamentos medicamento, Pageable pageable) {
+	public List<Medicamentos> buscar(Date fromDate, Date toDate, Medicamentos medicamento, String orderBy, String orderDir, Pageable pageable){
+		List<Medicamentos> medicamentosList;
 		
-        List<Medicamentos> medicamentosList = medicamentosDao.findAll((Specification<Medicamentos>) (root, cq, cb) -> {
+		Specification<Medicamentos> medicamentoSpec = (Specification<Medicamentos>) (root, cq, cb) -> {
+			
             Predicate p = cb.conjunction();
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
@@ -92,10 +102,47 @@ public class MedicamentosServiceImpl implements MedicamentosService{
                 p = cb.and(p, cb.like(cb.lower(root.get("medicamento")), "%" + medicamento.getMedicamento().toLowerCase() + "%"));
             }
            
-            cq.orderBy(cb.desc(root.get("medicamentoId")));
+            String orden = "medicamentoId";
+            if (!StringUtils.isEmpty(orderBy)) {
+            	orden = orderBy;
+            }
+            if("asc".equalsIgnoreCase(orderDir)){
+            	cq.orderBy(cb.asc(root.get(orden)));
+            }else {
+            	cq.orderBy(cb.desc(root.get(orden)));
+            }
             return p;
-        }, pageable).getContent();
+        };
+        if(pageable != null) {
+        	medicamentosList = medicamentosDao.findAll(medicamentoSpec, pageable).getContent();			
+		}else {
+			medicamentosList = medicamentosDao.findAll(medicamentoSpec);
+		}
         return medicamentosList;
     }
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<Medicamentos> buscarNoPaginable(Date fromDate, Date toDate, Medicamentos medicamento) {
+		List<Medicamentos> medicamentosList = medicamentosDao.findAll((Specification<Medicamentos>) (root, cq, cb) -> {
+            
+			Predicate p = cb.conjunction();
+			if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( medicamento.getMedicamentoId() != null ) {
+                p = cb.and(p, cb.equal(root.get("medicamentoId"), medicamento.getMedicamentoId()) );
+            }
+            if (!StringUtils.isEmpty(medicamento.getCodigo())) {
+                p = cb.and(p, cb.like(cb.lower(root.get("codigo")), "%" + medicamento.getCodigo().toLowerCase() + "%"));
+            }
+            if (!StringUtils.isEmpty(medicamento.getMedicamento())) {
+                p = cb.and(p, cb.like(cb.lower(root.get("medicamento")), "%" + medicamento.getMedicamento().toLowerCase() + "%"));
+            }
+         
+            cq.orderBy(cb.desc(root.get("medicamentoId")));
+            return p;
+        });
+        return medicamentosList;
+    }
 }

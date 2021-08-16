@@ -13,6 +13,8 @@ public interface CarrerasService {
 	
 	public Carreras findById(int id);
 	
+	public int count();
+	
 	public Carreras save(Carreras carrera);
 	
 	public void delete(int id);

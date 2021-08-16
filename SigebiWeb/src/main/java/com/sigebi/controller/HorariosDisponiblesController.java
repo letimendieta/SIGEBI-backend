@@ -96,6 +96,10 @@ public class HorariosDisponiblesController {
     		@RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_PATTERN) Date toDate,
             @RequestParam(required = false) String filtros,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String orderDir,
             Pageable pageable) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -118,7 +122,6 @@ public class HorariosDisponiblesController {
 			horariosDisponible.setFecha(fecha);
 		}
 		
-		Map<String, Object> response = new HashMap<>();
 		List<HorariosDisponibles> horariosDisponiblesList = new ArrayList<HorariosDisponibles>();
 		
 		if ( horariosDisponible == null ) {
@@ -133,12 +136,12 @@ public class HorariosDisponiblesController {
 		if( horariosDisponible.getFuncionarios() != null) {
 
 			if(horariosDisponible.getFuncionarios().getPersonas() != null) {
-				personasList = personasService.buscar(null, null, horariosDisponible.getFuncionarios().getPersonas(), PageRequest.of(0, 20));
+				personasList = personasService.buscarNoPaginable(null, null, horariosDisponible.getFuncionarios().getPersonas());
 				for( Personas persona : personasList ){
 					personasId.add(persona.getPersonaId());
 				}
 			}				
-			funcionariosList = funcionariosService.buscar(null, null, horariosDisponible.getFuncionarios(), personasId, PageRequest.of(0, 20));
+			funcionariosList = funcionariosService.buscarNoPaginable(null, null, horariosDisponible.getFuncionarios(), personasId);
 
 			for( Funcionarios funcionario : funcionariosList ){
 				funcionariosIds.add(funcionario.getFuncionarioId());
@@ -146,10 +149,16 @@ public class HorariosDisponiblesController {
 			if( funcionariosList.isEmpty()) {
 				return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
 			}
-		}		
+		}	
+		
+		if ("-1".equals(size)) {
+			int total = funcionariosService.count();
+			int pagina = page != null ? Integer.parseInt(page) : 0;
+			pageable = PageRequest.of(pagina, total);
+		}
 		
 		horariosDisponiblesList = horariosDisponiblesService.buscar(fromDate, toDate, horariosDisponible, 
-																funcionariosIds, pageable);
+																funcionariosIds, orderBy, orderDir, pageable);
 			
         return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
     }

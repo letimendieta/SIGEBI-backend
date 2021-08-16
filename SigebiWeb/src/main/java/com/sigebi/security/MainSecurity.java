@@ -6,6 +6,7 @@ import com.sigebi.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -69,8 +70,13 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
 	        .authorizeRequests()
-	        .antMatchers("/auth/**").permitAll().and()
-	        .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().and()
+	        .antMatchers("/auth/login").permitAll().and()
+	        .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().and()	        
+	        //.authorizeRequests().antMatchers("/archivos/filesName/**").permitAll().and()
+	        .authorizeRequests().antMatchers("/auth/archivos/**").permitAll().and()
+				//.authorizeRequests().antMatchers(HttpMethod.GET, "/auth/archivos/**")
+				//.hasAuthority("ROL_ADMIN")//, "ROL_CONSULTORIO", "ROL_ABM_PACIENTE", "ROL_AYUDA")
+				//.and()
 	        .authorizeRequests().antMatchers("/swagger").permitAll()
 	        .anyRequest().authenticated()
 	        .and()
