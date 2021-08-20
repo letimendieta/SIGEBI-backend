@@ -70,7 +70,6 @@ public class UsuariosController {
 		Usuario usu = new Usuario();
 		usu.setNombreUsuario(nombreUsuario);
 		
-		//return nombreUsuario;
 		return new ResponseEntity(usu, HttpStatus.OK);
 	}
 	

@@ -20,12 +20,7 @@ public class UsuariosRolesController {
 
 	@Autowired
 	private IUsuarioRolDao repo;
-
-	/*@GetMapping
-	public List<UsuarioRol> listar() {
-		return repo.findAll();
-	}*/
-
+	
 	@PostMapping
 	public void insertar(@RequestBody UsuarioRol usuarioRol) {
 		repo.save(usuarioRol);

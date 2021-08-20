@@ -32,10 +32,7 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	
 	@Autowired
 	private IUsuarioDao usuarioDao;
-	
-	//@Autowired
-	//private BCryptPasswordEncoder encoder;
-	
+		
 	@Autowired
 	private PersonasService personasService;
 	
@@ -52,7 +49,8 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 	@Override
 	@Transactional(readOnly = true)
 	public Usuario findById(int id) {
-		Usuario usuario = usuarioDao.findById(id).orElse(null);				
+		Usuario usuario = usuarioDao.findById(id).orElse(null);	
+		usuario.setPassword(null);
 		return usuario;
 	}
 	
@@ -146,33 +144,4 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-		
-	/*@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		Usuarios us = usuariosDao.findByCodigoUsuario(username);
-		
-		List<GrantedAuthority> roles = new ArrayList<>();
-		roles.add(new SimpleGrantedAuthority("ADMIN"));
-		
-	    UserDetails userDet = new User(us.getCodigoUsuario(), us.getPassword(), roles);
-	    
-	    return userDet;
-	}
-	
-	@Override
-	public List<GrantedAuthority> buildGrante(byte rol){
-		return null;
-	}
-	
-	@Override
-	public void crearUsuario(Usuarios usuario){
-		try {
-			//String encodePass = encoder.encode(usuario.getPassword());	
-			//usuario.setPassword(encodePass);
-			usuariosDao.save(usuario);
-		} catch (Exception e) {
-			throw new AbortException("Ocurrio un error al guardar el usuario: " + e.getMessage());
-		}		
-	}*/
 }

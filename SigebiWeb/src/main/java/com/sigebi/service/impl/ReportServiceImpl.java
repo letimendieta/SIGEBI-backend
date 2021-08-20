@@ -1,10 +1,8 @@
 package com.sigebi.service.impl;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,12 +15,14 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import com.lowagie.text.DocumentException;
 import com.sigebi.clases.UnionEstamentos;
 import com.sigebi.entity.Parametros;
+import com.sigebi.security.entity.UsuarioPrincipal;
 import com.sigebi.service.ParametrosService;
 import com.sigebi.service.ReportService;
 import com.sigebi.util.ConcatenarPDF;
@@ -30,14 +30,11 @@ import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.util.JRSaver;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
@@ -58,18 +55,24 @@ public class ReportServiceImpl implements ReportService {
 
     public String exportReport(String reportFormat, Integer consultaid) throws SigebiException, SQLException {
         String pathReportes;
-        String path;
 		Connection conn = null;
 		try {
 			Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
 			pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
 			conn = dataSource.getConnection();
+			
+			Authentication auth = SecurityContextHolder
+	                .getContext()
+	                .getAuthentication();
+			
+			UsuarioPrincipal userDetails = (UsuarioPrincipal) auth.getPrincipal();
 	
 			FileInputStream inputStream = new FileInputStream(pathReportes + "receta.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("consultaid",consultaid);
 			parameters.put("consulta_id",consultaid);
+			parameters.put("usuario",userDetails.getUsername());
 			parameters.put("subReporteDir", pathReportes );
 			parameters.put("reportLogo", pathReportes );
 			
@@ -137,11 +140,18 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 			JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(listaReporte);
+			
+			Authentication auth = SecurityContextHolder
+	                .getContext()
+	                .getAuthentication();
+			
+			UsuarioPrincipal userDetails = (UsuarioPrincipal) auth.getPrincipal();
 
 			FileInputStream inputStream = new FileInputStream(pathReportes + "servicios_salud.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",filtros.get("anho"));
 			parameters.put("mes",filtros.get("mes"));
+			parameters.put("usuario",userDetails.getUsername());
 			parameters.put("itemsJRBean", itemsJRBean);
 			parameters.put("subReporteDir", pathReportes);
 			parameters.put("reportLogo", pathReportes );
@@ -246,8 +256,6 @@ public class ReportServiceImpl implements ReportService {
 			    throw new SigebiException.BusinessException("No existe la paramétrica con código " + Globales.PATH_REPORTE);
 			}
 			
-			System.out.println(" parametro " + pathParametroReportes.getValor());
-
 			pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 
 			FileInputStream inputStream = new FileInputStream(pathReportes + "reporte_totales.jasper");
@@ -295,8 +303,6 @@ public class ReportServiceImpl implements ReportService {
         if (pathParametroReportes == null){
             throw new SigebiException.BusinessException("No existe la paramétrica con código " + Globales.PATH_REPORTE);
         }
-
-        System.out.println(" parametro " + pathParametroReportes.getValor());
 
         String pathReportes = pathParametroReportes.getValor() + SEPARATOR;
 

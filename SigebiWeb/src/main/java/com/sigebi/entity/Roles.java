@@ -26,8 +26,8 @@ public class Roles {
 	@Size(max=15, message="maximo 15 caracteres")
 	private String codigo;
 	
-	@Column(name = "descripcion", length = 30)
-	@Size(max=30, message="maximo 30 caracteres")
+	@Column(name = "descripcion", length = 100)
+	@Size(max=100, message="maximo 100 caracteres")
 	private String descripcion;
 	
 	@Column(name = "fecha_creacion")

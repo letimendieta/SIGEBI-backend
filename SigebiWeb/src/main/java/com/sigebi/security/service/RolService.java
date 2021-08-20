@@ -1,5 +1,6 @@
 package com.sigebi.security.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,8 @@ public class RolService {
         return rolRepository.findByRolNombre(rolNombre);
     }
     
-    public List<Rol> listar(){
-        return rolRepository.findAll();
+    public List<Rol> listar(){    	
+        return rolRepository.findByEstado("A");
     }
 
     public void save(Rol rol){
@@ -40,9 +42,8 @@ public class RolService {
     }
     
 	/*@Transactional(readOnly = true)
-	public List<Rol> buscar(Rol rol, 
-			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
-		List<Rol> rolList;
+	public List<Rol> buscar(Rol rol){
+		List<Rol> rolList = new ArrayList<Rol>();
 		
 		Specification<Rol> rolSpec = (Specification<Rol>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
@@ -52,21 +53,15 @@ public class RolService {
             }
                         
             String orden = "rolNombre";
-            if (!StringUtils.isEmpty(orderBy)) {
-            	orden = orderBy;
-            }
-            if("asc".equalsIgnoreCase(orderDir)){
-            	cq.orderBy(cb.asc(root.get(orden)));
-            }else {
-            	cq.orderBy(cb.desc(root.get(orden)));
-            }
+            
+
+            cq.orderBy(cb.desc(root.get(orden)));
+            
             return p;
         };
-		if(pageable != null) {
-			rolList = rolRepository.findAll(rolSpec, pageable).getContent();			
-		}else {
-			rolList = rolRepository.findAll(rolSpec);
-		}
+
+		rolList = rolRepository.findAll(rolSpec);
+		
         
         return rolList;
     }*/
