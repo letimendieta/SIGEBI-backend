@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,7 +72,7 @@ public class AnamnesisController {
 		anamnesis = anamnesisService.findById(id);
 		
 		if( anamnesis == null ) {
-			response.put("mensaje", "El anamnesis con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "La anamnesis con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class AnamnesisController {
 			anamnesis = objectMapper.readValue(filtros, Anamnesis.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Anamnesis> anamnesisList = new ArrayList<Anamnesis>();
 		
 		if ( anamnesis == null ) {
@@ -138,7 +136,7 @@ public class AnamnesisController {
 		
 		anamnesisNew = anamnesisService.save(anamnesis);
 		
-		response.put("mensaje", "El anamnesis ha sido creada con éxito!");
+		response.put("mensaje", "La anamnesis ha sido creada con éxito!");
 		response.put("anamnesis", anamnesisNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -174,7 +172,7 @@ public class AnamnesisController {
 
 		anamnesisUpdated = anamnesisService.save(anamnesis);;
 
-		response.put("mensaje", "El anamnesis ha sido actualizada con éxito!");
+		response.put("mensaje", "La anamnesis ha sido actualizada con éxito!");
 		response.put("anamnesis", anamnesisUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);

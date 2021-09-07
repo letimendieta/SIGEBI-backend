@@ -37,6 +37,10 @@ public class HorariosDisponibles {
 	@Size(max=1, message="maximo 1 caracteres")
 	private String estado;
 	
+	@Column(name = "dia", length = 15)
+	@Size(max=15, message="maximo 15 caracteres")
+	private String dia;
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
 	
@@ -52,7 +56,7 @@ public class HorariosDisponibles {
 	private String usuarioModificacion;
 	
 	@OneToOne
-    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId", unique = true)
+    @JoinColumn(name = "funcionario_id", referencedColumnName = "funcionarioId")
     private Funcionarios funcionarios;
 	
 	@PrePersist
@@ -103,6 +107,14 @@ public class HorariosDisponibles {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public String getDia() {
+		return dia;
+	}
+
+	public void setDia(String dia) {
+		this.dia = dia;
 	}
 
 	public Funcionarios getFuncionarios() {

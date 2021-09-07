@@ -1,24 +1,16 @@
 package com.sigebi.security.service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import javax.persistence.criteria.Predicate;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import com.sigebi.entity.Areas;
 import com.sigebi.security.entity.Rol;
+import com.sigebi.security.entity.UsuarioPrincipal;
 import com.sigebi.security.enums.RolNombre;
 import com.sigebi.security.repository.RolRepository;
 
@@ -41,28 +33,23 @@ public class RolService {
         rolRepository.save(rol);
     }
     
-	/*@Transactional(readOnly = true)
-	public List<Rol> buscar(Rol rol){
-		List<Rol> rolList = new ArrayList<Rol>();
+    public boolean verificarRol(String rol) {
+    	
+    	boolean autorized = false;
+    	
+    	Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 		
-		Specification<Rol> rolSpec = (Specification<Rol>) (root, cq, cb) -> {
-            Predicate p = cb.conjunction();
-            
-            if (!StringUtils.isEmpty(rol.getEstado())) {
-                p = cb.and(p, cb.like(root.get("estado"), "%" + rol.getEstado() + "%"));
-            }
-                        
-            String orden = "rolNombre";
-            
-
-            cq.orderBy(cb.desc(root.get(orden)));
-            
-            return p;
-        };
-
-		rolList = rolRepository.findAll(rolSpec);
+		UsuarioPrincipal userDetails = (UsuarioPrincipal) auth.getPrincipal();
+					
+		for( int i= 0; i < userDetails.getAuthorities().size() ; i++){
+			if( userDetails.getAuthorities().toArray()[i].toString().equals(rol) ) {
+				autorized = true;
+				break;
+			}
+		}
 		
-        
-        return rolList;
-    }*/
+		return autorized;
+    }
 }

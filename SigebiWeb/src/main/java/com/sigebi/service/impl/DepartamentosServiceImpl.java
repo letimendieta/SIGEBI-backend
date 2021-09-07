@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IDepartamentosDao;
 import com.sigebi.entity.Departamentos;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.DepartamentosService;
 
 

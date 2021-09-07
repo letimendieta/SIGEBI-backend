@@ -1,50 +1,33 @@
 package com.sigebi.security.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sigebi.entity.Personas;
-import com.sigebi.entity.Usuarios;
-import com.sigebi.security.dto.JwtDto;
-import com.sigebi.security.dto.LoginUsuario;
-import com.sigebi.security.dto.NuevoUsuario;
-import com.sigebi.security.entity.Rol;
-import com.sigebi.security.entity.Usuario;
-import com.sigebi.security.enums.RolNombre;
-import com.sigebi.security.jwt.JwtProvider;
-import com.sigebi.security.service.RolService;
-import com.sigebi.security.service.UsuarioService;
-import com.sigebi.service.PersonasService;
-import com.sigebi.service.UtilesService;
-import com.sigebi.util.Mensaje;
-import com.sigebi.util.exceptions.SigebiException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.sigebi.security.dto.JwtDto;
+import com.sigebi.security.dto.LoginUsuario;
+import com.sigebi.security.dto.NuevoUsuario;
+import com.sigebi.security.jwt.JwtProvider;
+import com.sigebi.security.service.RolService;
+import com.sigebi.security.service.UsuarioService;
+import com.sigebi.util.Mensaje;
+import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
 @RequestMapping("/auth")
@@ -87,7 +70,7 @@ public class AuthController {
       
         usuarioService.save(nuevoUsuario);
         
-        return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
+        return new ResponseEntity(new Mensaje("Usuario guardado"), HttpStatus.CREATED);
     }
     
     @PostMapping("/actualizar")
@@ -107,11 +90,11 @@ public class AuthController {
     	
         usuarioService.update(nuevoUsuario);
         
-        return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
+        return new ResponseEntity(new Mensaje("Usuario actualizado"), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) throws SigebiException{
+    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) throws Exception{
         
     	JwtDto jwtDto = null;
     	    	

@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IMovimientoInsumoDao;
 import com.sigebi.dao.IStockDao;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.MovimientosInsumos;
@@ -91,7 +90,19 @@ public class StockServiceImpl implements StockService{
 		}
 		if( stock.getInsumosMedicos().getInsumoMedicoId() != null && stock.getMedicamentos().getMedicamentoId() != null ) {
 			throw new SigebiException.BusinessException("No puede crearse un stock con un insumo y un medicamento");
-		}	
+		}
+		if ( stock.getCantidad() == 0 ) {
+			throw new SigebiException.BusinessException("Debe ingresar una cantidad distinta a cero ");
+		}
+		
+		Integer cantidadEntrada = null;
+		Integer cantidadSalida = null;
+		
+		if(stock.getCantidad() > 0) {
+			cantidadEntrada = stock.getCantidad();
+		}else {
+			cantidadSalida = stock.getCantidad() * -1;
+		}
 		
 		if( stock.getInsumosMedicos() != null && stock.getInsumosMedicos().getInsumoMedicoId() != null ) {
 			insumoMedico.setInsumoMedicoId(stock.getInsumosMedicos().getInsumoMedicoId());
@@ -108,14 +119,17 @@ public class StockServiceImpl implements StockService{
 		//guardar el movimiento de insumos/medicamentos	
 		MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
 		
-		movimientoInsumo.setCantidadEntrada(stock.getCantidad());
+		movimientoInsumo.setCantidadEntrada(cantidadEntrada);
+		movimientoInsumo.setCantidadSalida(cantidadSalida);
 		movimientoInsumo.setCodProceso(Globales.Procesos.ALTA_STOCK);
 		movimientoInsumo.setInsumosMedicos(stock.getInsumosMedicos());
 		movimientoInsumo.setMedicamentos(stock.getMedicamentos());
 		movimientoInsumo.setUsuarioCreacion(stock.getUsuarioCreacion());
+		movimientoInsumo.setNotas(stock.getNotas());
 		
 		movimientoInsumoDao.save(movimientoInsumo);
 		
+		stock.setNotas(null);
 		return stockDao.save(stock);
 	}
 	
@@ -127,12 +141,25 @@ public class StockServiceImpl implements StockService{
 			throw new SigebiException.BusinessException("Stock id es requerido ");
 		}
 		
+		if ( stock.getCantidad() == 0 ) {
+			throw new SigebiException.BusinessException("Debe ingresar una cantidad distinta a cero ");
+		}
+		
 		Stock stockActual = stockDao.findById(stock.getStockId()).orElse(null);
 		
 		if ( stockActual == null ) {
 			String mensaje = "Error: no se pudo editar, el stock ID: "
 					.concat(String.valueOf(stock.getStockId()).concat(" no existe en la base de datos!"));
 			throw new SigebiException.DataNotFound(mensaje);
+		}
+		
+		Integer cantidadEntrada = null;
+		Integer cantidadSalida = null;
+		
+		if(stock.getCantidad() > 0) {
+			cantidadEntrada = stock.getCantidad();
+		}else {
+			cantidadSalida = stock.getCantidad() * -1;
 		}
 		
 		Integer cantidadModificar = stock.getCantidad();
@@ -148,14 +175,18 @@ public class StockServiceImpl implements StockService{
 		//guardar el movimiento de insumos/medicamentos	
 		MovimientosInsumos movimientoInsumo = new MovimientosInsumos();
 		
-		movimientoInsumo.setCantidadEntrada(stock.getCantidad());
+		movimientoInsumo.setCantidadEntrada(cantidadEntrada);
+		movimientoInsumo.setCantidadSalida(cantidadSalida);
+		movimientoInsumo.setCantidadStock(stockActual.getCantidad());
 		movimientoInsumo.setCodProceso(Globales.Procesos.MODIF_STOCK);
 		movimientoInsumo.setInsumosMedicos(stock.getInsumosMedicos());
 		movimientoInsumo.setMedicamentos(stock.getMedicamentos());
 		movimientoInsumo.setUsuarioCreacion(stock.getUsuarioCreacion());
+		movimientoInsumo.setNotas(stock.getNotas());
 		
 		movimientoInsumoDao.save(movimientoInsumo);
 		
+		stock.setNotas(null);
 		return stockDao.save(stock);
 	}
 

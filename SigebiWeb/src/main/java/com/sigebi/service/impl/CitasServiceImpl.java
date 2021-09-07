@@ -24,8 +24,6 @@ public class CitasServiceImpl implements CitasService{
 
 	@Autowired
 	private ICitasDao citasDao;
-	@Autowired
-	private IProcedimientosDao procedimientosDao;
 	
 	public CitasServiceImpl(ICitasDao citasDao) {
         this.citasDao = citasDao;

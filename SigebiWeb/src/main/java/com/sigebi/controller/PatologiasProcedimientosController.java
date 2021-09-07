@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,7 +72,7 @@ public class PatologiasProcedimientosController {
 		patologiaProcedimiento = patologiasProcedimientosService.findById(id);
 		
 		if( patologiaProcedimiento == null ) {
-			response.put("mensaje", "El patologiaProcedimiento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "El patologia procedimiento con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class PatologiasProcedimientosController {
 			patologiaProcedimiento = objectMapper.readValue(filtros, PatologiasProcedimientos.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<PatologiasProcedimientos> patologiasProcedimientosList = new ArrayList<PatologiasProcedimientos>();
 		
 		if ( patologiaProcedimiento == null ) {
@@ -133,7 +131,7 @@ public class PatologiasProcedimientosController {
 		
 		patologiaProcedimientoNew = patologiasProcedimientosService.save(patologiaProcedimiento);
 		
-		response.put("mensaje", "El patologiaProcedimiento ha sido creada con éxito!");
+		response.put("mensaje", "Patología procedimiento ha sido creado con éxito!");
 		response.put("patologiaProcedimiento", patologiaProcedimientoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -143,7 +141,7 @@ public class PatologiasProcedimientosController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( patologiaProcedimiento.getPatologiaProcedimientoId() == null ) {
-			response.put("mensaje", "Error: patologiaProcedimiento id es requerido");
+			response.put("mensaje", "Error: patología procedimiento id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -169,7 +167,7 @@ public class PatologiasProcedimientosController {
 
 		patologiaProcedimientoUpdated = patologiasProcedimientosService.save(patologiaProcedimiento);;
 
-		response.put("mensaje", "El patologiaProcedimiento ha sido actualizada con éxito!");
+		response.put("mensaje", "Patologia procedimiento ha sido actualizado con éxito!");
 		response.put("patologiaProcedimiento", patologiaProcedimientoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -180,21 +178,21 @@ public class PatologiasProcedimientosController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: patologiaProcedimiento id es requerido");
+			response.put("mensaje", "Error: patología procedimiento id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		PatologiasProcedimientos patologiaProcedimientoActual = patologiasProcedimientosService.findById(id);
 		
 		if ( patologiaProcedimientoActual == null ) {
-			response.put("mensaje", "La patologiaProcedimiento ID: "
+			response.put("mensaje", "Patología procedimiento ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		patologiasProcedimientosService.delete(id);
 		
-		response.put("mensaje", "PatologiaProcedimiento eliminada con éxito!");
+		response.put("mensaje", "Patologia procedimiento eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

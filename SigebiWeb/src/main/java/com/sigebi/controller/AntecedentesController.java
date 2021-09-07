@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -96,7 +95,6 @@ public class AntecedentesController {
 			antecedente = objectMapper.readValue(filtros, Antecedentes.class);
 		}
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Antecedentes> antecedenteList = new ArrayList<Antecedentes>();
 		
 		if ( antecedente == null ) {

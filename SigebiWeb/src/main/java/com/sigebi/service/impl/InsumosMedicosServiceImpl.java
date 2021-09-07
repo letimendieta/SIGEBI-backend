@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IInsumosMedicosDao;
-import com.sigebi.dao.IMedicamentosDao;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.InsumosMedicos;
-import com.sigebi.entity.Personas;
 import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.util.exceptions.SigebiException;
 

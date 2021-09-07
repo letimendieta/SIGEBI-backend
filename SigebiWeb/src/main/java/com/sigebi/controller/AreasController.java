@@ -32,8 +32,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Areas;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.AreasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
@@ -45,6 +48,8 @@ public class AreasController {
 	private AreasService areasService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -119,7 +124,7 @@ public class AreasController {
 		
 		areaNew = areasService.guardar(area);
 		
-		response.put("mensaje", "El area ha sido creada con éxito!");
+		response.put("mensaje", "El área ha sido creado con éxito!");
 		response.put("area", areaNew);
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -142,7 +147,7 @@ public class AreasController {
 		
 		areaUpdated = areasService.actualizar(area);;
 
-		response.put("mensaje", "El área ha sido actualizada con éxito!");
+		response.put("mensaje", "El área ha sido actualizado con éxito!");
 		response.put("area", areaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -151,10 +156,14 @@ public class AreasController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> borrar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
-							
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_CONFIGURACION) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
+		
 		areasService.eliminar(id);
 		
-		response.put("mensaje", "Area eliminada con éxito!");
+		response.put("mensaje", "Área eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

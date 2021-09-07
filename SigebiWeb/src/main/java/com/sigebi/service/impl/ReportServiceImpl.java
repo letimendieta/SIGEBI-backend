@@ -146,7 +146,7 @@ public class ReportServiceImpl implements ReportService {
 	                .getAuthentication();
 			
 			UsuarioPrincipal userDetails = (UsuarioPrincipal) auth.getPrincipal();
-
+			
 			FileInputStream inputStream = new FileInputStream(pathReportes + "servicios_salud.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",filtros.get("anho"));

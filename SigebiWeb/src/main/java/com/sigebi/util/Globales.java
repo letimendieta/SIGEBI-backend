@@ -5,6 +5,7 @@ public class Globales {
 	public static final class TipoDatoFichaMedica {
 		public static final String ALERGIAS = "ALE";
 		public static final String ANTECEDENTE_PATOLOGIAS_PROCEDIMIENTOS = "P/P";
+		public static final String PATOLOGIA_TRATAMIENTO_ACTUAL = "P/T";
 	}
 	public static final class TiposAntecedentes {
 		public static final String PERSONAL = "P";

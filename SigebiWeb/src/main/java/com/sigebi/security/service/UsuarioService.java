@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.aop.framework.adapter.ThrowsAdviceInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,26 +15,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sigebi.clases.UsuarioRolId;
-import com.sigebi.dao.IFuncionariosDao;
 import com.sigebi.dao.IUsuarioDao;
-import com.sigebi.dao.IUsuarioRolDao;
 import com.sigebi.entity.Funcionarios;
-import com.sigebi.entity.Usuarios;
 import com.sigebi.security.dto.JwtDto;
 import com.sigebi.security.dto.LoginUsuario;
 import com.sigebi.security.dto.NuevoUsuario;
 import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
-import com.sigebi.security.entity.UsuarioRol;
-import com.sigebi.security.enums.RolNombre;
 import com.sigebi.security.jwt.JwtProvider;
 import com.sigebi.security.repository.UsuarioRepository;
-import com.sigebi.service.FuncionariosService;
 import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
-import com.sigebi.util.exceptions.SigebiException.AuthenticationError;
-import com.sigebi.util.exceptions.SigebiException.BusinessException;
 
 @Service
 @Transactional
@@ -89,6 +79,11 @@ public class UsuarioService {
     			|| nuevoUsuario.getUsuario().getFuncionarios().getFuncionarioId() == null ){
     		throw new SigebiException.BusinessException("Datos del funcionario es requerido ");
     	}
+    	
+    	if(  Globales.Estados.INACTIVO.equals(nuevoUsuario.getUsuario().getFuncionarios().getEstado()) ){
+    		throw new SigebiException.BusinessException("El funcionario se encuenta INACTIVO");
+    	}
+    	
     	Funcionarios funcionario = new Funcionarios();
     	funcionario.setFuncionarioId(nuevoUsuario.getUsuario().getFuncionarios().getFuncionarioId());
     	  
@@ -99,6 +94,10 @@ public class UsuarioService {
     	}
     	
     	Usuario usuario = nuevoUsuario.getUsuario();
+    	
+    	if( nuevoUsuario.getUsuario().getPassword() == null) {
+    		throw new SigebiException.BusinessException("Contraseña requerida ");
+		}
     	
     	String valido = validarPassword(nuevoUsuario.getUsuario().getPassword());
     	
@@ -133,7 +132,10 @@ public class UsuarioService {
 				throw new SigebiException.BusinessException("No se encontró usuario ");
 			}
 			
-			String valido = validarPassword(nuevoUsuario.getUsuario().getPassword());
+			String valido = "";
+			if( nuevoUsuario.getUsuario().getPassword() != null) {
+				valido = validarPassword(nuevoUsuario.getUsuario().getPassword());
+			}			
 	    	
 	    	if( valido != "" ) {
 	    		throw new SigebiException.BusinessException(valido);
@@ -149,6 +151,7 @@ public class UsuarioService {
 				roles.add(rol);
 			}
 			usuarioDb.setRoles(roles);
+			usuarioDb.setEstado(nuevoUsuario.getUsuario().getEstado());
 			
 			usuarioRepository.save(usuarioDb);
 			
@@ -210,9 +213,6 @@ public class UsuarioService {
                  }
          }
          int passLength = pass.length();
-         //System.out.println("Cantidad de letras mayusculas:"+contLetraMay);
-         System.out.println("Cantidad de letras minusculas:"+contLetraMin);
-         System.out.println("Cantidad de numeros:"+contNumero);
          
          if( contLetraMin == 0 ) {
         	 valido = valido + " La contraseña debe contener letras";

@@ -14,14 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
-import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
-import com.sigebi.entity.Stock;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
 import com.sigebi.util.Globales;

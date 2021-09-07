@@ -1,5 +1,6 @@
 package com.sigebi.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -94,7 +95,7 @@ public class AreasServiceImpl implements AreasService{
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public void eliminar(int id) throws SigebiException {
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
@@ -116,9 +117,21 @@ public class AreasServiceImpl implements AreasService{
 	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, 
 			String orderBy, String orderDir, Pageable pageable) throws DataAccessException{
 		List<Areas> areasList;
+		List<String> tiposString = new ArrayList<>();
+		
+		if( area.getTipo() != null ){
+			String[] tipos = area.getTipo().split(",");
+			
+			for(int i=0; i<tipos.length; i++ ) {
+				tiposString.add(tipos[i]);
+			}
+		}		
 		
 		Specification<Areas> areasSpec = (Specification<Areas>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();
+            if( tiposString != null && !tiposString.isEmpty() ){
+            	p = cb.and(root.get("tipo").in(tiposString));
+            } 
             if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
                 p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
             }
@@ -131,12 +144,10 @@ public class AreasServiceImpl implements AreasService{
             if (!StringUtils.isEmpty(area.getDescripcion())) {
                 p = cb.and(p, cb.like(root.get("descripcion"), "%" + area.getDescripcion() + "%"));
             }
-            if (!StringUtils.isEmpty(area.getTipo())) {
-                p = cb.and(p, cb.like(root.get("tipo"), "%" + area.getTipo() + "%"));
-            }
             if (!StringUtils.isEmpty(area.getEstado())) {
-                p = cb.and(p, cb.like(root.get("estado"), "%" + area.getEstado() + "%"));
+                p = cb.and(p, cb.equal(root.get("estado"), area.getEstado()) );
             }
+            
                         
             String orden = "areaId";
             if (!StringUtils.isEmpty(orderBy)) {

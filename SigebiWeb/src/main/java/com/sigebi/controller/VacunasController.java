@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,8 +31,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Vacunas;
-import com.sigebi.service.VacunasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.service.VacunasService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -73,7 +72,7 @@ public class VacunasController {
 		vacuna = vacunasService.findById(id);
 		
 		if( vacuna == null ) {
-			response.put("mensaje", "El vacuna con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "La vacuna con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class VacunasController {
 			vacuna = objectMapper.readValue(filtros, Vacunas.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Vacunas> vacunasList = new ArrayList<Vacunas>();
 		
 		if ( vacuna == null ) {
@@ -133,7 +131,7 @@ public class VacunasController {
 		
 		vacunaNew = vacunasService.save(vacuna);
 		
-		response.put("mensaje", "El vacuna ha sido creada con éxito!");
+		response.put("mensaje", "La vacuna ha sido creada con éxito!");
 		response.put("vacuna", vacunaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -162,14 +160,14 @@ public class VacunasController {
 		}
 		
 		if ( vacunaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el vacuna ID: "
+			response.put("mensaje", "Error: no se pudo editar, la vacuna ID: "
 					.concat(String.valueOf(vacuna.getVacunaId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		vacunaUpdated = vacunasService.save(vacuna);;
 
-		response.put("mensaje", "El vacuna ha sido actualizada con éxito!");
+		response.put("mensaje", "La vacuna ha sido actualizada con éxito!");
 		response.put("vacuna", vacunaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);

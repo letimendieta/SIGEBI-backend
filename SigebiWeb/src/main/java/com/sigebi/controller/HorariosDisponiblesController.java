@@ -1,7 +1,6 @@
 package com.sigebi.controller;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,10 +34,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.HorariosDisponibles;
 import com.sigebi.entity.Personas;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.HorariosDisponiblesService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -55,6 +55,8 @@ public class HorariosDisponiblesController {
 	private PersonasService personasService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -84,7 +86,7 @@ public class HorariosDisponiblesController {
 		horariosDisponible = horariosDisponiblesService.findById(id);
 		
 		if( horariosDisponible == null ) {
-			response.put("mensaje", "El horariosDisponible con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "El horario disponible con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -104,17 +106,7 @@ public class HorariosDisponiblesController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		JSONObject jo = new JSONObject(filtros);
-		String fechaString = jo.length()>0 && !jo.get("fecha").equals(null) ? (String) jo.get("fecha") : "";
-		LocalDate fecha = null;
-		
-		//se quita fecha de filtros por que da error al mapear
-		if( fechaString != null && !fechaString.equals("")) {
-			String fechaAquitar = '"' + (String) jo.get("fecha") + '"';
-			filtros = filtros.replace(fechaAquitar, "null");			
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			fecha = LocalDate.parse(fechaString, format);					
-		}
+		LocalDate fecha = null;		
 		
 		HorariosDisponibles horariosDisponible = null;
 		if(!utiles.isNullOrBlank(filtros)) {
@@ -150,9 +142,13 @@ public class HorariosDisponiblesController {
 				return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
 			}
 		}	
+		int total = funcionariosService.count();
 		
-		if ("-1".equals(size)) {
-			int total = funcionariosService.count();
+		if( total == 0) {
+			return new ResponseEntity<List<HorariosDisponibles>>(horariosDisponiblesList, HttpStatus.OK);
+		}
+		
+		if ("-1".equals(size)) {			
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}
@@ -191,7 +187,7 @@ public class HorariosDisponiblesController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( horariosDisponible.getHorarioDisponibleId() == null ) {
-			response.put("mensaje", "Error: horariosDisponible id es requerido");
+			response.put("mensaje", "Error: horarios disponible id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -226,6 +222,10 @@ public class HorariosDisponiblesController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_FUNCIONARIO) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
 			response.put("mensaje", "Error: horario id es requerido");

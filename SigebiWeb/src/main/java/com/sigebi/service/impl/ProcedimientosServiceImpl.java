@@ -20,12 +20,13 @@ import com.sigebi.dao.IProcedimientosDao;
 import com.sigebi.dao.IProcedimientosInsumosDao;
 import com.sigebi.dao.IStockDao;
 import com.sigebi.entity.Areas;
-import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.MovimientosInsumos;
 import com.sigebi.entity.Procedimientos;
 import com.sigebi.entity.ProcedimientosInsumos;
 import com.sigebi.entity.Stock;
+import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.MovimientosInsumosService;
 import com.sigebi.service.ProcedimientosInsumosService;
 import com.sigebi.service.ProcedimientosService;
@@ -51,6 +52,8 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 	private IMovimientoInsumoDao movimientoInsumoDao;
 	@Autowired
 	private MovimientosInsumosService movimientosInsumosService;
+	@Autowired
+	private FuncionariosService funcionariosService;
 		
 	public ProcedimientosServiceImpl(IProcedimientosDao procedimientosDao) {
         this.procedimientosDao = procedimientosDao;
@@ -112,6 +115,17 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 
 	@Transactional
 	public Procedimientos guardar(ProcesoProcedimientos procesoProcedimiento) throws Exception {		
+		
+		if( procesoProcedimiento.getProcedimiento().getFuncionarios() == null 
+				|| procesoProcedimiento.getProcedimiento().getFuncionarios().getFuncionarioId() == null ){
+			throw new SigebiException.BusinessException("Funcionario es requerido ");
+		}
+		Funcionarios funcionario = 
+				funcionariosService.findById(procesoProcedimiento.getProcedimiento().getFuncionarios().getFuncionarioId());
+		
+		if( Globales.Estados.INACTIVO.equals(funcionario.getEstado()) ){
+			throw new SigebiException.BusinessException("El funcionario se encuentra inactivo");
+		}
 		
 		int cantidadMedicamentos = 0;
 		for(ProcedimientosInsumos procedimientoInsumo : procesoProcedimiento.getProcedimientoInsumoList()) {
@@ -362,12 +376,12 @@ public class ProcedimientosServiceImpl implements ProcedimientosService{
 			
 			if( procedimientoInsumo.getInsumosMedicos() != null && procedimientoInsumo.getInsumosMedicos().getInsumoMedicoId() != null ) {
 				stockAdescontar = stockDao.findByInsumosMedicos(procedimientoInsumo.getInsumosMedicos());
-				stock = stockAdescontar;//stockService.obtener(stockAdescontar.getStockId());
+				stock = stockAdescontar;
 				if( stock == null ) throw new SigebiException.BusinessException("No se encontró stock del insumo " + procedimientoInsumo.getInsumosMedicos().getNombre());
 				nombre = stock.getInsumosMedicos().getNombre();
 			}else if( procedimientoInsumo.getMedicamentos() != null && procedimientoInsumo.getMedicamentos().getMedicamentoId() != null ) {
 				stockAdescontar = stockDao.findByMedicamentos(procedimientoInsumo.getMedicamentos());
-				stock = stockAdescontar;//stockService.obtener(stockAdescontar.getStockId());
+				stock = stockAdescontar;
 				if( stock == null ) throw new SigebiException.BusinessException("No se encontró stock del medicamento " + procedimientoInsumo.getMedicamentos().getMedicamento());
 				nombre = stock.getMedicamentos().getMedicamento();
 			}

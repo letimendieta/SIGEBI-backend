@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -68,16 +67,16 @@ public class PreguntasController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		Preguntas area = null;
+		Preguntas pregunta = null;
 
-		area = preguntasService.findById(id);
+		pregunta = preguntasService.findById(id);
 		
-		if( area == null ) {
-			response.put("mensaje", "El area con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( pregunta == null ) {
+			response.put("mensaje", "La pregunta con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Preguntas>(area, HttpStatus.OK);
+		return new ResponseEntity<Preguntas>(pregunta, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
@@ -93,16 +92,15 @@ public class PreguntasController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		Preguntas area = null;
+		Preguntas pregunta = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			area = objectMapper.readValue(filtros, Preguntas.class);
+			pregunta = objectMapper.readValue(filtros, Preguntas.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Preguntas> preguntasList = new ArrayList<Preguntas>();
 		
-		if ( area == null ) {
-			area = new Preguntas();
+		if ( pregunta == null ) {
+			pregunta = new Preguntas();
 		}
 		if ( "-1".equals(size) ) {
 			int total = preguntasService.count();
@@ -110,15 +108,15 @@ public class PreguntasController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 		
-		preguntasList = preguntasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
+		preguntasList = preguntasService.buscar(fromDate, toDate, pregunta, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<Preguntas>>(preguntasList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody Preguntas area, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody Preguntas pregunta, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		Preguntas areaNew = null;
+		Preguntas preguntaNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -131,24 +129,24 @@ public class PreguntasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		areaNew = preguntasService.save(area);
+		preguntaNew = preguntasService.save(pregunta);
 		
-		response.put("mensaje", "El area ha sido creada con éxito!");
-		response.put("area", areaNew);
+		response.put("mensaje", "La pregunta ha sido creada con éxito!");
+		response.put("pregunta", preguntaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody Preguntas area, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody Preguntas pregunta, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		if ( area.getPreguntaId() == null ) {
-			response.put("mensaje", "Error: area id es requerido");
+		if ( pregunta.getPreguntaId() == null ) {
+			response.put("mensaje", "Error: pregunta id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Preguntas areaActual = preguntasService.findById(area.getPreguntaId());
-		Preguntas areaUpdated = null;
+		Preguntas preguntaActual = preguntasService.findById(pregunta.getPreguntaId());
+		Preguntas preguntaUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -161,16 +159,16 @@ public class PreguntasController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( areaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el area ID: "
-					.concat(String.valueOf(area.getPreguntaId()).concat(" no existe en la base de datos!")));
+		if ( preguntaActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el pregunta ID: "
+					.concat(String.valueOf(pregunta.getPreguntaId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		areaUpdated = preguntasService.save(area);;
+		preguntaUpdated = preguntasService.save(pregunta);;
 
-		response.put("mensaje", "El area ha sido actualizada con éxito!");
-		response.put("area", areaUpdated);
+		response.put("mensaje", "La pregunta ha sido actualizada con éxito!");
+		response.put("pregunta", preguntaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -180,14 +178,14 @@ public class PreguntasController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: area id es requerido");
+			response.put("mensaje", "Error: pregunta id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Preguntas areaActual = preguntasService.findById(id);
+		Preguntas preguntaActual = preguntasService.findById(id);
 		
-		if ( areaActual == null ) {
-			response.put("mensaje", "La area ID: "
+		if ( preguntaActual == null ) {
+			response.put("mensaje", "La pregunta ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,7 +72,7 @@ public class VacunacionesController {
 		vacunaciones = vacunacionesService.findById(id);
 		
 		if( vacunaciones == null ) {
-			response.put("mensaje", "El vacunaciones con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "Vacunación con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class VacunacionesController {
 			vacunaciones = objectMapper.readValue(filtros, Vacunaciones.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Vacunaciones> vacunacionesList = new ArrayList<Vacunaciones>();
 		
 		if ( vacunaciones == null ) {
@@ -133,7 +131,7 @@ public class VacunacionesController {
 
 		vacunacionesNew = vacunacionesService.save(vacunaciones);
 		
-		response.put("mensaje", "Vacunaciones ha sido creada con éxito!");
+		response.put("mensaje", "Vacunación ha sido creada con éxito!");
 		response.put("vacunaciones", vacunacionesNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -162,14 +160,14 @@ public class VacunacionesController {
 		}
 		
 		if ( vacunacionesActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el vacunaciones ID: "
+			response.put("mensaje", "Error: no se pudo editar, la vacunación ID: "
 					.concat(String.valueOf(vacunaciones.getVacunacionId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		vacunacionesUpdated = vacunacionesService.save(vacunaciones);;
 
-		response.put("mensaje", "Vacunaciones ha sido actualizada con éxito!");
+		response.put("mensaje", "Vacunación ha sido actualizada con éxito!");
 		response.put("vacunaciones", vacunacionesUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -187,14 +185,14 @@ public class VacunacionesController {
 		Vacunaciones vacunacionesActual = vacunacionesService.findById(id);
 		
 		if ( vacunacionesActual == null ) {
-			response.put("mensaje", "La vacunaciones ID: "
+			response.put("mensaje", "La vacunación ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		vacunacionesService.delete(id);
 		
-		response.put("mensaje", "Vacunacion eliminada con éxito!");
+		response.put("mensaje", "Vacunación eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

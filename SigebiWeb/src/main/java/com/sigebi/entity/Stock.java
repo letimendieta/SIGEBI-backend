@@ -26,7 +26,11 @@ public class Stock {
 	private Integer cantidad;
 	
 	@Column(name = "fecha_creacion")
-	private LocalDateTime fechaCreacion;	
+	private LocalDateTime fechaCreacion;
+	
+	@Column(name = "notas", length = 100)
+	@Size(max=100, message="maximo 100 caracteres")
+	private String notas;
 	
 	@Column(name = "usuario_creacion", length = 15)
 	@Size(max=15, message="maximo 15 caracteres")
@@ -120,6 +124,13 @@ public class Stock {
 	public void setFechaModificacion(LocalDateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
-	
-	
+
+	public String getNotas() {
+		return notas;
+	}
+
+	public void setNotas(String notas) {
+		this.notas = notas;
+	}
+		
 }

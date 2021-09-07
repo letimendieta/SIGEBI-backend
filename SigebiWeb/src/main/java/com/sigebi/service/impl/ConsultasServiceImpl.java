@@ -26,17 +26,13 @@ import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.MotivosConsulta;
 import com.sigebi.entity.Personas;
 import com.sigebi.security.entity.Usuario;
-import com.sigebi.security.entity.UsuarioRol;
-import com.sigebi.security.service.RolService;
 import com.sigebi.security.service.UsuarioRolService;
-import com.sigebi.security.service.UsuarioService;
 import com.sigebi.service.ConsultasService;
 import com.sigebi.service.EnfermedadesCie10Service;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.UsuariosService;
 import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
-import com.sigebi.util.exceptions.SigebiException.BusinessException;
 
 
 @Service

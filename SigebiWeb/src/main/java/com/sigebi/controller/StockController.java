@@ -33,10 +33,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.InsumosMedicos;
 import com.sigebi.entity.Medicamentos;
 import com.sigebi.entity.Stock;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.service.MedicamentosService;
 import com.sigebi.service.StockService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
@@ -52,6 +55,8 @@ public class StockController {
 	private MedicamentosService medicamentosService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -133,8 +138,14 @@ public class StockController {
 				return new ResponseEntity<List<Medicamentos>>(medicamentosList, HttpStatus.OK);
 			}
 		}
-		if ("-1".equals(size)) {
-			int total = stockService.count();
+		
+		int total = stockService.count();
+		
+		if( total == 0) {
+			return new ResponseEntity<List<Stock>>(stockList, HttpStatus.OK);
+		}
+		
+		if ("-1".equals(size)) {			
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}
@@ -159,9 +170,9 @@ public class StockController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		stockNew = stockService.save(stock);
+		stockNew = stockService.guardar(stock);
 		
-		response.put("mensaje", "El stock ha sido creada con éxito!");
+		response.put("mensaje", "El stock ha sido creado con éxito!");
 		response.put("stock", stockNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -175,7 +186,6 @@ public class StockController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		Stock stockActual = stockService.obtener(stock.getStockId());
 		Stock stockUpdated = null;
 
 		if( result.hasErrors() ) {
@@ -188,16 +198,10 @@ public class StockController {
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		if ( stockActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el stock ID: "
-					.concat(String.valueOf(stock.getStockId()).concat(" no existe en la base de datos!")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-
+	
 		stockUpdated = stockService.actualizar(stock);
 
-		response.put("mensaje", "El stock ha sido actualizada con éxito!");
+		response.put("mensaje", "El stock ha sido actualizado con éxito!");
 		response.put("stock", stockUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -206,6 +210,10 @@ public class StockController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_STOCK) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
 			response.put("mensaje", "Error: stock id es requerido");

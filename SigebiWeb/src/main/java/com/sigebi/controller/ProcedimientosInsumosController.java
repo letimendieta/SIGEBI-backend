@@ -111,7 +111,6 @@ public class ProcedimientosInsumosController {
 			procedimientoInsumo = objectMapper.readValue(filtros, ProcedimientosInsumos.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<ProcedimientosInsumos> procedimientosInsumosList = new ArrayList<ProcedimientosInsumos>();
 		
 		if ( procedimientoInsumo == null ) {
@@ -146,7 +145,7 @@ public class ProcedimientosInsumosController {
 		
 		procedimientoInsumoNew = procedimientosInsumosService.save(procedimientoInsumo);
 		
-		response.put("mensaje", "El procedimiento insumo ha sido creada con éxito!");
+		response.put("mensaje", "El procedimiento insumo ha sido creado con éxito!");
 		response.put("procedimientoInsumo", procedimientoInsumoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -182,7 +181,7 @@ public class ProcedimientosInsumosController {
 
 		procedimientoInsumoUpdated = procedimientosInsumosService.save(procedimientoInsumo);;
 
-		response.put("mensaje", "El procedimiento insumo ha sido actualizada con éxito!");
+		response.put("mensaje", "El procedimiento insumo ha sido actualizado con éxito!");
 		response.put("procedimientoInsumo", procedimientoInsumoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -207,7 +206,7 @@ public class ProcedimientosInsumosController {
 
 		procedimientosInsumosService.delete(id);
 		
-		response.put("mensaje", "procedimiento insumo eliminado con éxito!");
+		response.put("mensaje", "Procedimiento insumo eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

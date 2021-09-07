@@ -92,7 +92,7 @@ public class ReportesController {
         if (null == anho && mes == null) {
             throw new SigebiException("Debe enviar dato del mes y año");
         }
-       String salida = reportService.unionEstamentos(formato, filtros);
+       reportService.unionEstamentos(formato, filtros);
        
        reportService.generarSegundaHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));
        reportService.generarTerceraHoja(formato,Integer.parseInt(anho),Integer.parseInt(mes));

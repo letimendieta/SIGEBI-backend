@@ -32,18 +32,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.clases.ProcesoPacienteHistorialClinico;
-import com.sigebi.entity.Carreras;
-import com.sigebi.entity.Departamentos;
-import com.sigebi.entity.Dependencias;
-import com.sigebi.entity.EnfermedadesCie10;
-import com.sigebi.entity.Estamentos;
-import com.sigebi.entity.HistorialClinico;
 import com.sigebi.entity.Pacientes;
-import com.sigebi.entity.Personas;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.FilesStorageService;
 import com.sigebi.service.PacientesService;
-import com.sigebi.service.PersonasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
@@ -54,11 +49,11 @@ public class PacientesController {
 	@Autowired
 	private PacientesService pacientesService;
 	@Autowired
-	private PersonasService personasService;
-	@Autowired
 	private UtilesService utiles;
 	@Autowired
 	FilesStorageService storageService;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -176,7 +171,7 @@ public class PacientesController {
 		
 		pacienteNew = pacientesService.actualizarPacienteHistorialClinico(pacienteHistorialClinico);
 					
-		response.put("mensaje", "El paciente ha sido creado con éxito!");
+		response.put("mensaje", "El paciente ha sido actualizado con éxito!");
 		response.put("paciente", pacienteNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -205,6 +200,10 @@ public class PacientesController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) throws SigebiException {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_PACIENTE) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 									
 		pacientesService.eliminar(id);
 		

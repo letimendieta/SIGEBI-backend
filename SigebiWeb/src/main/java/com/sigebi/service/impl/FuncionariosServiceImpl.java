@@ -15,11 +15,6 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IFuncionariosDao;
 import com.sigebi.dao.IPersonasDao;
-import com.sigebi.entity.Carreras;
-import com.sigebi.entity.Departamentos;
-import com.sigebi.entity.Dependencias;
-import com.sigebi.entity.EnfermedadesCie10;
-import com.sigebi.entity.Estamentos;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.FuncionariosService;

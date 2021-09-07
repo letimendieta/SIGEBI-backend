@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -76,7 +75,7 @@ public class AlergiasController {
 		alergia = alergiasService.findById(id);
 		
 		if( alergia == null ) {
-			response.put("mensaje", "El alergia con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "Alergia con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -135,7 +134,7 @@ public class AlergiasController {
 				
 		alergiaNew = alergiasService.guardar(alergia);
 		
-		response.put("mensaje", "La alergia ha sido creado con éxito!");
+		response.put("mensaje", "Alergia ha sido creada con éxito!");
 		response.put("alergia", alergiaNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -171,7 +170,7 @@ public class AlergiasController {
 
 		alergiaUpdated = alergiasService.actualizar(alergia);;
 
-		response.put("mensaje", "La alergia ha sido actualizada con éxito!");
+		response.put("mensaje", "Alergia actualizada con éxito!");
 		response.put("alergia", alergiaUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -189,14 +188,14 @@ public class AlergiasController {
 		Alergias alergiaActual = alergiasService.findById(id);
 		
 		if ( alergiaActual == null ) {
-			response.put("mensaje", "La alergia ID: "
+			response.put("mensaje", "Alergia ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		alergiasService.delete(id);
 		
-		response.put("mensaje", "Alergias eliminado con éxito!");
+		response.put("mensaje", "Alergia eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

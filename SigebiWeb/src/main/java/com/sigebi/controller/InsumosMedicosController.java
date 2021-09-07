@@ -31,8 +31,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.InsumosMedicos;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.InsumosMedicosService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 import com.sigebi.util.exceptions.SigebiException;
 
 @RestController
@@ -44,6 +47,8 @@ public class InsumosMedicosController {
 	private InsumosMedicosService insumosService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -104,8 +109,14 @@ public class InsumosMedicosController {
 			insumo = new InsumosMedicos();
 		}
 		
+		int total = insumosService.count();
+		
+		if( total == 0) {
+			return new ResponseEntity<List<InsumosMedicos>>(insumosList, HttpStatus.OK);
+		}
+		
 		if ("-1".equals(size)) {
-			int total = insumosService.count();
+			
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}
@@ -133,7 +144,7 @@ public class InsumosMedicosController {
 		
 		insumosMedicoNew = insumosService.guardar(insumoMedico);
 		
-		response.put("mensaje", "El insumo medico ha sido creado con éxito!");
+		response.put("mensaje", "El insumo médico ha sido creado con éxito!");
 		response.put("insumoMedico", insumosMedicoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -157,7 +168,7 @@ public class InsumosMedicosController {
 				
 		insumoMedicoUpdated = insumosService.actualizar(insumoMedico);
 
-		response.put("mensaje", "El insumo medico ha sido actualizado con éxito!");
+		response.put("mensaje", "El insumo médico ha sido actualizado con éxito!");
 		response.put("insumo", insumoMedicoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -166,6 +177,10 @@ public class InsumosMedicosController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_STOCK) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
 			response.put("mensaje", "Error: insumo id es requerido");
@@ -182,7 +197,7 @@ public class InsumosMedicosController {
 					
 		insumosService.eliminar(id);
 		
-		response.put("mensaje", "Insumo eliminada con éxito!");
+		response.put("mensaje", "Insumo médico eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

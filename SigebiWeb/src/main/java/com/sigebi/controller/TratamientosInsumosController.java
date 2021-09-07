@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,7 +72,7 @@ public class TratamientosInsumosController {
 		tratamientoInsumo = tratamientosInsumosService.findById(id);
 		
 		if( tratamientoInsumo == null ) {
-			response.put("mensaje", "El tratamientoInsumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "El tratamiento insumo con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class TratamientosInsumosController {
 			tratamientoInsumo = objectMapper.readValue(filtros, TratamientosInsumos.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<TratamientosInsumos> tratamientosInsumosList = new ArrayList<TratamientosInsumos>();
 		
 		if ( tratamientoInsumo == null ) {
@@ -133,7 +131,7 @@ public class TratamientosInsumosController {
 		
 		tratamientoInsumoNew = tratamientosInsumosService.save(tratamientoInsumo);
 		
-		response.put("mensaje", "El tratamientoInsumo ha sido creada con éxito!");
+		response.put("mensaje", "El tratamiento insumo ha sido creado con éxito!");
 		response.put("tratamientoInsumo", tratamientoInsumoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -143,7 +141,7 @@ public class TratamientosInsumosController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( tratamientoInsumo.getTratamientoInsumoId() == null ) {
-			response.put("mensaje", "Error: tratamientoInsumo id es requerido");
+			response.put("mensaje", "Error: tratamiento insumo id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -169,7 +167,7 @@ public class TratamientosInsumosController {
 
 		tratamientoInsumoUpdated = tratamientosInsumosService.save(tratamientoInsumo);;
 
-		response.put("mensaje", "El tratamientoInsumo ha sido actualizada con éxito!");
+		response.put("mensaje", "El tratamiento insumo ha sido actualizado con éxito!");
 		response.put("tratamientoInsumo", tratamientoInsumoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -180,21 +178,21 @@ public class TratamientosInsumosController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: tratamientoInsumo id es requerido");
+			response.put("mensaje", "Error: tratamiento insumo id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		TratamientosInsumos tratamientoInsumoActual = tratamientosInsumosService.findById(id);
 		
 		if ( tratamientoInsumoActual == null ) {
-			response.put("mensaje", "El tratamientoInsumo ID: "
+			response.put("mensaje", "El tratamiento insumo ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}			
 
 		tratamientosInsumosService.delete(id);
 		
-		response.put("mensaje", "TratamientoInsumo eliminada con éxito!");
+		response.put("mensaje", "Tratamiento insumo eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

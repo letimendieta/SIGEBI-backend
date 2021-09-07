@@ -20,9 +20,6 @@ public class SigebiController {
 			Model model) {
 		
 		Personas p = new Personas();
-		p.setCedula("4695968");
-		p.setNombres("Cristin");
-		p.setApellidos("Jara");
 		repo.save(p);
 		
 		model.addAttribute("name", name);

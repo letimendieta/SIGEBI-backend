@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "movimientos_insumos")
@@ -28,8 +29,15 @@ public class MovimientosInsumos {
 	@Column(name = "cantidad_salida")
 	private Integer cantidadSalida;
 	
+	@Column(name = "cantidad_stock")
+	private Integer cantidadStock;
+	
 	@Column(name = "cod_proceso", length = 15)
 	private String codProceso;
+	
+	@Column(name = "notas", length = 100)
+	@Size(max=100, message="maximo 100 caracteres")
+	private String notas;
 	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;	
@@ -128,6 +136,26 @@ public class MovimientosInsumos {
 
 	public void setMedicamentos(Medicamentos medicamentos) {
 		this.medicamentos = medicamentos;
+	}
+
+
+	public String getNotas() {
+		return notas;
+	}
+
+
+	public void setNotas(String notas) {
+		this.notas = notas;
+	}
+
+
+	public Integer getCantidadStock() {
+		return cantidadStock;
+	}
+
+
+	public void setCantidadStock(Integer cantidadStock) {
+		this.cantidadStock = cantidadStock;
 	}
 
 }

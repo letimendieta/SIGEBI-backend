@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -132,7 +131,7 @@ public class AlergenosController {
 		
 		alergenoNew = alergenosService.save(alergeno);
 		
-		response.put("mensaje", "El alergeno ha sido creada con éxito!");
+		response.put("mensaje", "El alergeno ha sido creado con éxito!");
 		response.put("alergeno", alergenoNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -168,7 +167,7 @@ public class AlergenosController {
 		
 		alergenoUpdated = alergenosService.save(alergeno);;
 
-		response.put("mensaje", "El alergeno ha sido actualizada con éxito!");
+		response.put("mensaje", "El alergeno ha sido actualizado con éxito!");
 		response.put("alergeno", alergenoUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -193,7 +192,7 @@ public class AlergenosController {
 					
 		alergenosService.delete(id);
 		
-		response.put("mensaje", "Alergeno eliminada con éxito!");
+		response.put("mensaje", "Alergeno eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

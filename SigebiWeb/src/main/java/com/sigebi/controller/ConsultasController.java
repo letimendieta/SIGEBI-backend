@@ -46,7 +46,6 @@ import com.sigebi.service.ReportService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.util.Globales;
 import com.sigebi.util.exceptions.SigebiException;
-import com.sigebi.util.exceptions.SigebiException.BusinessException;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -186,7 +185,7 @@ public class ConsultasController {
 		filtros.put("mes", mes);
 		
 		if (null == anho && mes == null) {
-			throw new SigebiException("Debe enviar dato del mes y año");
+			throw new SigebiException("Debe enviar dato del mes y el año");
 		}
 		String salida = reportService.unionEstamentos(formato, filtros);
 		return ResponseEntity.ok(HttpStatus.OK);

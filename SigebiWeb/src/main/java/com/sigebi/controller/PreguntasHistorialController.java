@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -68,16 +67,16 @@ public class PreguntasHistorialController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> obtener(@PathVariable("id") Integer id){
 		Map<String, Object> response = new HashMap<>();
-		PreguntasHistorial area = null;
+		PreguntasHistorial preguntaHistorial = null;
 
-		area = preguntasService.findById(id);
+		preguntaHistorial = preguntasService.findById(id);
 		
-		if( area == null ) {
-			response.put("mensaje", "El area con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+		if( preguntaHistorial == null ) {
+			response.put("mensaje", "Pregunta historial con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<PreguntasHistorial>(area, HttpStatus.OK);
+		return new ResponseEntity<PreguntasHistorial>(preguntaHistorial, HttpStatus.OK);
 	}
 	
 	@GetMapping("/buscar")
@@ -93,16 +92,15 @@ public class PreguntasHistorialController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		PreguntasHistorial area = null;
+		PreguntasHistorial preguntaHistorial = null;
 		if(!utiles.isNullOrBlank(filtros)) {
-			area = objectMapper.readValue(filtros, PreguntasHistorial.class);
+			preguntaHistorial = objectMapper.readValue(filtros, PreguntasHistorial.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<PreguntasHistorial> preguntasList = new ArrayList<PreguntasHistorial>();
 		
-		if ( area == null ) {
-			area = new PreguntasHistorial();
+		if ( preguntaHistorial == null ) {
+			preguntaHistorial = new PreguntasHistorial();
 		}
 		if ( "-1".equals(size) ) {
 			int total = preguntasService.count();
@@ -110,15 +108,15 @@ public class PreguntasHistorialController {
 			pageable = PageRequest.of(pagina, total);
 		}			
 
-		preguntasList = preguntasService.buscar(fromDate, toDate, area, orderBy, orderDir, pageable);
+		preguntasList = preguntasService.buscar(fromDate, toDate, preguntaHistorial, orderBy, orderDir, pageable);
 		
         return new ResponseEntity<List<PreguntasHistorial>>(preguntasList, HttpStatus.OK);
     }
 
 	@PostMapping
-	public ResponseEntity<?> insertar(@Valid @RequestBody PreguntasHistorial area, BindingResult result) {
+	public ResponseEntity<?> insertar(@Valid @RequestBody PreguntasHistorial preguntaHistorial, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();		
-		PreguntasHistorial areaNew = null;
+		PreguntasHistorial preguntaHistorialNew = null;
 		
 		if( result.hasErrors() ) {
 
@@ -131,19 +129,19 @@ public class PreguntasHistorialController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		areaNew = preguntasService.save(area);
+		preguntaHistorialNew = preguntasService.save(preguntaHistorial);
 		
-		response.put("mensaje", "El area ha sido creada con éxito!");
-		response.put("area", areaNew);
+		response.put("mensaje", "Pregunta historial ha sido creado con éxito!");
+		response.put("preguntaHistorial", preguntaHistorialNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<?> modificar(@Valid @RequestBody PreguntasHistorial area, BindingResult result) {
+	public ResponseEntity<?> modificar(@Valid @RequestBody PreguntasHistorial preguntaHistorial, BindingResult result) {
 		Map<String, Object> response = new HashMap<>();
 		
-		PreguntasHistorial areaActual = preguntasService.findById(area.getPreguntaHistorialId());
-		PreguntasHistorial areaUpdated = null;
+		PreguntasHistorial preguntaHistorialActual = preguntasService.findById(preguntaHistorial.getPreguntaHistorialId());
+		PreguntasHistorial preguntaHistorialUpdated = null;
 
 		if( result.hasErrors() ) {
 
@@ -156,16 +154,16 @@ public class PreguntasHistorialController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		if ( areaActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el area ID: "
-					.concat(String.valueOf(area.getPreguntaHistorialId()).concat(" no existe en la base de datos!")));
+		if ( preguntaHistorialActual == null ) {
+			response.put("mensaje", "Error: no se pudo editar, el ID: "
+					.concat(String.valueOf(preguntaHistorial.getPreguntaHistorialId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		areaUpdated = preguntasService.save(area);;
+		preguntaHistorialUpdated = preguntasService.save(preguntaHistorial);;
 
-		response.put("mensaje", "El area ha sido actualizada con éxito!");
-		response.put("area", areaUpdated);
+		response.put("mensaje", "Pregunta historial ha sido actualizada con éxito!");
+		response.put("preguntaHistorial", preguntaHistorialUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -175,21 +173,21 @@ public class PreguntasHistorialController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: area id es requerido");
+			response.put("mensaje", "Error: pregunta historial id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		PreguntasHistorial areaActual = preguntasService.findById(id);
+		PreguntasHistorial preguntaHistorialActual = preguntasService.findById(id);
 		
-		if ( areaActual == null ) {
-			response.put("mensaje", "La area ID: "
+		if ( preguntaHistorialActual == null ) {
+			response.put("mensaje", "Pregunta historial ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		preguntasService.delete(id);
 		
-		response.put("mensaje", "PreguntaHistorial eliminada con éxito!");
+		response.put("mensaje", "Pregunta historial eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.ISignosVitalesDao;
+import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.SignosVitales;
+import com.sigebi.service.PacientesService;
 import com.sigebi.service.SignosVitalesService;
 
 
@@ -23,6 +25,8 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
 
 	@Autowired
 	private ISignosVitalesDao signoVitalsDao;
+	@Autowired
+	private PacientesService pacientesService;
 	
 	public SignosVitalesServiceImpl(ISignosVitalesDao signoVitalsDao) {
         this.signoVitalsDao = signoVitalsDao;
@@ -62,6 +66,18 @@ public class SignosVitalesServiceImpl implements SignosVitalesService{
 	@Transactional(readOnly = true)
 	public List<SignosVitales> buscar(Date fromDate, Date toDate, SignosVitales signoVital, String orderBy, String orderDir, Pageable pageable){
 		List<SignosVitales> signoVitalsList;
+		
+		Pacientes paciente = new Pacientes();
+		
+		if( signoVital.getPacientes() != null ) {
+			List<Pacientes> pacientes  = pacientesService.buscarPacientes(null, null, signoVital.getPacientes(), null, null, pageable);
+			
+			if( pacientes != null && pacientes.size() > 0 ) {
+				paciente = pacientes.get(0);
+			}
+		}
+		
+		signoVital.setPacientes(paciente);
 		
 		Specification<SignosVitales> signoVitalsSpec = (Specification<SignosVitales>) (root, cq, cb) -> {
             Predicate p = cb.conjunction();

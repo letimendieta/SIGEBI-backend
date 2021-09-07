@@ -38,11 +38,14 @@ import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.entity.Procedimientos;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.PacientesService;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.ProcedimientosService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -59,6 +62,8 @@ public class ProcedimientosController {
 	private PersonasService personasService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -134,8 +139,7 @@ public class ProcedimientosController {
 			filtros = filtros.replace(fechaAquitar, "null");
 			LocalDate date = LocalDate.parse(fechaString);
 			LocalDateTime localDateTime = date.atStartOfDay();
-			//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-			fecha = localDateTime;//LocalDateTime.parse(fechaString, format);					
+			fecha = localDateTime;					
 		}
 		
 		Procedimientos procedimiento = null;
@@ -144,7 +148,6 @@ public class ProcedimientosController {
 			procedimiento.setFecha(fecha);
 		}
 		
-		Map<String, Object> response = new HashMap<>();
 		List<Procedimientos> procedimientosList = new ArrayList<Procedimientos>();
 		
 		if ( procedimiento == null ) {
@@ -190,8 +193,13 @@ public class ProcedimientosController {
 			}
 		}
 		
-		if ("-1".equals(size)) {
-			int total = procedimientosService.count();
+		int total = procedimientosService.count();
+		
+		if( total == 0) {
+			return new ResponseEntity<List<Procedimientos>>(procedimientosList, HttpStatus.OK);
+		}
+		
+		if ("-1".equals(size)) {			
 			int pagina = page != null ? Integer.parseInt(page) : 0;
 			pageable = PageRequest.of(pagina, total);
 		}
@@ -265,6 +273,10 @@ public class ProcedimientosController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_PROCEDIMIENTO) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
 			response.put("mensaje", "Error: procedimiento id es requerido");

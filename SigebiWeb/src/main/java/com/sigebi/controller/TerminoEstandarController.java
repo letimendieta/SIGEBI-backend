@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,7 +72,7 @@ public class TerminoEstandarController {
 		terminoEstandar = terminoEstandarService.findById(id);
 		
 		if( terminoEstandar == null ) {
-			response.put("mensaje", "El terminoEstandar con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "El termino estandar con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -98,7 +97,6 @@ public class TerminoEstandarController {
 			terminoEstandar = objectMapper.readValue(filtros, TerminoEstandar.class);
 		}				
 		
-		Map<String, Object> response = new HashMap<>();
 		List<TerminoEstandar> terminoEstandarList = new ArrayList<TerminoEstandar>();
 		
 		if ( terminoEstandar == null ) {
@@ -133,7 +131,7 @@ public class TerminoEstandarController {
 
 		terminoEstandarNew = terminoEstandarService.save(terminoEstandar);
 		
-		response.put("mensaje", "El terminoEstandar ha sido creada con éxito!");
+		response.put("mensaje", "El termino estandar ha sido creado con éxito!");
 		response.put("terminoEstandar", terminoEstandarNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -143,7 +141,7 @@ public class TerminoEstandarController {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( terminoEstandar.getId() == null ) {
-			response.put("mensaje", "Error: terminoEstandar id es requerido");
+			response.put("mensaje", "Error: termino estandar id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -169,7 +167,7 @@ public class TerminoEstandarController {
 
 		terminoEstandarUpdated = terminoEstandarService.save(terminoEstandar);;
 
-		response.put("mensaje", "El terminoEstandar ha sido actualizada con éxito!");
+		response.put("mensaje", "El termino estandar ha sido actualizado con éxito!");
 		response.put("terminoEstandar", terminoEstandarUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -187,14 +185,14 @@ public class TerminoEstandarController {
 		TerminoEstandar terminoEstandarActual = terminoEstandarService.findById(id);
 		
 		if ( terminoEstandarActual == null ) {
-			response.put("mensaje", "La terminoEstandar ID: "
+			response.put("mensaje", "La termino estandar ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		terminoEstandarService.delete(id);
 		
-		response.put("mensaje", "TerminoEstandar eliminada con éxito!");
+		response.put("mensaje", "Termino estandar eliminado con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

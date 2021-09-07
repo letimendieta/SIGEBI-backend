@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IEstamentosDao;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Estamentos;
 import com.sigebi.service.EstamentosService;
 

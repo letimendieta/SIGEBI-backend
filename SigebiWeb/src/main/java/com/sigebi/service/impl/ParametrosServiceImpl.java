@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IParametrosDao;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Parametros;
 import com.sigebi.service.ParametrosService;
 

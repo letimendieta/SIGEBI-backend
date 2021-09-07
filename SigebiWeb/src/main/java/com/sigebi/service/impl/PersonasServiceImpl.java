@@ -8,7 +8,6 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import com.sigebi.entity.Carreras;
 import com.sigebi.entity.Departamentos;
 import com.sigebi.entity.Dependencias;
 import com.sigebi.entity.Estamentos;
-import com.sigebi.entity.Pacientes;
 import com.sigebi.entity.Personas;
 import com.sigebi.service.CarrerasService;
 import com.sigebi.service.DepartamentosService;
@@ -279,6 +277,12 @@ public class PersonasServiceImpl implements PersonasService{
             return p;
         };
         
+        if(pageable != null) {
+        	personasList = personasDao.findAll(personasSpec, pageable).getContent();			
+		}else {
+			personasList = personasDao.findAll(personasSpec);
+		}
+        
         for( Personas personaList : personasList) {
 			
 			if( personaList.getDepartamentos() == null ) {
@@ -293,12 +297,6 @@ public class PersonasServiceImpl implements PersonasService{
 			if( personaList.getEstamentos() == null ) {
 				personaList.setEstamentos(new Estamentos());
 			}
-		}
-        
-        if(pageable != null) {
-        	personasList = personasDao.findAll(personasSpec, pageable).getContent();			
-		}else {
-			personasList = personasDao.findAll(personasSpec);
 		}
         
         return personasList;

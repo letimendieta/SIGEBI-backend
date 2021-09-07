@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,8 +31,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.EnfermedadesCie10Service;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -44,6 +46,8 @@ public class EnfermedadesCie10Controller {
 	private EnfermedadesCie10Service enfermedadesCie10Service;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -73,7 +77,7 @@ public class EnfermedadesCie10Controller {
 		enfermedadCie10 = enfermedadesCie10Service.findById(id);
 		
 		if( enfermedadCie10 == null ) {
-			response.put("mensaje", "El enfermedadCie10 con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "La enfermedad con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -132,7 +136,7 @@ public class EnfermedadesCie10Controller {
 		
 		enfermedadCie10New = enfermedadesCie10Service.save(enfermedadCie10);
 		
-		response.put("mensaje", "El enfermedadCie10 ha sido creada con éxito!");
+		response.put("mensaje", "La enfermedad ha sido creada con éxito!");
 		response.put("enfermedadCie10", enfermedadCie10New);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -142,7 +146,7 @@ public class EnfermedadesCie10Controller {
 		Map<String, Object> response = new HashMap<>();
 		
 		if ( enfermedadCie10.getEnfermedadCie10Id() == null ) {
-			response.put("mensaje", "Error: enfermedadCie10 id es requerido");
+			response.put("mensaje", "Error: enfermedad id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -161,14 +165,14 @@ public class EnfermedadesCie10Controller {
 		}
 		
 		if ( enfermedadCie10Actual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el enfermedadCie10 ID: "
+			response.put("mensaje", "Error: no se pudo editar, la enfermedad ID: "
 					.concat(String.valueOf(enfermedadCie10.getEnfermedadCie10Id()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		enfermedadCie10Updated = enfermedadesCie10Service.save(enfermedadCie10);;
 
-		response.put("mensaje", "El enfermedadCie10 ha sido actualizada con éxito!");
+		response.put("mensaje", "La enfermedad ha sido actualizada con éxito!");
 		response.put("enfermedadCie10", enfermedadCie10Updated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -177,23 +181,27 @@ public class EnfermedadesCie10Controller {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
+				
+		if( !rolService.verificarRol(Globales.ROL_ABM_CONFIGURACION) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
-			response.put("mensaje", "Error: enfermedadCie10 id es requerido");
+			response.put("mensaje", "Error: enfermedad id es requerido");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		EnfermedadesCie10 enfermedadCie10Actual = enfermedadesCie10Service.findById(id);
 		
 		if ( enfermedadCie10Actual == null ) {
-			response.put("mensaje", "La enfermedadCie10 ID: "
+			response.put("mensaje", "La enfermedad ID: "
 					.concat(String.valueOf(id).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 					
 		enfermedadesCie10Service.delete(id);
 		
-		response.put("mensaje", "EnfermedadCie10 eliminada con éxito!");
+		response.put("mensaje", "Enfermedad eliminada con éxito!");
 		
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}

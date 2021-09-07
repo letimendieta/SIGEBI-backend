@@ -18,10 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IUsuarioDao;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.Personas;
-import com.sigebi.security.entity.Rol;
 import com.sigebi.security.entity.Usuario;
 import com.sigebi.service.PersonasService;
 import com.sigebi.service.UsuariosService;
@@ -109,7 +107,7 @@ public class UsuariosServiceImpl implements UsuariosService, UserDetailsService{
                 p = cb.and(p, cb.equal(root.get("id"), usuario.getId()) );
             }
             if ( !StringUtils.isEmpty(usuario.getNombreUsuario())) {
-                p = cb.and(p, cb.equal(root.get("nombreUsuario"), usuario.getNombreUsuario()) );
+                p = cb.and(p, cb.like(cb.lower(root.get("nombreUsuario")), "%" + usuario.getNombreUsuario().toLowerCase() + "%"));
             }
             if ( !StringUtils.isEmpty(usuario.getEstado()) ) {
                 p = cb.and(p, cb.equal(root.get("estado"), usuario.getEstado()) );

@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.ICarrerasDao;
 import com.sigebi.entity.Carreras;
-import com.sigebi.entity.EnfermedadesCie10;
 import com.sigebi.service.CarrerasService;
 
 

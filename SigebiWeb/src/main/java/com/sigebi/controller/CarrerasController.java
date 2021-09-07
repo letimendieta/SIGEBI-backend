@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,8 +31,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sigebi.entity.Carreras;
+import com.sigebi.security.service.RolService;
 import com.sigebi.service.CarrerasService;
 import com.sigebi.service.UtilesService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.Mensaje;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -44,6 +46,8 @@ public class CarrerasController {
 	private CarrerasService carrerasService;
 	@Autowired
 	private UtilesService utiles;
+	@Autowired
+	private RolService rolService;
 	
 	private static final String DATE_PATTERN = "yyyy/MM/dd";	
 		
@@ -73,7 +77,7 @@ public class CarrerasController {
 		carrera = carrerasService.findById(id);
 		
 		if( carrera == null ) {
-			response.put("mensaje", "El carrera con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "La carrera con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -133,7 +137,7 @@ public class CarrerasController {
 		
 		carreraNew = carrerasService.save(carrera);
 		
-		response.put("mensaje", "El carrera ha sido creada con éxito!");
+		response.put("mensaje", "La carrera ha sido creada con éxito!");
 		response.put("carrera", carreraNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -162,14 +166,14 @@ public class CarrerasController {
 		}
 		
 		if ( carreraActual == null ) {
-			response.put("mensaje", "Error: no se pudo editar, el carrera ID: "
+			response.put("mensaje", "Error: no se pudo editar, la carrera ID: "
 					.concat(String.valueOf(carrera.getCarreraId()).concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		carreraUpdated = carrerasService.save(carrera);;
 
-		response.put("mensaje", "El carrera ha sido actualizada con éxito!");
+		response.put("mensaje", "La carrera ha sido actualizada con éxito!");
 		response.put("carrera", carreraUpdated);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -178,6 +182,10 @@ public class CarrerasController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		Map<String, Object> response = new HashMap<>();
+		
+		if( !rolService.verificarRol(Globales.ROL_ABM_CONFIGURACION) ){
+			return new ResponseEntity(new Mensaje("No cuenta con el rol requerido "), HttpStatus.UNAUTHORIZED);
+		}
 		
 		if ( utiles.isNullOrBlank(String.valueOf(id)) ) {
 			response.put("mensaje", "Error: carrera id es requerido");

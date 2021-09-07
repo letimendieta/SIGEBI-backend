@@ -14,9 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IHorariosDisponiblesDao;
-import com.sigebi.entity.EnfermedadesCie10;
+import com.sigebi.entity.Funcionarios;
 import com.sigebi.entity.HorariosDisponibles;
+import com.sigebi.service.FuncionariosService;
 import com.sigebi.service.HorariosDisponiblesService;
+import com.sigebi.service.PersonasService;
+import com.sigebi.util.Globales;
+import com.sigebi.util.exceptions.SigebiException;
 
 
 @Service
@@ -24,6 +28,8 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
 
 	@Autowired
 	private IHorariosDisponiblesDao horariosDisponiblesDao;
+	@Autowired
+	private FuncionariosService funcionariosService;
 		
 	public HorariosDisponiblesServiceImpl(IHorariosDisponiblesDao horariosDisponiblesDao) {
         this.horariosDisponiblesDao = horariosDisponiblesDao;
@@ -49,7 +55,16 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
 
 	@Transactional
 	public HorariosDisponibles guardar(HorariosDisponibles horariosDisponible) throws Exception {
-						
+		
+		if( horariosDisponible.getFuncionarios() == null || horariosDisponible.getFuncionarios().getFuncionarioId() == null ){
+			throw new SigebiException.BusinessException("Funcionario es requerido ");
+		}
+		Funcionarios funcionario = funcionariosService.findById(horariosDisponible.getFuncionarios().getFuncionarioId());
+		
+		if( Globales.Estados.INACTIVO.equals(funcionario.getEstado()) ){
+			throw new SigebiException.BusinessException("El funcionario se encuentra inactivo");
+		}
+		
 		return horariosDisponiblesDao.save(horariosDisponible);
 	}
 	
@@ -86,6 +101,9 @@ public class HorariosDisponiblesServiceImpl implements HorariosDisponiblesServic
             }
             if ( horariosDisponible.getFecha() != null ) {
                 p = cb.and(p, cb.equal(root.get("fecha"), horariosDisponible.getFecha()) );
+            }
+            if ( horariosDisponible.getDia() != null ) {
+                p = cb.and(p, cb.equal(root.get("dia"), horariosDisponible.getDia()) );
             }
             if ( horariosDisponible.getEstado() != null ) {
                 p = cb.and(p, cb.equal(root.get("estado"), horariosDisponible.getEstado()) );
