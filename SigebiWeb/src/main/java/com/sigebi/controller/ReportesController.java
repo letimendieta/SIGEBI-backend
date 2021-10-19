@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +78,7 @@ public class ReportesController {
     }
 
     @PostMapping("/union-estamentos")
-    public ResponseEntity<InputStreamResource>  reporteProduccionEstadistica(
+    public ResponseEntity<InputStreamResource>  reporteUnionEstamentos(
             @RequestParam(value = "anho") String anho,
             @RequestParam(value = "mes") String mes,
             @RequestParam(value = "formato") String formato)
@@ -112,4 +113,43 @@ public class ReportesController {
                 .contentType(MediaType.parseMediaType("application/pdf"))
                 .body(resource);
     }
+    
+    @PostMapping("/informe-mensual")
+    public ResponseEntity<InputStreamResource>  reporteInformeMensual(
+            @RequestParam(value = "anho") String anho,
+            @RequestParam(value = "mes") String mes,
+            @RequestParam(value = "formato") String formato)
+            throws FileNotFoundException, JRException, SQLException, SigebiException, IOException, DocumentException {
+    	
+        Parametros pathParametroReportes = parametrosService.findByCodigo(Globales.PATH_REPORTE);
+
+        HashMap<String, Object> filtros = new HashMap<>();
+        filtros.put("anho", Integer.parseInt(anho));
+        filtros.put("mes", Integer.parseInt(mes));
+
+        if (null == anho && mes == null) {
+            throw new SigebiException("Debe enviar dato del mes y año");
+        }
+     
+       reportService.generarInformeMensualAtencionMedica(formato,Integer.parseInt(anho),Integer.parseInt(mes));
+       reportService.generarInformeMensualEnfermeria(formato,Integer.parseInt(anho),Integer.parseInt(mes));
+       reportService.generarInformeMensualElectrocardiograma(formato,Integer.parseInt(anho),Integer.parseInt(mes));
+       
+       reportService.concatenarInformeMensual();
+       
+	   String fileName = "informe_mensual.pdf";
+	   
+	   File file = new File(pathParametroReportes.getValor()+SEPARATOR + fileName);
+	   HttpHeaders headers = new HttpHeaders();
+	   headers.add("content-disposition", "inline;filename=" +fileName);
+
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(resource);
+    }
+    
 }

@@ -3,6 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_atenciones" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b97a2c0b-6705-420b-862b-79163c3e8029">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="355"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="634"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<parameter name="anho" class="java.lang.Integer"/>
 	<parameter name="subReporteDir" class="java.lang.String"/>
@@ -10,15 +12,12 @@
 	<queryString language="SQL">
 		<![CDATA[select count(per.sexo) as sumatotal
 from consultas c
-join pacientes p
-on  c.paciente_id=p.paciente_id
-join personas per
-on p.persona_id=per.persona_id 
-join carreras cr
-on per.carrera_id=cr.carrera_id
-join estamentos es
-on per.estamento_id = es.estamento_id 
-where EXTRACT(MONTH FROM fecha)=$P{mes} and EXTRACT(YEAR FROM fecha)=$P{anho}]]>
+join pacientes p on  c.paciente_id=p.paciente_id
+join personas per on p.persona_id=per.persona_id 
+left join carreras cr on per.carrera_id=cr.carrera_id
+left join estamentos es on per.estamento_id = es.estamento_id 
+where EXTRACT(MONTH FROM fecha)=$P{mes} 
+and EXTRACT(YEAR FROM fecha)=$P{anho}]]>
 	</queryString>
 	<field name="sumatotal" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="sumatotal"/>

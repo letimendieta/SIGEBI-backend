@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION public.sumatotal_dependencia3(mes integer, anho integer, areaid integer)
+ RETURNS TABLE(total bigint, codcarrera character varying)
+ LANGUAGE plpgsql
+AS $function$
+declare
+    f record;
+begin
+    for f in select dependencia_id from dependencias
+    loop 
+   
+      return query
+		 select count(*) as total,
+		(select codigo from dependencias where dependencia_id=f.dependencia_id) as coddependencia
+		from procedimientos pr
+		join pacientes p
+		on  pr.paciente_id=p.paciente_id
+		join personas per on p.persona_id=per.persona_id 
+		left join dependencias dc on per.dependencia_id=dc.dependencia_id
+		left join estamentos es	on per.estamento_id = es.estamento_id
+		where EXTRACT(MONTH FROM fecha)=mes 
+		and EXTRACT(YEAR FROM fecha)=anho 
+		and es.codigo like '%FUN%' 
+		and dc.dependencia_id=f.dependencia_id
+		and pr.area_id  = areaid
+		and pr.estado = 'FINALIZADO';
+		 
+    end loop;
+END;
+$function$
+;
+

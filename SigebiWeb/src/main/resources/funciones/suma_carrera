@@ -1,0 +1,51 @@
+CREATE OR REPLACE FUNCTION public.suma_carrera(mes integer, anho integer)
+ RETURNS TABLE(nombreestamento character varying, codcarrera character varying, femenino bigint, masculino bigint, suma numeric)
+ LANGUAGE plpgsql
+AS $function$
+declare
+    f record;
+begin
+    for f in select carrera_id from carreras
+    loop 
+
+      return query
+		 SELECT
+     (select descripcion from estamentos where codigo='EST') as nombreestamento,
+	(select codigo from carreras where carrera_id=f.carrera_id) as codcarrera,
+	       o.femenino, 
+	       o.masculino, 
+	       SUM(o.femenino + o.masculino) AS Suma
+	FROM(
+	select count(per.sexo) as femenino,
+	(select count(per.sexo) from consultas c
+	join pacientes p
+	on  c.paciente_id=p.paciente_id
+	join personas per
+	on p.persona_id=per.persona_id 
+	join carreras cr
+	on per.carrera_id=cr.carrera_id
+	join estamentos es
+	on per.estamento_id = es.estamento_id
+	where EXTRACT(MONTH FROM fecha)=mes and EXTRACT(YEAR FROM fecha)=anho and per.sexo like '%M%' and es.codigo='EST' and cr.carrera_id=f.carrera_id) as masculino
+	from consultas c
+	join pacientes p
+	on  c.paciente_id=p.paciente_id
+	join personas per
+	on p.persona_id=per.persona_id 
+	join carreras cr
+	on per.carrera_id=cr.carrera_id
+	join estamentos es
+	on per.estamento_id = es.estamento_id
+	where EXTRACT(MONTH FROM fecha)=mes and EXTRACT(YEAR FROM fecha)=anho and per.sexo like '%F%' and es.codigo='EST' and cr.carrera_id=f.carrera_id
+	)
+	AS o
+	GROUP BY 
+		 o.femenino, 
+		 o.masculino;
+
+		 
+    end loop;
+END;
+$function$
+;
+

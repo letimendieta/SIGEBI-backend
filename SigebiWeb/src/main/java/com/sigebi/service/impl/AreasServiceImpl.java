@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.sigebi.dao.IAreasDao;
 import com.sigebi.entity.Areas;
+import com.sigebi.entity.Personas;
 import com.sigebi.service.AreasService;
 import com.sigebi.service.UtilesService;
 import com.sigebi.util.exceptions.SigebiException;
@@ -68,7 +69,7 @@ public class AreasServiceImpl implements AreasService{
 		
 		return area;
 	}
-
+	
 	@Override
 	@Transactional
 	public Areas guardar(Areas area) {
@@ -166,6 +167,47 @@ public class AreasServiceImpl implements AreasService{
 			areasList = areasDao.findAll(areasSpec);
 		}
         
+        return areasList;
+    }
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Areas> buscarNoPaginable(Date fromDate, Date toDate, Areas area) throws DataAccessException{
+		List<String> tiposString = new ArrayList<>();
+		
+		if( area.getTipo() != null ){
+			String[] tipos = area.getTipo().split(",");
+			
+			for(int i=0; i<tipos.length; i++ ) {
+				tiposString.add(tipos[i]);
+			}
+		}		
+		
+        List<Areas> areasList = areasDao.findAll((Specification<Areas>) (root, cq, cb) -> {
+            
+        	Predicate p = cb.conjunction();
+            if( tiposString != null && !tiposString.isEmpty() ){
+            	p = cb.and(root.get("tipo").in(tiposString));
+            } 
+            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate) && fromDate.before(toDate)) {
+                p = cb.and(p, cb.between(root.get("fechaCreacion"), fromDate, toDate));
+            }
+            if ( area.getAreaId() != null ) {
+                p = cb.and(p, cb.equal(root.get("areaId"), area.getAreaId()) );
+            }
+            if (!StringUtils.isEmpty(area.getCodigo())) {
+                p = cb.and(p, cb.like(root.get("codigo"), "%" + area.getCodigo() + "%"));
+            }
+            if (!StringUtils.isEmpty(area.getDescripcion())) {
+                p = cb.and(p, cb.like(root.get("descripcion"), "%" + area.getDescripcion() + "%"));
+            }
+            if (!StringUtils.isEmpty(area.getEstado())) {
+                p = cb.and(p, cb.equal(root.get("estado"), area.getEstado()) );
+            }
+         
+            cq.orderBy(cb.desc(root.get("areaId")));
+            return p;
+        });
         return areasList;
     }
 

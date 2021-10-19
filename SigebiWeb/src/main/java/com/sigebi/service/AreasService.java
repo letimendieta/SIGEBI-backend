@@ -16,7 +16,7 @@ public interface AreasService {
 	public int count();
 	
 	public Areas obtener(int id) throws SigebiException;
-	
+		
 	public Areas guardar(Areas area);
 	
 	public Areas actualizar(Areas area) throws SigebiException;
@@ -26,5 +26,6 @@ public interface AreasService {
 	public List<Areas> buscar(Date fromDate, Date toDate, Areas area, 
 			String orderBy, String orderDir, Pageable pageable) throws DataAccessException;
 	
-	
+	public List<Areas> buscarNoPaginable(Date fromDate, Date toDate, Areas area) throws DataAccessException;
+		
 }

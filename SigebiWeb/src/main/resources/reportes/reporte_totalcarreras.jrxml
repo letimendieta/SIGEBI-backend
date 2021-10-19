@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_totalcarreras" pageWidth="141" pageHeight="40" columnWidth="141" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c96b6613-2784-4972-a421-618d2d87145b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIGEBI"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
 	<parameter name="anho" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString language="SQL">
@@ -16,7 +16,7 @@
 		<property name="com.jaspersoft.studio.field.name" value="codcarrera"/>
 		<property name="com.jaspersoft.studio.field.label" value="codcarrera"/>
 	</field>
-	<variable name="total1" class="java.lang.Long" resetType="Column" calculation="Sum">
+	<variable name="total1" class="java.lang.Long" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
 	<group name="total">
@@ -100,7 +100,7 @@
 				</textElement>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="80" y="0" width="60" height="20" uuid="13f8766f-c807-42dd-bad5-eef7f46537ec"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>

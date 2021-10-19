@@ -38,6 +38,21 @@ public class ConcatenarPDF {
 
     }
 
+    public void informeMensual(String path) throws IOException, DocumentException {
 
+        PdfReader reader1 = new PdfReader(path + "informe_mensual_atencion_medica.pdf");
+        unlockPdf(reader1);
+        PdfReader reader2 = new PdfReader(path + "informe_mensual_enfermeria.pdf");
+        unlockPdf(reader2);
+        PdfReader reader3 = new PdfReader(path + "informe_mensual_electrocardiograma.pdf");
+        unlockPdf(reader3);
+        PdfCopyFields copy =
+                new PdfCopyFields(new FileOutputStream(path + "informe_mensual.pdf"));
+        copy.addDocument(reader1);
+        copy.addDocument(reader2);
+        copy.addDocument(reader3);
+        copy.close();
+
+    }
 
 }

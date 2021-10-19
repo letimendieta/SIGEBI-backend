@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION public.sumatotal_carrera2(mes integer, anho integer, areaid integer)
+ RETURNS TABLE(total bigint, codcarrera character varying)
+ LANGUAGE plpgsql
+AS $function$
+declare
+    f record;
+begin
+    for f in select carrera_id from carreras
+    loop 
+   
+      return query
+		 select count(*) as total,
+(select codigo from carreras where carrera_id=f.carrera_id) as codcarrera
+from consultas c
+join pacientes p on  c.paciente_id=p.paciente_id
+join personas per on p.persona_id=per.persona_id 
+left join carreras cr on per.carrera_id=cr.carrera_id
+left join estamentos es on per.estamento_id = es.estamento_id
+where EXTRACT(MONTH FROM fecha)=mes and EXTRACT(YEAR FROM fecha)=anho 
+and es.codigo='EST' and cr.carrera_id=f.carrera_id
+and c.area_id  = areaid;
+		 
+    end loop;
+END;
+$function$
+;
+

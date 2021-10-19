@@ -11,6 +11,11 @@ public class Globales {
 		public static final String PERSONAL = "P";
 		public static final String FAMILIAR = "F";
 	}
+	public static final class Areas {
+		public static final String ENFERMERIA = "ENF";
+		public static final String CLINICA_MEDICA = "MED";
+		public static final String ELECTROCARDIOGRAMA = "ELEC";
+	}
 	public static final class EstadosEntregaInsumos {
 		public static final String ENTREGADO = "ENT";
 		public static final String NOENTREGADO = "NOENT";

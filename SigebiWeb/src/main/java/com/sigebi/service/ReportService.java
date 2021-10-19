@@ -19,6 +19,16 @@ public interface ReportService {
     String generarTerceraHoja(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException;
     
     String unionEstamentos(String reportFormat, HashMap<String, Object> filtros) throws FileNotFoundException, JRException, SQLException, SigebiException;
+    
+    String informeMensual(String reportFormat, HashMap<String, Object> filtros) throws FileNotFoundException, JRException, SQLException, SigebiException;
+    
+    String generarInformeMensualAtencionMedica(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException ;
+    
+    String generarInformeMensualEnfermeria(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException ;
+    
+    String generarInformeMensualElectrocardiograma(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException ;
 
     void concatenarPDF() throws SigebiException, IOException, DocumentException;
+    
+    void concatenarInformeMensual() throws SigebiException, IOException, DocumentException;
 }
