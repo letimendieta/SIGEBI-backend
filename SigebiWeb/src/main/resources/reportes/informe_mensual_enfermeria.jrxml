@@ -15,6 +15,8 @@
 	<parameter name="totalFuncionariosEnfermeria" class="java.lang.Integer"/>
 	<parameter name="totalDocentesEnfermeria" class="java.lang.Integer"/>
 	<parameter name="totalPersonasEnfermeria" class="java.lang.Integer"/>
+	<parameter name="mujeres" class="java.lang.Integer"/>
+	<parameter name="varones" class="java.lang.Integer"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -98,7 +100,7 @@
 			<staticText>
 				<reportElement x="360" y="108" width="69" height="20" uuid="8a05bff6-8829-44de-ade0-25ecd9849be2"/>
 				<box rightPadding="4"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
@@ -111,7 +113,27 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="128" splitType="Stretch">
+		<band height="137" splitType="Stretch">
+			<staticText>
+				<reportElement x="405" y="40" width="135" height="90" uuid="baa7dde2-0c46-4de3-a886-a1f427567707"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="269" y="40" width="135" height="90" uuid="3be1b43d-1f80-4f6f-b080-f48eb6e16444"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
 			<staticText>
 				<reportElement x="0" y="1" width="88" height="39" uuid="6a7fe406-c0d2-4464-9727-44b7043f84cb">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -302,28 +324,28 @@
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" x="269" y="60" width="41" height="20" uuid="3cc911cf-4fe8-4fbe-8f4f-2ba18dbaf621"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalEstudiantesEnfermeria}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" x="269" y="80" width="41" height="20" uuid="429e9576-f0ef-4709-8d06-52b293a8d886">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalFuncionariosEnfermeria}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" x="269" y="100" width="41" height="20" uuid="b4c33b4b-3ee1-45cd-9469-6cb751666473">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalDocentesEnfermeria}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="310" y="60" width="94" height="20" uuid="8dd86ff5-c095-4786-888a-d7249ad7e512">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Estudiantes]]></text>
@@ -332,7 +354,7 @@
 				<reportElement positionType="Float" x="310" y="80" width="94" height="20" uuid="6f4c53b0-c945-4177-9579-f53452036e78">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Funcionarios]]></text>
@@ -341,7 +363,7 @@
 				<reportElement positionType="Float" x="310" y="100" width="94" height="20" uuid="bf82bf15-511b-431e-9f3a-6b24f0af9a88">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Docentes]]></text>
@@ -355,37 +377,46 @@
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" x="404" y="60" width="41" height="20" uuid="fe212b57-af7e-47aa-bb1b-e72431a44e3d"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalPersonasEnfermeria}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="445" y="60" width="94" height="20" uuid="c5b0c8d8-078d-483c-b34a-4d87149eff5a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Personas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="269" y="40" width="135" height="80" uuid="3be1b43d-1f80-4f6f-b080-f48eb6e16444"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<text><![CDATA[]]></text>
+				<reportElement x="414" y="81" width="70" height="20" uuid="cb48417b-eecf-4ce5-8f40-5209cea3c836">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mujeres]]></text>
 			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="486" y="81" width="41" height="20" uuid="4d10f890-7c5d-41c2-8e5a-6fb80bd17681"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{mujeres}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="486" y="103" width="41" height="20" uuid="dfc431b6-82a4-4988-b4c2-bb03d2885bb9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{varones}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="405" y="40" width="135" height="80" uuid="baa7dde2-0c46-4de3-a886-a1f427567707"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<text><![CDATA[]]></text>
+				<reportElement x="414" y="103" width="70" height="20" uuid="14278a9e-024a-47da-bb82-28182862db80">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Varones]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

@@ -1,6 +1,8 @@
 package com.sigebi.security.jwt;
 
 import com.sigebi.security.entity.UsuarioPrincipal;
+import com.sigebi.util.exceptions.SigebiException;
+
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,21 +36,25 @@ public class JwtProvider {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) throws SigebiException{
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         }catch (MalformedJwtException e){
             logger.error("token mal formado");
+            throw new SigebiException("token mal formado");
         }catch (UnsupportedJwtException e){
             logger.error("token no soportado");
+            throw new SigebiException("token no soportado");
         }catch (ExpiredJwtException e){
             logger.error("token expirado");
+            throw new SigebiException("token expirado");
         }catch (IllegalArgumentException e){
             logger.error("token vacío");
+            throw new SigebiException("token vacío");
         }catch (SignatureException e){
             logger.error("fail en la firma");
+            throw new SigebiException("fail en la firma");
         }
-        return false;
     }
 }

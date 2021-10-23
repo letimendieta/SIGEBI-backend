@@ -339,7 +339,6 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String generarInformeMensualAtencionMedica(String reportFormat, Integer anho, Integer mes) throws SigebiException, SQLException {
 
-
         Connection conn = null;
         String pathReportes;
         
@@ -371,6 +370,10 @@ public class ReportServiceImpl implements ReportService {
 			Integer totalFuncionarios = obtenerTotalFuncionarios(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.CLINICA_MEDICA, conn );
 			Integer totalDocentes = obtenerTotalDocentes(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.CLINICA_MEDICA, conn );
 			Integer totalPersonas = totalEstudiantes + totalFuncionarios + totalDocentes;
+			
+			Map<String, Integer> porSexo = new HashMap<>();
+			
+			porSexo = obtenerTotalPorSexo(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.CLINICA_MEDICA, conn );
 
 			FileInputStream inputStream = new FileInputStream(pathReportes + "informe_mensual_atencion_medica.jasper");
 			Map<String, Object> parameters = new HashMap<>();
@@ -386,6 +389,8 @@ public class ReportServiceImpl implements ReportService {
 			parameters.put("totalFuncionariosAtencionMedica", totalFuncionarios );
 			parameters.put("totalDocentesAtencionMedica", totalDocentes );
 			parameters.put("totalPersonasAtencionMedica", totalPersonas );
+			parameters.put("varones", porSexo.get("varones") );
+			parameters.put("mujeres", porSexo.get("mujeres") );
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			JRPdfExporter exporter = new JRPdfExporter();
@@ -452,6 +457,9 @@ public class ReportServiceImpl implements ReportService {
 			Integer totalFuncionarios = obtenerTotalFuncionarios(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.ENFERMERIA, conn );
 			Integer totalDocentes = obtenerTotalDocentes(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.ENFERMERIA, conn );
 			Integer totalPersonas = totalEstudiantes + totalFuncionarios + totalDocentes;
+			
+			Map<String, Integer> porSexo = new HashMap<>();			
+			porSexo = obtenerTotalPorSexo(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.ENFERMERIA, conn );
 
 			FileInputStream inputStream = new FileInputStream(pathReportes + "informe_mensual_enfermeria.jasper");
 			Map<String, Object> parameters = new HashMap<>();
@@ -467,6 +475,8 @@ public class ReportServiceImpl implements ReportService {
 			parameters.put("totalFuncionariosEnfermeria", totalFuncionarios );
 			parameters.put("totalDocentesEnfermeria", totalDocentes );
 			parameters.put("totalPersonasEnfermeria", totalPersonas );
+			parameters.put("varones", porSexo.get("varones") );
+			parameters.put("mujeres", porSexo.get("mujeres") );
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			JRPdfExporter exporter = new JRPdfExporter();
@@ -534,6 +544,9 @@ public class ReportServiceImpl implements ReportService {
 			Integer totalDocentes = obtenerTotalDocentes(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.ELECTROCARDIOGRAMA, conn );
 			Integer totalPersonas = totalEstudiantes + totalFuncionarios + totalDocentes;
 
+			Map<String, Integer> porSexo = new HashMap<>();			
+			porSexo = obtenerTotalPorSexo(mes, anho, areaList.get(0).getAreaId(), Globales.Areas.ELECTROCARDIOGRAMA, conn );
+			
 			FileInputStream inputStream = new FileInputStream(pathReportes + "informe_mensual_electrocardiograma.jasper");
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("anho",anho);
@@ -548,6 +561,8 @@ public class ReportServiceImpl implements ReportService {
 			parameters.put("totalFuncionariosElectrocardiograma", totalFuncionarios );
 			parameters.put("totalDocentesElectrocardiograma", totalDocentes );
 			parameters.put("totalPersonasElectrocardiograma", totalPersonas );
+			parameters.put("varones", porSexo.get("varones") );
+			parameters.put("mujeres", porSexo.get("mujeres") );
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, conn);
 			JRPdfExporter exporter = new JRPdfExporter();
@@ -682,38 +697,76 @@ public class ReportServiceImpl implements ReportService {
 
 	private Integer obtenerTotalDocentes(Integer mes, Integer anho, Integer areaId, String area, Connection conn) throws SQLException {
 	
-	CallableStatement cstmt = null;
-    ResultSet resultUnion = null;
-    
-    if( Globales.Areas.CLINICA_MEDICA.equals(area) ) {
-    	cstmt = conn.prepareCall("{call sumatotal_departamento2(?, ?, ?)}");
-	}else {
-		cstmt = conn.prepareCall("{call sumatotal_departamento3(?, ?, ?)}");
-	}
-    
-	if (mes != null) {
-	    cstmt.setInt(1, mes);
-	} else {
-	    cstmt.setNString(1, null);
-	}
-
-	if (anho != null) {
-	    cstmt.setInt(2, anho);
-	} else {
-	    cstmt.setNString(2, null);
+		CallableStatement cstmt = null;
+	    ResultSet resultUnion = null;
+	    
+	    if( Globales.Areas.CLINICA_MEDICA.equals(area) ) {
+	    	cstmt = conn.prepareCall("{call sumatotal_departamento2(?, ?, ?)}");
+		}else {
+			cstmt = conn.prepareCall("{call sumatotal_departamento3(?, ?, ?)}");
+		}
+	    
+		if (mes != null) {
+		    cstmt.setInt(1, mes);
+		} else {
+		    cstmt.setNString(1, null);
+		}
+	
+		if (anho != null) {
+		    cstmt.setInt(2, anho);
+		} else {
+		    cstmt.setNString(2, null);
+		}
+		
+		if (areaId != null) {
+		    cstmt.setInt(3, areaId);
+		}
+		int suma = 0;
+		resultUnion = cstmt.executeQuery();
+		while (resultUnion.next()) {
+		    suma = suma + Integer.parseInt(resultUnion.getString("total").toString());
+		}
+		
+		return suma;
 	}
 	
-	if (areaId != null) {
-	    cstmt.setInt(3, areaId);
-	}
-	int suma = 0;
-	resultUnion = cstmt.executeQuery();
-	while (resultUnion.next()) {
-	    suma = suma + Integer.parseInt(resultUnion.getString("total").toString());
-	}
+	private Map<String, Integer> obtenerTotalPorSexo(Integer mes, Integer anho, Integer areaId, String area, Connection conn) throws SQLException {
+		
+		CallableStatement cstmt = null;
+	    ResultSet resultUnion = null;
+		
+		if( Globales.Areas.CLINICA_MEDICA.equals(area) ) {
+			cstmt = conn.prepareCall("{call suma_consultas_sexo(?, ?, ?)}");
+		}else {
+			cstmt = conn.prepareCall("{call suma_procedimientos_sexo(?, ?, ?)}");
+		}
+	    
+		if (mes != null) {
+		    cstmt.setInt(1, mes);
+		} else {
+		    cstmt.setNString(1, null);
+		}
 	
-	return suma;
-}
+		if (anho != null) {
+		    cstmt.setInt(2, anho);
+		} else {
+		    cstmt.setNString(2, null);
+		}
+		
+		if (areaId != null) {
+		    cstmt.setInt(3, areaId);
+		}
+		
+		Map<String, Integer> resultado = new HashMap<>();
+		resultUnion = cstmt.executeQuery();
+		
+		while (resultUnion.next()) {
+			resultado.put("varones", Integer.parseInt(resultUnion.getString("masculino").toString()));
+			resultado.put("mujeres", Integer.parseInt(resultUnion.getString("femenino").toString()));
+		}
+		
+		return resultado;
+	}
 
     private String obtenerMes(int mes) {
         String respuesta = "";

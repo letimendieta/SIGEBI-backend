@@ -15,6 +15,8 @@
 	<parameter name="totalFuncionariosAtencionMedica" class="java.lang.Integer"/>
 	<parameter name="totalDocentesAtencionMedica" class="java.lang.Integer"/>
 	<parameter name="totalPersonasAtencionMedica" class="java.lang.Integer"/>
+	<parameter name="mujeres" class="java.lang.Integer"/>
+	<parameter name="varones" class="java.lang.Integer"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -98,7 +100,7 @@
 			<staticText>
 				<reportElement x="360" y="108" width="69" height="20" uuid="2b353f16-fa6f-443a-aee0-81be7116935d"/>
 				<box rightPadding="4"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
@@ -111,7 +113,27 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="127" splitType="Stretch">
+		<band height="138" splitType="Stretch">
+			<staticText>
+				<reportElement x="405" y="40" width="136" height="90" uuid="82222c3f-2da3-454a-84a2-f3eb2e100bc9"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="269" y="40" width="135" height="90" uuid="fd7d149b-23e7-4541-bd71-112f48dc30d3"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
 			<staticText>
 				<reportElement x="0" y="1" width="88" height="39" uuid="6a7fe406-c0d2-4464-9727-44b7043f84cb">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -294,54 +316,54 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="269" y="40" width="135" height="20" uuid="d55198f0-95d8-4632-b2d3-13eb8bea660a"/>
+				<reportElement x="269" y="41" width="135" height="20" uuid="d55198f0-95d8-4632-b2d3-13eb8bea660a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Atención Médica]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="269" y="60" width="41" height="20" uuid="e6a22147-3b01-43b0-9857-9fd95d9a8b07"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="269" y="65" width="41" height="20" uuid="e6a22147-3b01-43b0-9857-9fd95d9a8b07"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalEstudiantesAtencionMedica}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="269" y="80" width="41" height="20" uuid="ddf7f316-2d64-4f67-b587-ff0f197c0b45">
+				<reportElement x="269" y="85" width="41" height="20" uuid="ddf7f316-2d64-4f67-b587-ff0f197c0b45">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalFuncionariosAtencionMedica}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="269" y="100" width="41" height="20" uuid="6d30f50b-3358-446d-b593-34dcf0ee9c42">
+				<reportElement x="269" y="105" width="41" height="20" uuid="6d30f50b-3358-446d-b593-34dcf0ee9c42">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalDocentesAtencionMedica}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="310" y="60" width="94" height="20" uuid="7d6ea4b1-b9f2-4dd9-9d3b-33c2041e8dc7">
+				<reportElement x="310" y="65" width="94" height="20" uuid="7d6ea4b1-b9f2-4dd9-9d3b-33c2041e8dc7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Estudiantes]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="310" y="80" width="94" height="20" uuid="0e4ee862-fc1b-4071-b211-936c4acbf74d">
+				<reportElement x="310" y="85" width="94" height="20" uuid="0e4ee862-fc1b-4071-b211-936c4acbf74d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Funcionarios]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="310" y="100" width="94" height="20" uuid="5fb4a387-50d8-4429-b1e0-0cbde6f026a8">
+				<reportElement x="310" y="105" width="94" height="20" uuid="5fb4a387-50d8-4429-b1e0-0cbde6f026a8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Docentes]]></text>
@@ -355,38 +377,47 @@
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="404" y="60" width="41" height="20" uuid="118ef277-8735-46ef-99a7-c34f9fab8d79"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalPersonasAtencionMedica}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="445" y="60" width="94" height="20" uuid="f3792ae0-510f-4992-a576-d6dd4417fcfd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Personas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="269" y="40" width="135" height="80" uuid="fd7d149b-23e7-4541-bd71-112f48dc30d3"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<text><![CDATA[]]></text>
+				<reportElement x="414" y="81" width="70" height="20" uuid="9f54d17e-22be-41f8-bf68-53cca85d54ea">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mujeres]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="405" y="40" width="136" height="80" uuid="82222c3f-2da3-454a-84a2-f3eb2e100bc9"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<text><![CDATA[]]></text>
+				<reportElement x="414" y="103" width="70" height="20" uuid="8a6f9653-aecb-4006-818c-d97ba61951db">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Varones]]></text>
 			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="486" y="81" width="41" height="20" uuid="56d055e1-d190-4ec0-81b2-a94a71248226"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{mujeres}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="486" y="103" width="41" height="20" uuid="d499e6e0-9caa-442e-ac8e-115acf090c31"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{varones}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 </jasperReport>
