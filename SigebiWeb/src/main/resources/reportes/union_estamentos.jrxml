@@ -42,16 +42,16 @@
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{nombreestamento}]]></groupExpression>
 		<groupHeader>
-			<band height="37">
+			<band height="20">
 				<textField textAdjust="StretchHeight">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="37" uuid="94fc607d-68fa-42f7-a2a6-304b3bba864f">
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="180" height="20" uuid="94fc607d-68fa-42f7-a2a6-304b3bba864f">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{nombreestamento}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="415" height="37" uuid="0b9fdd0b-24c7-4dde-9c7b-19148982c43b">
+					<reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="415" height="20" uuid="0b9fdd0b-24c7-4dde-9c7b-19148982c43b">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<subreportParameter name="itemsJRBean">

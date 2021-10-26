@@ -18,28 +18,28 @@ FROM estamentos]]>
 			</image>
 			<staticText>
 				<reportElement x="126" y="0" width="294" height="20" uuid="1d43a9f2-20eb-4241-a1de-727632e4a588"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Universidad Nacional de Asunción ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="126" y="20" width="154" height="20" uuid="f1bc2a22-0023-4760-ad78-703f0a7a1a34"/>
-				<textElement>
+				<reportElement x="183" y="20" width="154" height="20" uuid="f1bc2a22-0023-4760-ad78-703f0a7a1a34"/>
+				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Facultad Politécnica]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="126" y="40" width="304" height="20" uuid="18eaaab6-a992-4585-ab5d-f1a62bda544a"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dirección de Bienestar Institucional]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="126" y="60" width="134" height="19" uuid="6a664675-8c38-4b13-b11d-4e22bf28cdda"/>
-				<textElement>
+				<reportElement x="193" y="60" width="134" height="19" uuid="6a664675-8c38-4b13-b11d-4e22bf28cdda"/>
+				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[División SALUD]]></text>
@@ -56,14 +56,14 @@ FROM estamentos]]>
 				<text><![CDATA[INFORME DE SERVICIO DE SALUD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="198" y="21" width="50" height="19" uuid="ac0d55e8-6b7e-4e6f-a385-a54ec7b4f451"/>
+				<reportElement x="185" y="21" width="50" height="19" uuid="ac0d55e8-6b7e-4e6f-a385-a54ec7b4f451"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mes]]></text>
 			</staticText>
 			<textField pattern="yyyy">
-				<reportElement x="248" y="20" width="180" height="19" uuid="775a80a4-2156-4287-ab12-4617273f41cf"/>
+				<reportElement x="235" y="20" width="180" height="19" uuid="775a80a4-2156-4287-ab12-4617273f41cf"/>
 				<textElement textAlignment="Left">
 					<font size="14" isBold="true"/>
 				</textElement>

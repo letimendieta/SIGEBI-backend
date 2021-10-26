@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="departamentos" pageWidth="375" pageHeight="842" columnWidth="375" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="63b776bb-7fcb-482c-9cba-6b0ef67cbfe1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="departamentos" pageWidth="375" pageHeight="860" columnWidth="375" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="63b776bb-7fcb-482c-9cba-6b0ef67cbfe1">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="itemsJRBean" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="nombreestamento" class="java.lang.String"/>
 	<queryString>
@@ -43,9 +34,9 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="26" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="0" width="158" height="20" isPrintWhenDetailOverflows="true" uuid="ebf9a2b8-4aa7-434d-815c-9820797e7bbb">
+				<reportElement x="0" y="0" width="158" height="26" isPrintWhenDetailOverflows="true" uuid="ebf9a2b8-4aa7-434d-815c-9820797e7bbb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -54,7 +45,7 @@
 				<textFieldExpression><![CDATA[$F{codcarrera}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="181" y="0" width="50" height="20" uuid="df35bb32-5c34-4c80-a6c6-7ac86ed92aba">
+				<reportElement x="181" y="0" width="50" height="26" uuid="df35bb32-5c34-4c80-a6c6-7ac86ed92aba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -63,7 +54,7 @@
 				<textFieldExpression><![CDATA[$F{femenino}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="246" y="0" width="50" height="20" uuid="871f32f9-2e9a-47a9-9777-4819b898deab">
+				<reportElement x="246" y="0" width="50" height="26" uuid="871f32f9-2e9a-47a9-9777-4819b898deab">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -72,7 +63,7 @@
 				<textFieldExpression><![CDATA[$F{masculino}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="309" y="0" width="63" height="20" uuid="ef891285-5384-414f-ba99-b627d834418d">
+				<reportElement x="309" y="0" width="63" height="26" uuid="ef891285-5384-414f-ba99-b627d834418d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -80,7 +71,9 @@
 				<textFieldExpression><![CDATA[$F{suma}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="375" height="20" uuid="17b39195-560f-45b4-9810-cd1fe99c1d1e"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="375" height="26" uuid="17b39195-560f-45b4-9810-cd1fe99c1d1e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
